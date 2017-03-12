@@ -1,0 +1,65 @@
+<code-editor>
+
+<style type="text/css">
+#code {
+    width: 100%;
+    height: 600px;
+}
+</style>
+
+<h3>Develop</h3>
+<input id="command" value="{ room }">
+<button onclick="{ run }" ref="run">⏵</button>
+
+<div id="code" onkeydown="{ handler }" ref="code"></div>
+<br>
+
+<script>
+
+  this.room = "Untitled"
+
+  Y({
+    db: {
+      name: 'memory' // use memory database adapter.
+      //name: 'indexeddb' // use indexeddb database adapter instead for offline apps
+    },
+    connector: {
+      name: 'webrtc', // use webrtc connector
+      // name: 'websockets-client'
+      // name: 'xmpp'
+      room: this.room // clients connecting to the same room share data 
+    },
+    sourceDir: 'node_modules', // location of the y-* modules (browser only)
+    share: {
+      ace: 'Text' // y.share.textarea is of type y-text
+    }
+  }).then(function (y) {
+    // The Yjs instance `y` is available
+    // y.share.* contains the shared types
+    // Bind `y.share.textarea` to `<textarea/>`
+    var editor = ace.edit("code")
+    editor.setTheme("ace/theme/twilight")
+    editor.getSession().setMode("ace/mode/python")
+    editor.$blockScrolling = Infinity 
+
+    this.y = y
+    y.share.ace.bindAce(editor)
+  })
+
+</script>
+
+<script type="text/Rapyd">
+
+print('RapydScript-ng ' + RapydScript.rs_version)
+
+self.run = def():
+    eval(compiler.compile(str(self.y.share['ace'])))
+
+self.handler = def(e):
+    if (e.keyCode == 13):
+        if (e.ctrlKey):
+            this.refs.run.click()
+
+</script>
+</code-editor>
+
