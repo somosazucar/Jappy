@@ -1,0 +1,24 @@
+from pythonize import strings
+
+strings()
+
+def input(*args):
+    return prompt(args)
+
+def ρσ_print(*args):
+    sep = " "
+    end = "\n"
+
+    def printAsync():
+        element = document.getElementById('__terminal__')
+        if element:
+            addition = sep.join([arg for arg in args]) + end
+            previous = element.innerHTML
+            element.innerHTML = previous + addition.replace('\n', '<br>')
+            element.scrollTop = element.scrollHeight
+        else:
+            console.log (sep.join([str (arg) for arg in args]))
+    setTimeout(printAsync, 5)
+
+window.onerror = def(e):
+    print(e)

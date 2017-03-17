@@ -1,0 +1,88 @@
+<code-editor>
+
+<style type="text/css">
+.ace_editor {
+    width: 100%;
+    height: 100%;
+    font-size: 16pt;
+    font-family: "DejaVu Sans Mono", monospace;
+}
+.ace_error-marker{
+    border: 1px solid red;
+}
+iframe {
+    height: 100%;
+    border: 0px;
+}
+</style>
+
+<div ref="code"></div>
+<button ref="run">⏵</button>
+<iframe ref="vmframe"></iframe>
+
+<script type="text/Rapyd">
+
+Range = ace.require('ace/range').Range
+
+print('RapydScript-ng ' + RapydScript.rs_version)
+
+tag = this
+this.marker = None
+
+def compile(editor):
+    session = editor.getSession()
+    if tag.marker:
+        session.removeMarker(tag.marker)
+
+    try:
+        result = compiler.compile(editor.getValue())
+    except Exception as e:
+        code = "print ('''" + e.name + ": " + e.message + "''')"
+
+
+        tag.marker = session.addMarker(
+                new Range(e.line-1, e.col, e.line-1, e.col+1),
+                            "ace_error-marker", "text")
+
+        result = compiler.compile(code)
+    return result
+
+def initAce():
+    editor = ace.edit(this.refs.code)
+    editor.setTheme("ace/theme/solarized_light")
+    editor.getSession().setNewLineMode("unix");
+    editor.getSession().setMode("ace/mode/python")
+    editor.$blockScrolling = Infinity
+
+    iframe = this.refs.vmframe
+    def run():
+        iframe.contentDocument.body.innerHTML = ''
+        js_output = compile(editor)
+        html_output = Mustache.render(tag.template, {'output':js_output})
+        iframe.contentDocument.write(html_output)
+        iframe.contentDocument.close()
+
+    button = this.refs.run
+    button.onclick = run
+
+    editor.commands.removeCommand('gotoline') # Conflicts with browser hotkey
+    editor.commands.addCommand({
+            'name': 'Run',
+            'bindKey': {'win': 'Ctrl-Enter',  'mac': 'Command-Enter'},
+            'exec': run})
+
+    this.editor = editor
+    window.editor = editor
+
+this.on('mount', initAce)
+
+xhttp = XMLHttpRequest()
+xhttp.open("GET", "template.html", True)
+xhttp.send()
+
+xhttp.onreadystatechange = def():
+  if this.readyState == 4 and this.status == 200:
+    tag.template = this.responseText
+
+</script>
+</code-editor>
