@@ -5,9 +5,11 @@ A *Develop Activity* proposal for Sugar and Sugarizer.
 
 Web Apps for Sugarizer and any Platform
 Templates for Apps:
-    - Python
-    - Game
-    - Tool
+
+ - Python
+ - Game
+ - Tool
+
 Collaboration, Simplicity, Reflection
     "Never loose work"
 
