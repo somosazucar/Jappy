@@ -1,0 +1,58 @@
+<tool-bar>
+<style>
+  #main-toolbar #tray-button {
+      background-image: url(icons/tray-show.svg);
+  }
+  #main-toolbar #run-button {
+      background-image: url(icons/run_bw.svg);
+  }
+  #main-toolbar #break-button {
+      background-image: url(icons/stopit_bw.svg);
+  }
+  #main-toolbar #example-button {
+      background-image: url(icons/pippy-openoff.svg);
+  }
+  #main-toolbar hr {
+      margin: 0px 2.5px 5px 2.5px;
+  }
+</style>
+
+<div id="main-toolbar" class="toolbar">
+  <button class="toolbutton" id="activity-button" title="Jappy Activity"></button>
+
+  <button class="toolbutton" id="tray-button" title="Show ouput panel" ref="traybutton"></button>
+
+  <button class="toolbutton" id="run-button" title="Run" ref="runbutton"></button>
+
+  <button class="toolbutton" id="break-button" title="Break" ref="breakbutton"></button>
+  <hr />
+  <button class="toolbutton" id="example-button" title="Open an example" ref="examplebutton"></button>
+
+  <button class="toolbutton pull-right" id="stop-button" title="Stop"></button>
+</div>
+
+<script type="text/Rapyd">
+
+tag = this
+window.tag = tag
+
+def init():
+    this.refs.traybutton.onclick = def():
+        event_bus.trigger("toggle-tray")
+    this.refs.runbutton.onclick = def():
+        event_bus.trigger("run-code")
+    this.refs.breakbutton.onclick = def():
+        event_bus.trigger("break-code")
+
+    def traybutton_open():
+        tag.refs.traybutton.style.backgroundImage = "url(icons/tray-show.svg)"
+    event_bus.on("traybutton-open", traybutton_open)
+
+    def traybutton_close():
+        tag.refs.traybutton.style.backgroundImage = "url(icons/tray-hide.svg)"
+    event_bus.on("traybutton-close", traybutton_close)
+
+this.on('mount', init)
+
+</script>
+</tool-bar>

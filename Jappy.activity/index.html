@@ -1,12 +1,25 @@
 <!doctype html>
 <meta charset="utf-8">
 <head>
+    <meta name="viewport" content="user-scalable=no, initial-scale=1, maximum-scale=1, minimum-scale=1, width=device-width"/>
+    <link rel="stylesheet" media="not screen and (device-width: 1200px) and (device-height: 900px)"
+            href="lib/sugar-web/graphics/css/sugar-96dpi.css">
+    <link rel="stylesheet" media="screen and (device-width: 1200px) and (device-height: 900px)"
+            href="lib/sugar-web/graphics/css/sugar-200dpi.css">
+    <link rel="stylesheet" type="text/css" href="css/activity.css">
     <style>
     body, html {
       display: flex;
       height: 100%;
       width: 100%;
       margin:0;
+      flex-direction: column;
+    }
+    tool-bar {
+      height: 60px;
+      width: 100%;
+      display: flex;
+      flex-direction: column;
     }
     code-editor {
       height: 100%;
@@ -14,9 +27,14 @@
       display: flex;
       flex-direction: column;
     }
+    .palette {
+        z-index: 1;
+    }
     </style>
 </head>
 <body>
+
+    <tool-bar></tool-bar>
 
     <code-editor></code-editor>
 
@@ -25,13 +43,17 @@
     <script src="node_modules/mustache/mustache.js"></script>
 
     <script src="node_modules/ace-builds/src-min-noconflict/ace.js"></script>
-    <script src="node_modules/ace-builds/src-min-noconflict/theme-solarized_dark.js"></script>
+    <script src="node_modules/ace-builds/src-min-noconflict/theme-solarized_light.js"></script>
     <script src="node_modules/ace-builds/src-min-noconflict/mode-python.js"></script>
 
     <script type="riot/tag" data-src="code_editor.tag.html"></script>
+    <script type="riot/tag" data-src="toolbar.tag.html"></script>
+    <script data-main="js/loader" src="lib/require.js"></script>
     <script>
 
         compiler = RapydScript.create_embedded_compiler()
+
+        event_bus = riot.observable()
 
         riot.parsers.js.Rapyd = function(js, options) {
           return (compiler.compile(js))

@@ -3,11 +3,13 @@
 from flask import Flask
 from flask import redirect
 
-app = Flask(__name__, static_folder="web")
+app_dir = "Jappy.activity"
+
+app = Flask(__name__, static_folder=app_dir)
 
 @app.route("/")
 def hello():
-    return redirect("web/app.html")
+    return redirect(app_dir)
 
 if __name__ == "__main__":
     app.run(host="0.0.0.0")

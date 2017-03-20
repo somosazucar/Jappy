@@ -13,11 +13,11 @@
 iframe {
     height: 100%;
     border: 0px;
+    display: none;
 }
 </style>
 
 <div ref="code"></div>
-<button ref="run">⏵</button>
 <iframe ref="vmframe"></iframe>
 
 <script type="text/Rapyd">
@@ -55,15 +55,29 @@ def initAce():
     editor.$blockScrolling = Infinity
 
     iframe = this.refs.vmframe
+
+    def toggle_tray(show=False):
+        if show==True or getComputedStyle(iframe).display == 'none':
+            iframe.style.display='block'
+            event_bus.trigger("traybutton-close")
+        else:
+            iframe.style.display='none'
+            event_bus.trigger("traybutton-open")
+        editor.resize()
+    event_bus.on("toggle-tray", toggle_tray)
+
     def run():
+        toggle_tray(True)
         iframe.contentDocument.body.innerHTML = ''
         js_output = compile(editor)
         html_output = Mustache.render(tag.template, {'output':js_output})
         iframe.contentDocument.write(html_output)
         iframe.contentDocument.close()
+    event_bus.on("run-code", run)
 
-    button = this.refs.run
-    button.onclick = run
+    def break_code():
+        iframe.contentWindow.stop()
+    event_bus.on("break-code", break_code)
 
     editor.commands.removeCommand('gotoline') # Conflicts with browser hotkey
     editor.commands.addCommand({
