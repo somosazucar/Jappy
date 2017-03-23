@@ -17,12 +17,19 @@ body {
 .pull-right {
   float: right;
 }
+.toolbar > .pull-right {
+  margin-left: auto !important;
+}
+.toolbar > .pull-right ~ .pull-right {
+  margin-left: 2.5px !important;
+}
 a {
   color: #0076c3;
   text-decoration: none;
 }
 /* Toolbar */
 .toolbar {
+  display: flex;
   height: 55px;
   padding: 0 57px;
   color: white;
@@ -32,14 +39,16 @@ a {
 }
 /* Toolbar separator */
 .toolbar hr {
-  display: inline-block;
-  height: 33px;
-  margin: 2.5px;
-  margin-bottom: -17px;
+  flex-direction: row;
+  display: flex;
+  height: 55px;
+  margin: 0px 2.5px 0px;
   border: 1px solid #808080;
 }
 /* Toolbar toolbutton */
 .toolbar .toolbutton {
+  flex-direction: row;
+  display: flex;
   position: relative;
   width: 47px;
   height: 47px;

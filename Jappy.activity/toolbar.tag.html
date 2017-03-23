@@ -9,11 +9,11 @@
   #main-toolbar #break-button {
       background-image: url(icons/stopit_bw.svg);
   }
+  #main-toolbar #erase-button {
+      background-image: url(icons/eraser_bw.svg);
+  }
   #main-toolbar #example-button {
       background-image: url(icons/pippy-openoff.svg);
-  }
-  #main-toolbar hr {
-      margin: 0px 2.5px 5px 2.5px;
   }
 </style>
 
@@ -25,6 +25,8 @@
   <button class="toolbutton" id="run-button" title="Run" ref="runbutton"></button>
 
   <button class="toolbutton" id="break-button" title="Break" ref="breakbutton"></button>
+
+  <button class="toolbutton" id="erase-button" title="Clean" ref="erasebutton"></button>
   <hr />
   <button class="toolbutton" id="example-button" title="Open an example" ref="examplebutton"></button>
 
@@ -34,7 +36,6 @@
 <script type="text/Rapyd">
 
 tag = this
-window.tag = tag
 
 def init():
     this.refs.traybutton.onclick = def():
@@ -43,6 +44,8 @@ def init():
         event_bus.trigger("run-code")
     this.refs.breakbutton.onclick = def():
         event_bus.trigger("break-code")
+    this.refs.erasebutton.onclick = def():
+        event_bus.trigger("clear-output")
 
     def traybutton_open():
         tag.refs.traybutton.style.backgroundImage = "url(icons/tray-show.svg)"

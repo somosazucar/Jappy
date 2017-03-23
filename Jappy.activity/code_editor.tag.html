@@ -3,22 +3,30 @@
 <style type="text/css">
 .ace_editor {
     width: 100%;
-    height: 100%;
     font-size: 16pt;
     font-family: "DejaVu Sans Mono", monospace;
+    flex: 1 1;
 }
 .ace_error-marker{
     border: 1px solid red;
 }
 iframe {
-    height: 100%;
     border: 0px;
     display: none;
+    flex: 1 1;
+}
+hr {
+    border: 1px solid #808080;
+    padding : 0px;
+    margin: 0px;
 }
 </style>
 
 <div ref="code"></div>
-<iframe ref="vmframe"></iframe>
+<div draggable="true" ref="hr"><hr></div>
+<iframe ref="vmframe" src="template.html"></iframe>
+
+<script ref="default" type="text/template" src="template.html"></script>
 
 <script type="text/Rapyd">
 
@@ -36,15 +44,17 @@ def compile(editor):
 
     try:
         result = compiler.compile(editor.getValue())
+        if "print;" in result:
+            raise SyntaxError('Missing parentheses in call to "print"')
+
     except Exception as e:
         code = "print ('''" + e.name + ": " + e.message + "''')"
-
-
-        tag.marker = session.addMarker(
-                new Range(e.line-1, e.col, e.line-1, e.col+1),
-                            "ace_error-marker", "text")
-
+        if e.line and e.col:
+            tag.marker = session.addMarker(
+                    new Range(e.line-1, e.col, e.line-1, e.col+1),
+                                "ace_error-marker", "text")
         result = compiler.compile(code)
+
     return result
 
 def initAce():
@@ -65,19 +75,27 @@ def initAce():
             event_bus.trigger("traybutton-open")
         editor.resize()
     event_bus.on("toggle-tray", toggle_tray)
+    this.refs.hr.onclick = toggle_tray
 
     def run():
         toggle_tray(True)
-        iframe.contentDocument.body.innerHTML = ''
         js_output = compile(editor)
-        html_output = Mustache.render(tag.template, {'output':js_output})
-        iframe.contentDocument.write(html_output)
-        iframe.contentDocument.close()
+        script = iframe.contentDocument.createElement('script')
+        script.innerHTML = js_output
+        def write_script():
+            iframe.contentDocument.body.appendChild(script)
+            iframe.contentDocument.close()
+        iframe.onload = write_script
+        iframe.contentWindow.location = 'template.html'
     event_bus.on("run-code", run)
 
     def break_code():
         iframe.contentWindow.stop()
     event_bus.on("break-code", break_code)
+
+    def clear_output():
+        iframe.contentWindow.location = 'about:blank'
+    event_bus.on("clear-output", clear_output)
 
     editor.commands.removeCommand('gotoline') # Conflicts with browser hotkey
     editor.commands.addCommand({
@@ -89,14 +107,6 @@ def initAce():
     window.editor = editor
 
 this.on('mount', initAce)
-
-xhttp = XMLHttpRequest()
-xhttp.open("GET", "template.html", True)
-xhttp.send()
-
-xhttp.onreadystatechange = def():
-  if this.readyState == 4 and this.status == 200:
-    tag.template = this.responseText
 
 </script>
 </code-editor>
