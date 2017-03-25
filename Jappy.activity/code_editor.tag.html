@@ -26,11 +26,7 @@ hr {
 <div draggable="true" ref="hr"><hr></div>
 <iframe ref="vmframe" src="template.html"></iframe>
 
-<script ref="default" type="text/template" src="template.html"></script>
-
 <script type="text/Rapyd">
-
-Range = ace.require('ace/range').Range
 
 print('RapydScript-ng ' + RapydScript.rs_version)
 
@@ -50,6 +46,7 @@ def compile(editor):
     except Exception as e:
         code = "print ('''" + e.name + ": " + e.message + "''')"
         if e.line and e.col:
+            Range = ace.require('ace/range').Range
             tag.marker = session.addMarker(
                     new Range(e.line-1, e.col, e.line-1, e.col+1),
                                 "ace_error-marker", "text")
@@ -57,7 +54,7 @@ def compile(editor):
 
     return result
 
-def initAce():
+def init():
     editor = ace.edit(this.refs.code)
     editor.setTheme("ace/theme/solarized_light")
     editor.getSession().setNewLineMode("unix");
@@ -65,6 +62,14 @@ def initAce():
     editor.$blockScrolling = Infinity
 
     iframe = this.refs.vmframe
+
+    def load_datastore(activity):
+        datastore = activity.getDatastoreObject()
+        def check_load(error, metadata, data):
+            editor.getSession().setValue(data)
+        datastore.loadAsText(check_load)
+        window.activity = activity
+    event_bus.on("activity-ready", load_datastore)
 
     def toggle_tray(show=False):
         if show==True or getComputedStyle(iframe).display == 'none':
@@ -78,6 +83,8 @@ def initAce():
     this.refs.hr.onclick = toggle_tray
 
     def run():
+        if window.activity:
+            event_bus.trigger("activity-save", activity)
         toggle_tray(True)
         js_output = compile(editor)
         script = iframe.contentDocument.createElement('script')
@@ -97,6 +104,17 @@ def initAce():
         iframe.contentWindow.location = 'about:blank'
     event_bus.on("clear-output", clear_output)
 
+    def save(activity):
+        datastore = activity.getDatastoreObject()
+        datastore.setDataAsText(editor.getSession().getValue())
+        def check_save(error):
+            if error is None:
+                console.log("Saved")
+            else:
+                console.log("NOT Saved")
+        datastore.save(check_save)
+    event_bus.on("activity-save", save)
+
     editor.commands.removeCommand('gotoline') # Conflicts with browser hotkey
     editor.commands.addCommand({
             'name': 'Run',
@@ -106,7 +124,7 @@ def initAce():
     this.editor = editor
     window.editor = editor
 
-this.on('mount', initAce)
+this.on('mount', init)
 
 </script>
 </code-editor>

@@ -37,7 +37,6 @@
 
     <script src="node_modules/riot/riot+compiler.js"></script>
     <script src="lib/rapydscript.js"></script>
-    <script src="node_modules/mustache/mustache.js"></script>
 
     <script src="node_modules/ace-builds/src-min-noconflict/ace.js"></script>
     <script src="node_modules/ace-builds/src-min-noconflict/theme-solarized_light.js"></script>
@@ -46,20 +45,4 @@
     <script type="riot/tag" data-src="code_editor.tag.html"></script>
     <script type="riot/tag" data-src="toolbar.tag.html"></script>
     <script data-main="js/loader" src="lib/require.js"></script>
-    <script>
-
-        compiler = RapydScript.create_embedded_compiler()
-
-        event_bus = riot.observable()
-
-        riot.parsers.js.Rapyd = function(js, options) {
-          return (compiler.compile(js))
-        }
-
-        riot.compile(function() {
-          // here tags are compiled and riot.mount works synchronously
-          var tags = riot.mount('*')
-        })
-
-    </script>
 </body>

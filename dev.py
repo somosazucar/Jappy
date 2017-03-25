@@ -9,7 +9,7 @@ app = Flask(__name__, static_folder=app_dir)
 
 @app.route("/")
 def hello():
-    return redirect(app_dir)
+    return redirect(app_dir + "/index.html")
 
 if __name__ == "__main__":
     app.run(host="0.0.0.0")
