@@ -66,7 +66,8 @@ def init():
     def load_datastore(activity):
         datastore = activity.getDatastoreObject()
         def check_load(error, metadata, data):
-            editor.getSession().setValue(data)
+            if (data):
+                editor.getSession().setValue(data)
         datastore.loadAsText(check_load)
         window.activity = activity
     event_bus.on("activity-ready", load_datastore)
@@ -74,6 +75,7 @@ def init():
     def toggle_tray(show=False):
         if show==True or getComputedStyle(iframe).display == 'none':
             iframe.style.display='block'
+            iframe.style.width='100%'
             event_bus.trigger("traybutton-close")
         else:
             iframe.style.display='none'
