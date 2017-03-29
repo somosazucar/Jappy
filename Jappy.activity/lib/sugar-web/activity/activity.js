@@ -19,10 +19,9 @@ define(["webL10n",
         l10n.start();
 
         function sendPauseEvent() {
-			var pauseEvent = document.createEvent("CustomEvent");
-			pauseEvent.initCustomEvent('activityPause', false, false, {
-				'cancelable': true	
-			});
+            var pauseEvent = document.createEvent("CustomEvent");
+            pauseEvent.initCustomEvent('activityPause', false, false, {
+                                       'cancelable': true});
             window.dispatchEvent(pauseEvent);
         }
         bus.onNotification("activity.pause", sendPauseEvent);
@@ -32,10 +31,10 @@ define(["webL10n",
         // call activity.close() after storing.
 
         function sendStopEvent() {
-			var stopEvent = document.createEvent("CustomEvent");
-			stopEvent.initCustomEvent('activityStop', false, false, {
-				'cancelable': true	
-			});
+            var stopEvent = document.createEvent("CustomEvent");
+            stopEvent.initCustomEvent('activityStop', false, false, {
+                                      'cancelable': true});
+
             var result = window.dispatchEvent(stopEvent);
             if (result) {
                 activity.close();
@@ -127,6 +126,100 @@ define(["webL10n",
         }
 
         bus.sendMessage("activity.show_object_chooser", [], onResponseReceived);
+    };
+
+    activity.showAlert = function (title, message, btnLabel, btnCallback) {
+        if (btnLabel == null) {
+            btnLabel = 'Ok';
+        }
+
+        // if there are a alert visible, hide it
+        activity.hideAlert();
+
+        var fragment = document.createDocumentFragment();
+        var div = document.createElement('div');
+        div.className = 'alert';
+        div.id = 'activity-alert';
+        div.innerHTML = '<p><b>' + title + '</b><br/>' + message + '</p>' +
+            '<p class="button-box">' +
+            '<button id="actvity-alert-btn" class="icon">' +
+            '<span class="ok"></span>' +
+            btnLabel + '</button></p>';
+        fragment.appendChild(div);
+
+        document.body.appendChild(fragment.cloneNode(true));
+
+        var btn = document.getElementById("actvity-alert-btn");
+        btn.addEventListener('click', function (e) {
+            activity.hideAlert();
+            if (btnCallback != null) {
+                btnCallback();
+            }
+        });
+
+    };
+
+    activity.showConfirmationAlert = function (title, message, btnOkLabel,
+                                               btnCancelLabel, btnCallback) {
+        /*
+        title, message, btnOkLabel and btCancelLabel are str parameters
+        callback is a function called when the user press a button,
+        and receives a boolean with true if the user pressed the Ok button
+        */
+        if (btnOkLabel == null) {
+            btnOkLabel = 'Ok';
+        }
+        if (btnCancelLabel == null) {
+            btnCancelLabel = 'Cancel';
+        }
+
+        // if there are a alert visible, hide it
+        activity.hideAlert();
+
+        var fragment = document.createDocumentFragment();
+        var div = document.createElement('div');
+        div.className = 'alert';
+        div.id = 'activity-alert';
+
+        div.innerHTML = '<p><b>' + title + '</b><br/>' + message + '</p>' +
+            '<p class="button-box">' +
+            '<button id="actvity-alert-ok-btn" class="icon">' +
+            '<span class="ok"></span>' +
+            btnOkLabel + '</button>' +
+            '<button id="actvity-alert-cancel-btn" class="icon">' +
+            '<span class="cancel"></span>' +
+            btnCancelLabel + '</button>' +
+            '</p>';
+
+        fragment.appendChild(div);
+
+        document.body.appendChild(fragment.cloneNode(true));
+
+        var okBtn = document.getElementById("actvity-alert-ok-btn");
+        var cancelBtn = document.getElementById("actvity-alert-cancel-btn");
+
+        function hideAlertAndReply(result) {
+            activity.hideAlert();
+            if (btnCallback != null) {
+                btnCallback(result);
+            };
+        };
+
+        okBtn.addEventListener('click', function (e) {
+            hideAlertAndReply(true);
+        });
+
+        cancelBtn.addEventListener('click', function (e) {
+            hideAlertAndReply(false);
+        });
+
+    };
+
+    activity.hideAlert = function() {
+        var alertNode = document.getElementById("activity-alert");
+        if (alertNode && alertNode.parentNode) {
+            alertNode.parentNode.removeChild(alertNode);
+        };
     };
 
     return activity;
