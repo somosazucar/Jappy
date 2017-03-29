@@ -25,7 +25,7 @@
       width: 100%;
       display: -webkit-flex;
       display: flex;
-      flex-direction: column;
+      flex-direction: row;
     }
     .palette {
         z-index: 1;
@@ -37,6 +37,9 @@
     <tool-bar></tool-bar>
 
     <code-editor></code-editor>
+
+    <script src="node_modules/babel-polyfill/dist/polyfill.js"></script>
+    <!-- ^^ This is only necessary for very old browser ^^ (such as Webkit1) -->
 
     <script src="lib/riot+compiler.min.js"></script>
     <script src="lib/rapydscript.js"></script>
