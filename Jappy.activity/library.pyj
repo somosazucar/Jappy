@@ -5,9 +5,8 @@ strings()
 def input(*args):
     return prompt(args)
 
-def ρσ_print(*args):
+def ρσ_print(end="\n", *args):
     sep = " "
-    end = "\n"
 
     def printAsync():
         element = document.getElementById('__terminal__')
@@ -18,7 +17,7 @@ def ρσ_print(*args):
             element.scrollTop = element.scrollHeight
         else:
             console.log (sep.join([str (arg) for arg in args]))
-    setTimeout(printAsync, 5)
+    setTimeout(printAsync)
 
 window.onerror = def(e):
     print(e)
