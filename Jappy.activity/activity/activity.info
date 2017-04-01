@@ -1,5 +1,5 @@
 [Activity]
-name = Jappy Activity
+name = Jappy
 activity_version = 1
 bundle_id = org.somosazucar.JappyActivity
 exec = sugar-activity-web
