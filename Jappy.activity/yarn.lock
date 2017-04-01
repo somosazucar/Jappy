@@ -82,6 +82,10 @@ ast-types@0.9.5:
   version "0.9.5"
   resolved "https://registry.yarnpkg.com/ast-types/-/ast-types-0.9.5.tgz#1a660a09945dbceb1f9c9cbb715002617424e04a"
 
+ast-types@~0.7.0:
+  version "0.7.8"
+  resolved "https://registry.yarnpkg.com/ast-types/-/ast-types-0.7.8.tgz#902d2e0d60d071bdcd46dc115e1809ed11c138a9"
+
 async-each@^1.0.0:
   version "1.0.1"
   resolved "https://registry.yarnpkg.com/async-each/-/async-each-1.0.1.tgz#19d386a1d9edc6e7c1c85d388aedbcc56d33602d"
@@ -133,6 +137,13 @@ babel-core@^6.18.2, babel-core@^6.24.0:
     private "^0.1.6"
     slash "^1.0.0"
     source-map "^0.5.0"
+
+babel-es6-polyfill@^1.1.0:
+  version "1.1.0"
+  resolved "https://registry.yarnpkg.com/babel-es6-polyfill/-/babel-es6-polyfill-1.1.0.tgz#cd957f96d91e731dba2bcdc2e4ece23ba51dc4dd"
+  dependencies:
+    core-js "^0.8.1"
+    regenerator-babel "^0.8.13-2"
 
 babel-generator@^6.24.0:
   version "6.24.0"
@@ -247,14 +258,6 @@ babel-plugin-transform-es2015-for-of@^6.18.0:
   resolved "https://registry.yarnpkg.com/babel-plugin-transform-es2015-for-of/-/babel-plugin-transform-es2015-for-of-6.23.0.tgz#f47c95b2b613df1d3ecc2fdb7573623c75248691"
   dependencies:
     babel-runtime "^6.22.0"
-
-babel-polyfill@^6.23.0:
-  version "6.23.0"
-  resolved "https://registry.yarnpkg.com/babel-polyfill/-/babel-polyfill-6.23.0.tgz#8364ca62df8eafb830499f699177466c3b03499d"
-  dependencies:
-    babel-runtime "^6.22.0"
-    core-js "^2.4.0"
-    regenerator-runtime "^0.10.0"
 
 babel-register@^6.24.0:
   version "6.24.0"
@@ -425,7 +428,7 @@ commander@^2.5.0, commander@^2.9.0:
   dependencies:
     graceful-readlink ">= 1.0.0"
 
-commoner@^0.10.8:
+commoner@^0.10.8, commoner@~0.10.0:
   version "0.10.8"
   resolved "https://registry.yarnpkg.com/commoner/-/commoner-0.10.8.tgz#34fc3672cd24393e8bb47e70caa0293811f4f2c5"
   dependencies:
@@ -450,6 +453,10 @@ console-control-strings@^1.0.0, console-control-strings@~1.1.0:
 convert-source-map@^1.1.0:
   version "1.4.0"
   resolved "https://registry.yarnpkg.com/convert-source-map/-/convert-source-map-1.4.0.tgz#e3dad195bf61bfe13a7a3c73e9876ec14a0268f3"
+
+core-js@^0.8.1:
+  version "0.8.4"
+  resolved "https://registry.yarnpkg.com/core-js/-/core-js-0.8.4.tgz#c22665f1e0d1b9c3c5e1b08dabd1f108695e4fcf"
 
 core-js@^2.4.0:
   version "2.4.1"
@@ -1200,6 +1207,15 @@ rechoir@^0.6.2:
   dependencies:
     resolve "^1.1.6"
 
+regenerator-babel@^0.8.13-2:
+  version "0.8.13-2"
+  resolved "https://registry.yarnpkg.com/regenerator-babel/-/regenerator-babel-0.8.13-2.tgz#1c075ff524208e935914191808d0798fd8fbc4e5"
+  dependencies:
+    ast-types "~0.7.0"
+    commoner "~0.10.0"
+    private "~0.1.5"
+    through "~2.3.6"
+
 regenerator-preset@^0.9.6:
   version "0.9.6"
   resolved "https://registry.yarnpkg.com/regenerator-preset/-/regenerator-preset-0.9.6.tgz#5247445e3600fa95cfb336f903de6969f1290940"
@@ -1458,7 +1474,7 @@ tar@~2.2.1:
     fstream "^1.0.2"
     inherits "2"
 
-through@^2.3.8:
+through@^2.3.8, through@~2.3.6:
   version "2.3.8"
   resolved "https://registry.yarnpkg.com/through/-/through-2.3.8.tgz#0dd4c9ffaabc357960b1b724115d7e0e86a2e1f5"
 
