@@ -5,18 +5,9 @@ A tribute to Pippy activity.
 
 *Shall work with Sugar and Sugarizer, deploy everywhere.*
 
+It currently implements the [RapydScript-NG transpiler](https://github.com/kovidgoyal/rapydscript-ng)'s python-like language.
 
 ## Development
-
-### Install dependencies
-
-cd into `Jappy.activity/` and run:
-
-```
-npm i
-```
-
-This will download the javascript libraries required.
 
 ### Launch
 
@@ -47,3 +38,9 @@ Templates for Apps:
 Collaboration, Simplicity, Reflection
     "Never loose work"
 
+Issues
+======
+
+- I've spent many hours trying to get Fedora 18's Webkit1 renderer to run this (this is the last renderer available on XO hardware). **Doesn't run on XO**
+- Needs different sugar-web for Sugar(Webkit2) vs Sugarizer
+- Might consider method to avoid *infinite loops*. Currently they **crash the tab or browser or PC**.
