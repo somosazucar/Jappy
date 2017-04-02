@@ -6,6 +6,7 @@
   "dependencies": {
     "ace-builds": "^1.2.6",
     "babel-es6-polyfill": "^1.1.0",
+    "babel-polyfill": "^6.23.0",
     "mustache": "^2.3.0",
     "rapydscript-ng": "https://github.com/kovidgoyal/rapydscript-ng",
     "riot": "^3.3.1"

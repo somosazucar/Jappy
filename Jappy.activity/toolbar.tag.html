@@ -36,6 +36,7 @@
 <script type="text/Rapyd">
 
 tag = this
+examples = ['memorize.pyj']
 
 def init():
     this.refs.traybutton.onclick = def():
@@ -59,6 +60,26 @@ def init():
         tag.refs.stopbutton.onclick = def():
             event_bus.trigger("activity-save", activity)
     event_bus.on("activity-ready", activity_ready)
+
+    require(["sugar-web/graphics/palette"],
+        def(palette):
+            example_palette = new palette.Palette(tag.refs.examplebutton, 'Examples')
+            items = []
+            for i in examples:
+                row = document.createElement('div')
+                row.classList.add('menu')
+                item = document.createElement('button')
+                item.classList.add('icon')
+                span = document.createElement('span')
+                span.classList.add('pyj')
+                text = document.createTextNode(i)
+                item.appendChild(span)
+                item.appendChild(text)
+                item.onclick = def(): alert(i)
+                row.appendChild(item)
+                items.append(row)
+            example_palette.setContent(items)
+        )
 
 this.on('mount', init)
 
