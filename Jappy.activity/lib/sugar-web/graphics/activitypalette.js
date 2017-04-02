@@ -1,4 +1,5 @@
-define(["sugar-web/graphics/palette"], function (palette) {
+define(["sugar-web/graphics/palette",
+        "text!sugar-web/graphics/activitypalette.html"], function (palette, template) {
 
     'use strict';
 
@@ -16,17 +17,7 @@ define(["sugar-web/graphics/palette"], function (palette) {
         this.getPalette().id = "activity-palette";
 
         var containerElem = document.createElement('div');
-
-        containerElem.innerHTML = '<div class="row">' +
-            '<input type="text" id="title" class="expand">' +
-            '</div>' +
-            '<div class="row small">' +
-            '<label>Description:</label>' +
-            '</div>' +
-            '<div class="row expand">' +
-            '<textarea rows="8" id="description" class="expand"></textarea>' +
-            '</div>';
-
+        containerElem.innerHTML = template;
         this.setContent([containerElem]);
 
         this.titleElem = containerElem.querySelector('#title');
