@@ -1,0 +1,47 @@
+import random
+
+print ("<h1>Memorize</h1><hr><br>")
+
+window.pairs = 10
+nums = random.shuffle(list(range(1, pairs+1))
+              .concat(list(range(1, pairs+1))))
+
+def mem_button(num):
+    button = document.createElement('button')
+    button.innerHTML = '&nbsp;'
+    button.onclick = show(num)
+    return (button)
+
+for num in nums:
+    document.body.appendChild(mem_button(num))
+
+window.last_btn = Object()
+def show(num):
+    return def():
+        button = this
+        button.innerHTML = num
+        if button==window.last_btn:
+            return
+        if window.last_btn.innerHTML==button.innerHTML:
+            button.disabled = True
+            window.last_btn.disabled = True
+            button.innerHTML=window.last_btn.innerHTML=num
+            window.last_btn = Object()
+            window.pairs = pairs - 1
+            if pairs==0:
+                print("Congratulations!")
+            return
+        window.last_btn.innerHTML = '&nbsp;'
+        window.last_btn = button
+
+print("""<style>\
+    body {\
+        text-align: center; }\
+    button {\
+        font-size: 32pt;\
+        font-weight: bold;\
+        margin: 1px;\
+        width:120px;\
+        height:120px;\
+        display: inline;\
+    }</style>"""
