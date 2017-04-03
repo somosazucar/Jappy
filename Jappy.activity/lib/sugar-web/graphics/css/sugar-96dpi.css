@@ -41,9 +41,10 @@ a {
 .toolbar hr {
   flex-direction: row;
   display: flex;
-  height: 55px;
   margin: 0px 0px 0px;
   border: 1px solid #808080;
+  top: 0px;
+  bottom: 0px;
 }
 /* Toolbar toolbutton */
 .toolbar .toolbutton {
