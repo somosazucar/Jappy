@@ -42,7 +42,7 @@ a {
   flex-direction: row;
   display: flex;
   height: 55px;
-  margin: 0px 2.5px 0px;
+  margin: 0px 0px 0px;
   border: 1px solid #808080;
 }
 /* Toolbar toolbutton */
