@@ -63,7 +63,7 @@ def init():
 
     require(["sugar-web/graphics/palette"],
         def(palette):
-            example_palette = new palette.Palette(tag.refs.examplebutton, 'Examples')
+            tag.example_palette = new palette.Palette(tag.refs.examplebutton, 'Examples')
             items = []
             for i in examples:
                 row = document.createElement('div')
@@ -75,10 +75,14 @@ def init():
                 text = document.createTextNode(i)
                 item.appendChild(span)
                 item.appendChild(text)
-                item.onclick = def(): alert(i)
+                def trigger_load(i):
+                    return def():
+                        tag.example_palette.popDown()
+                        event_bus.trigger('example-load', i)
+                item.onclick = trigger_load(i)
                 row.appendChild(item)
                 items.append(row)
-            example_palette.setContent(items)
+            tag.example_palette.setContent(items)
         )
 this.on('mount', init)
 

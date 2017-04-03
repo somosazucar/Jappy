@@ -1,6 +1,6 @@
 import random
 
-print ("<h1>Memorize</h1><hr><br>")
+print ("<h1>Memorize</h1><hr>")
 
 window.pairs = 10
 nums = random.shuffle(list(range(1, pairs+1))

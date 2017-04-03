@@ -1,6 +1,10 @@
 <code-editor>
 
 <style type="text/css">
+code-editor {
+  display: flex;
+  flex: 1 1;
+}
 .ace_editor {
     width: 100%;
     font-size: 16pt;
@@ -21,11 +25,38 @@ hr {
     border: 0px;
     margin: 0px;
 }
+.split {
+    display: flex;
+    flex-direction: column;
+    flex: 1 1;
+}
+.vsplit {
+    display: flex;
+    flex-direction: row;
+    flex: 1 1;
+}
+.tabs button {
+    border-radius: 0;
+    padding: 10px;
+    border: 0px;
+}
+.tabs button.selected {
+    background-color: #282828;
+}
 </style>
 
-<div ref="code"></div>
-<div draggable="true" ref="hr"><hr></div>
-<iframe ref="vmframe" src="template.html"></iframe>
+<div class='vsplit'>
+    <div class='split'>
+        <div class='tabs'>
+        <button each={name in list(files)}
+                class={selected: name==parent.title}
+                onclick={ parent.switchtab }>{str(name)}</button>
+        </div>
+        <div ref="code"></div>
+    </div>
+    <div ref="hr"><hr></div>
+    <iframe ref="vmframe" src="template.html"></iframe>
+</div>
 
 <script type="text/Rapyd">
 
@@ -52,26 +83,35 @@ def compile(editor):
                     new Range(e.line-1, e.col, e.line-1, e.col+1),
                                 "ace_error-marker", "text")
         result = compiler.compile(code)
-
     return result
 
 def init():
     editor = ace.edit(this.refs.code)
     editor.setTheme("ace/theme/solarized_light")
-    editor.getSession().setNewLineMode("unix");
-    editor.getSession().setMode("ace/mode/python")
+    edit_session = editor.getSession()
+    edit_session.setNewLineMode("unix");
+    edit_session.setMode("ace/mode/python")
     editor.$blockScrolling = Infinity
-
     iframe = this.refs.vmframe
+    EditSession = ace.require('ace/edit_session').EditSession
 
     def load_datastore(activity):
         datastore = activity.getDatastoreObject()
         def check_load(error, metadata, data):
+            tag.title = 'untitled.pyj'
             if (data):
-                editor.getSession().setValue(data)
+                edit_session.setValue(data)
+                tag.title = metadata.title
+            window.files = {tag.title: edit_session}
+            tag.update()
         datastore.loadAsText(check_load)
         window.activity = activity
     event_bus.on("activity-ready", load_datastore)
+
+    def switchtab(e):
+        tag.title = e.target.innerHTML
+        editor.setSession(window.files[e.target.innerHTML])
+    tag.switchtab = switchtab
 
     def toggle_tray(show=False):
         if show==True or getComputedStyle(iframe).display == 'none':
@@ -109,7 +149,7 @@ def init():
 
     def save(activity):
         datastore = activity.getDatastoreObject()
-        datastore.setDataAsText(editor.getSession().getValue())
+        datastore.setDataAsText(edit_session.getValue())
         def check_save(error):
             if error is None:
                 console.log("Saved")
@@ -117,6 +157,26 @@ def init():
                 console.log("NOT Saved")
         datastore.save(check_save)
     event_bus.on("activity-save", save)
+
+    def example_load(file):
+        fetch('examples/'+file).then(
+            def(response):
+                if (response.ok):
+                    response.text().then(def(data):
+                        new_session = new EditSession(data)
+                        new_session.setNewLineMode("unix");
+                        new_session.setMode("ace/mode/python")
+                        window.files[file] = new_session
+                        editor.setSession(new_session)
+                        tag.title = file
+                        tag.update()
+                    )
+                else:
+                    error = new Error(response.statusText)
+                    error.response = response
+                    raise error
+        )
+    event_bus.on("example-load", example_load)
 
     editor.commands.removeCommand('gotoline') # Conflicts with browser hotkey
     editor.commands.addCommand({
