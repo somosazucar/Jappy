@@ -3581,15 +3581,10 @@ Object.defineProperties(input, {
 });
 
 function ρσ_print() {
-    var end = (arguments[0] === undefined || ( 0 === arguments.length-1 && arguments[arguments.length-1] !== null && typeof arguments[arguments.length-1] === "object" && arguments[arguments.length-1] [ρσ_kwargs_symbol] === true)) ? ρσ_print.__defaults__.end : arguments[0];
-    var ρσ_kwargs_obj = arguments[arguments.length-1];
-    if (ρσ_kwargs_obj === null || typeof ρσ_kwargs_obj !== "object" || ρσ_kwargs_obj [ρσ_kwargs_symbol] !== true) ρσ_kwargs_obj = {};
-    if (Object.prototype.hasOwnProperty.call(ρσ_kwargs_obj, "end")){
-        end = ρσ_kwargs_obj.end;
-    }
-    var args = Array.prototype.slice.call(arguments, 1);
-    if (ρσ_kwargs_obj !== null && typeof ρσ_kwargs_obj === "object" && ρσ_kwargs_obj [ρσ_kwargs_symbol] === true) args.pop();
-    var sep;
+    var args = Array.prototype.slice.call(arguments, 0);
+    if (arguments[arguments.length-1] !== null && typeof arguments[arguments.length-1] === "object" && arguments[arguments.length-1] [ρσ_kwargs_symbol] === true) args.pop();
+    var end, sep;
+    end = "\n";
     sep = " ";
     function printAsync() {
         var element, addition, previous;
@@ -3623,9 +3618,7 @@ function ρσ_print() {
     setTimeout(printAsync);
 };
 Object.defineProperties(ρσ_print, {
-    __defaults__ : {value: {end:"\n"}},
-    __handles_kwarg_interpolation__ : {value: true},
-    __argnames__ : {value: ["end"]}
+    __handles_kwarg_interpolation__ : {value: true}
 });
 
 window.onerror = (function() {

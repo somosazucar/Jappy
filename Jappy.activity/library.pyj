@@ -5,7 +5,8 @@ strings()
 def input(*args):
     return prompt(args)
 
-def ρσ_print(end="\n", *args):
+def ρσ_print(*args):
+    end = "\n"
     sep = " "
 
     def printAsync():
