@@ -116,14 +116,13 @@ def init():
     edit_session.setMode("ace/mode/python")
     editor.$blockScrolling = Infinity
     iframe = this.refs.vmframe
-    EditSession = ace.require('ace/edit_session').EditSession
 
     def load_datastore(activity):
         datastore = activity.getDatastoreObject()
         def check_load(error, metadata, data):
             if (data):
                 for file in data:
-                    new_session = new EditSession(data[file])
+                    new_session = ace.createEditSession(data[file])
                     new_session.setNewLineMode("unix");
                     new_session.setMode("ace/mode/python")
                     window.files[file] = new_session
@@ -156,6 +155,9 @@ def init():
                 tag.update()
                 editor.focus()
             editbox.onblur = rename_tab
+            editbox.onkeyup = def(e):
+                if e.keyCode==13:
+                    editor.focus()
             e.target.parentNode.insertBefore(editbox, e.target)
             editbox.focus()
     tag.switchtab = switchtab
@@ -170,6 +172,7 @@ def init():
             tag.title = list(window.files)[index]
             editor.setSession(window.files[tag.title])
             tag.update()
+            editor.focus()
     tag.closetab = closetab
 
     def get_new_untitled(file='untitled.pyj'):
@@ -183,7 +186,7 @@ def init():
 
     def newtab(e):
         file = get_new_untitled()
-        new_session = new EditSession('')
+        new_session = ace.createEditSession('')
         new_session.setNewLineMode("unix");
         new_session.setMode("ace/mode/python")
         window.files[file] = new_session
@@ -249,7 +252,7 @@ def init():
             def(response):
                 if (response.ok):
                     response.text().then(def(data):
-                        new_session = new EditSession(data)
+                        new_session = ace.createEditSession(data)
                         new_session.setNewLineMode("unix");
                         new_session.setMode("ace/mode/python")
                         files[file] = new_session
