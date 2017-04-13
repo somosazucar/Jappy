@@ -259,6 +259,7 @@ def init():
                         editor.setSession(new_session)
                         tag.title = file
                         tag.update()
+                        editor.focus()
                     )
                 else:
                     error = new Error(response.statusText)

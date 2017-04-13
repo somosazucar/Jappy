@@ -1,0 +1,20 @@
+
+print ("Hola, como te llamas?")
+xinput(saluda)
+
+def saluda(nombre):
+    if nombre:
+        window.nombre = nombre
+        print(nombre + "<br>")
+        print("Cual es la contraseña?")
+        xinput(verifica)
+    else:
+        return False
+        
+def verifica(seña):
+    if seña=='lala':
+        cls()
+        print ("Si. Bienvenid@ " + nombre +"!")
+        return True
+    print("No. <br>Vamos, intenta leer la <i>seña</i> en el código.")
+    return False

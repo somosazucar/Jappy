@@ -3580,6 +3580,66 @@ Object.defineProperties(input, {
     __handles_kwarg_interpolation__ : {value: true}
 });
 
+function cls() {
+    function asyncCls() {
+        var element;
+        element = document.getElementById("__terminal__");
+        if (element) {
+            element.innerHTML = "";
+        }
+    };
+
+    setTimeout(asyncCls);
+};
+
+function xinput() {
+    var cb = (arguments[0] === undefined || ( 0 === arguments.length-1 && arguments[arguments.length-1] !== null && typeof arguments[arguments.length-1] === "object" && arguments[arguments.length-1] [ρσ_kwargs_symbol] === true)) ? xinput.__defaults__.cb : arguments[0];
+    var ρσ_kwargs_obj = arguments[arguments.length-1];
+    if (ρσ_kwargs_obj === null || typeof ρσ_kwargs_obj !== "object" || ρσ_kwargs_obj [ρσ_kwargs_symbol] !== true) ρσ_kwargs_obj = {};
+    if (Object.prototype.hasOwnProperty.call(ρσ_kwargs_obj, "cb")){
+        cb = ρσ_kwargs_obj.cb;
+    }
+    var el;
+    el = document.createElement("input");
+    el.onsubmit = (function() {
+        var ρσ_anonfunc = function (e) {
+            if (cb) {
+                if (ρσ_in(cb(el.value), ρσ_list_decorate([ undefined, true ]))) {
+                    e.target.parentNode.removeChild(el);
+                }
+            }
+            function scrolldown() {
+                document.body.scrollTop = document.body.scrollHeight;
+            };
+
+            setTimeout(scrolldown);
+        };
+        Object.defineProperties(ρσ_anonfunc, {
+            __argnames__ : {value: ["e"]}
+        });
+        return ρσ_anonfunc;
+    })();
+    el.onkeyup = (function() {
+        var ρσ_anonfunc = function (e) {
+            if ((e.keyCode === 13 || typeof e.keyCode === "object" && ρσ_equals(e.keyCode, 13))) {
+                el.dispatchEvent(new Event("submit"));
+            }
+        };
+        Object.defineProperties(ρσ_anonfunc, {
+            __argnames__ : {value: ["e"]}
+        });
+        return ρσ_anonfunc;
+    })();
+    document.body.append(el);
+    el.focus();
+    return el;
+};
+Object.defineProperties(xinput, {
+    __defaults__ : {value: {cb:null}},
+    __handles_kwarg_interpolation__ : {value: true},
+    __argnames__ : {value: ["cb"]}
+});
+
 function ρσ_print() {
     var args = Array.prototype.slice.call(arguments, 0);
     if (arguments[arguments.length-1] !== null && typeof arguments[arguments.length-1] === "object" && arguments[arguments.length-1] [ρσ_kwargs_symbol] === true) args.pop();

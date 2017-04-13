@@ -5,6 +5,29 @@ strings()
 def input(*args):
     return prompt(args)
 
+def cls():
+    def asyncCls():
+        element = document.getElementById('__terminal__')
+        if element:
+            element.innerHTML = ''
+    setTimeout(asyncCls)
+
+def xinput(cb=None):
+    el = document.createElement('input')
+    el.onsubmit = def(e):
+        if cb:
+            if cb(el.value) in [undefined, True]:
+                e.target.parentNode.removeChild(el)
+        def scrolldown():
+            document.body.scrollTop = document.body.scrollHeight
+        setTimeout(scrolldown)
+    el.onkeyup = def(e):
+        if e.keyCode == 13:
+            el.dispatchEvent(new Event('submit'))
+    document.body.append(el)
+    el.focus()
+    return el
+
 def ρσ_print(*args):
     end = "\n"
     sep = " "
