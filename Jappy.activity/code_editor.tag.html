@@ -71,7 +71,7 @@ hr {
         --><span each={name in list(files)}><!--
         --><button class={selected: name==parent.title}
                     onclick={ parent.switchtab }>{str(name)}</button><!--
-        --><button if={ name==parent.title } id='closetab'
+        --><button if={ name==parent.title && len(files)>1 } id='closetab'
             onclick={ parent.closetab }>&nbsp;</button></span>
         </div>
         <div ref="code"></div>
@@ -122,7 +122,6 @@ def init():
         datastore = activity.getDatastoreObject()
         def check_load(error, metadata, data):
             if (data):
-                window.data = data
                 for file in data:
                     new_session = new EditSession(data[file])
                     new_session.setNewLineMode("unix");
@@ -162,14 +161,15 @@ def init():
     tag.switchtab = switchtab
 
     def closetab(e):
-        file = tag.title
-        index = list(window.files).index(file)
-        del window.files[file]
-        if index > 0:
-            index = index - 1
-        tag.title = list(window.files)[index]
-        editor.setSession(window.files[tag.title])
-        tag.update()
+        if len(window.files) > 1:
+            file = tag.title
+            index = list(window.files).index(file)
+            del window.files[file]
+            if index > 0:
+                index = index - 1
+            tag.title = list(window.files)[index]
+            editor.setSession(window.files[tag.title])
+            tag.update()
     tag.closetab = closetab
 
     def get_new_untitled(file='untitled.pyj'):
@@ -186,8 +186,9 @@ def init():
         new_session = new EditSession('')
         new_session.setNewLineMode("unix");
         new_session.setMode("ace/mode/python")
-        files[file] = new_session
+        window.files[file] = new_session
         editor.setSession(new_session)
+        editor.focus()
         tag.title = file
         tag.update()
     tag.newtab = newtab
