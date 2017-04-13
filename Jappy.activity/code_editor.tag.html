@@ -127,12 +127,14 @@ def init():
                         new_session.setNewLineMode("unix");
                         new_session.setMode("ace/mode/python")
                         window.files[file] = new_session
-                tag.title = list(data)[0]
-                editor.setSession(window.files[tag.title])
             else:
-                if(data):
+                if(data is not None):
                     # Early versions saved only one file
                     edit_session.setValue(data)
+            if len(window.files) > 0:
+                tag.title = list(data)[0]
+                editor.setSession(window.files[tag.title])
+            else:            
                 tag.title = get_new_untitled()
                 window.files = {tag.title: edit_session}
             tag.update()
