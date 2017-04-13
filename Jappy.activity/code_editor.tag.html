@@ -37,20 +37,42 @@ hr {
 }
 .tabs button {
     border-radius: 0;
-    padding: 10px;
+    padding: 10px 10px;
     border: 0px;
+    margin: 0px;
 }
 .tabs button.selected {
     background-color: #282828;
+}
+#closetab {
+    background-image: url(lib/sugar-web/graphics/icons/actions/entry-cancel-active.svg);
+    background-repeat: no-repeat;
+    background-color: #282828;
+    width: 28px;
+    background-position: center;
+    background-size: 16px 16px;
+}
+#closetab:active {
+    background-image: url(lib/sugar-web/graphics/icons/actions/entry-cancel.svg);
+}
+#newtab {
+    background-image: url(icons/tab-add.svg);
+    background-repeat: no-repeat;
+    width: 28px;
+    background-position: center;
+    background-size: 20px 20px;
 }
 </style>
 
 <div class='vsplit'>
     <div class='split'>
         <div class='tabs'>
-        <button each={name in list(files)}
-                class={selected: name==parent.title}
-                onclick={ parent.switchtab }>{str(name)}</button>
+        <button onclick={ this.newtab } id='newtab'>&nbsp;</button><!--
+        --><span each={name in list(files)}><!--
+        --><button class={selected: name==parent.title}
+                    onclick={ parent.switchtab }>{str(name)}</button><!--
+        --><button if={ name==parent.title } id='closetab'
+            onclick={ parent.closetab }>&nbsp;</button></span>
         </div>
         <div ref="code"></div>
     </div>
@@ -99,7 +121,7 @@ def init():
     def load_datastore(activity):
         datastore = activity.getDatastoreObject()
         def check_load(error, metadata, data):
-            tag.title = 'untitled.pyj'
+            tag.title = get_new_untitled()
             if (data):
                 edit_session.setValue(data)
                 tag.title = metadata.title
@@ -113,6 +135,36 @@ def init():
         tag.title = e.target.innerHTML
         editor.setSession(window.files[e.target.innerHTML])
     tag.switchtab = switchtab
+
+    def closetab(e):
+        file = tag.title
+        index = list(window.files).index(file)
+        del window.files[file]
+        if index > 0:
+            index = index - 1
+        tag.title = list(window.files)[index]
+        tag.update()
+    tag.closetab = closetab
+
+    def get_new_untitled(file='untitled.pyj'):
+        basename = file.substr(0, file.indexOf('.'))
+        extension = file.substr(file.indexOf('.'))
+        i = 1
+        while file in files:
+            file = basename + "-" + i + extension
+            i = i + 1
+        return file
+
+    def newtab(e):
+        file = get_new_untitled()
+        new_session = new EditSession('')
+        new_session.setNewLineMode("unix");
+        new_session.setMode("ace/mode/python")
+        files[file] = new_session
+        editor.setSession(new_session)
+        tag.title = file
+        tag.update()
+    tag.newtab = newtab
 
     def toggle_tray(show=False):
         if show==True or getComputedStyle(iframe).display == 'none':
@@ -160,7 +212,7 @@ def init():
     event_bus.on("activity-save", save)
 
     def example_load(file):
-        fetch('examples/'+file).then(
+        fetch(window.location.protocol+'examples/'+file).then(
             def(response):
                 if (response.ok):
                     response.text().then(def(data):
