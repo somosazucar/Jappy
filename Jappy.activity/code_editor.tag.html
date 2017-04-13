@@ -121,11 +121,18 @@ def init():
     def load_datastore(activity):
         datastore = activity.getDatastoreObject()
         def check_load(error, metadata, data):
-            tag.title = get_new_untitled()
             if (data):
-                edit_session.setValue(data)
-                tag.title = metadata.title
-            window.files = {tag.title: edit_session}
+                window.data = data
+                for file in data:
+                    new_session = new EditSession(data[file])
+                    new_session.setNewLineMode("unix");
+                    new_session.setMode("ace/mode/python")
+                    window.files[file] = new_session
+                tag.title = list(data)[0]
+                editor.setSession(window.files[tag.title])
+            else:
+                tag.title = get_new_untitled()
+                window.files = {tag.title: edit_session}
             tag.update()
         datastore.loadAsText(check_load)
         window.activity = activity
@@ -143,6 +150,7 @@ def init():
         if index > 0:
             index = index - 1
         tag.title = list(window.files)[index]
+        editor.setSession(window.files[tag.title])
         tag.update()
     tag.closetab = closetab
 
@@ -200,9 +208,15 @@ def init():
         iframe.contentWindow.location = 'about:blank'
     event_bus.on("clear-output", clear_output)
 
+    def serialize():
+        result = {}
+        for file in window.files:
+            result[file] = window.files[file].getValue()
+        return result
+
     def save(activity):
         datastore = activity.getDatastoreObject()
-        datastore.setDataAsText(edit_session.getValue())
+        datastore.setDataAsText(serialize())
         def check_save(error):
             if error is None:
                 console.log("Saved")
