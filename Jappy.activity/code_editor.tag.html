@@ -139,8 +139,26 @@ def init():
     event_bus.on("activity-ready", load_datastore)
 
     def switchtab(e):
-        tag.title = e.target.innerHTML
-        editor.setSession(window.files[e.target.innerHTML])
+        if tag.title is not e.target.innerHTML:
+            tag.title = e.target.innerHTML
+            editor.setSession(window.files[e.target.innerHTML])
+            editor.focus()
+        else:
+            e.target.style.display = 'none'
+            editbox = document.createElement('input')
+            editbox.value = tag.title
+            def rename_tab():
+                if editbox.value not in window.files:
+                    window.files[editbox.value] = editor.getSession()
+                    del window.files[tag.title]
+                    tag.title = editbox.value
+                e.target.style.display = 'inline-block'
+                e.target.parentNode.removeChild(editbox)
+                tag.update()
+                editor.focus()
+            editbox.onblur = rename_tab
+            e.target.parentNode.insertBefore(editbox, e.target)
+            editbox.focus()
     tag.switchtab = switchtab
 
     def closetab(e):
@@ -253,6 +271,7 @@ def init():
 
     this.editor = editor
     window.editor = editor
+    editor.focus()
 
 this.on('mount', init)
 
