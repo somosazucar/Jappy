@@ -15,6 +15,9 @@
   #main-toolbar #example-button {
       background-image: url(icons/pippy-openoff.svg);
   }
+  #main-toolbar #start-button {
+      background-image: url(icons/activity-start.svg);
+  }
 </style>
 
 <div id="main-toolbar" class="toolbar">
@@ -29,6 +32,8 @@
   <button class="toolbutton" id="erase-button" title="Clean" ref="erasebutton"></button>
   <hr />
   <button class="toolbutton" id="example-button" title="Open an example" ref="examplebutton"></button>
+  <hr />
+  <button class="toolbutton" id="start-button" title="Start" ref="startbutton"></button>
 
   <button class="toolbutton pull-right" id="stop-button" title="Stop" ref="stopbutton"></button>
 </div>
@@ -43,6 +48,8 @@ def init():
         event_bus.trigger("toggle-tray")
     this.refs.runbutton.onclick = def():
         event_bus.trigger("run-code")
+    this.refs.startbutton.onclick = def():
+        event_bus.trigger("run-full")
     this.refs.breakbutton.onclick = def():
         event_bus.trigger("break-code")
     this.refs.erasebutton.onclick = def():

@@ -25,12 +25,12 @@ hr {
     border: 0px;
     margin: 0px;
 }
-.split {
+#split {
     display: flex;
     flex-direction: column;
     flex: 1 1;
 }
-.vsplit {
+#vsplit {
     display: flex;
     flex-direction: row;
     flex: 1 1;
@@ -64,8 +64,8 @@ hr {
 }
 </style>
 
-<div class='vsplit'>
-    <div class='split'>
+<div id='vsplit' ref='vsplit'>
+    <div id='split' ref='split'>
         <div class='tabs'>
         <button onclick={ this.newtab } id='newtab'>&nbsp;</button><!--
         --><span each={name in list(files)}><!--
@@ -226,6 +226,7 @@ def init():
             iframe.contentDocument.close()
         iframe.onload = write_script
         iframe.contentWindow.location = 'template.html'
+        return iframe
     event_bus.on("run-code", run)
 
     def break_code():
@@ -279,6 +280,34 @@ def init():
                     raise error
         )
     event_bus.on("example-load", example_load)
+
+    def run_full():
+        code_editor = tag.refs.split
+        code_editor.style.display = 'none'
+        toolbar = document.getElementById('main-toolbar')
+        toolbar.style.display = 'none'
+        iframe = run()
+
+        def restore(e):
+            code_editor.style.display = 'flex'
+            toolbar.style.display = 'flex'
+            e.target.parentNode.removeChild(e.target)
+            iframe.removeEventListener('load', add_restore_button)
+
+        def add_restore_button():
+            restore_button = iframe.contentDocument.createElement('button')
+            restore_button.onclick = restore
+            restore_button.style.opacity = '0.5'
+            restore_button.style.position = 'fixed'
+            restore_button.style.right = restore_button.style.top = '0'
+            restore_button.style.padding = '0px'
+            restore_button.style['background-image'] = 'url(icons/view-return.svg)'
+            restore_button.style['background-repeat'] = 'no-repeat'
+            restore_button.style['background-position'] = 'center'
+            restore_button.style.width = restore_button.style.height = '55px'
+            iframe.contentDocument.body.appendChild(restore_button)
+        iframe.addEventListener('load', add_restore_button)
+    event_bus.on("run-full", run_full)
 
     editor.commands.removeCommand('gotoline') # Conflicts with browser hotkey
     editor.commands.addCommand({
