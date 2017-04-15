@@ -77,7 +77,7 @@ hr {
         <div ref="code"></div>
     </div>
     <div ref="hr"><hr></div>
-    <iframe ref="vmframe" src="template.html"></iframe>
+    <iframe allowTransparency="false" ref="vmframe" src="template.html"></iframe>
 </div>
 
 <script type="text/Rapyd">
@@ -141,6 +141,12 @@ def init():
         datastore.loadAsText(check_load)
         window.activity = activity
     event_bus.on("activity-ready", load_datastore)
+
+    def make_do():
+        tag.title = get_new_untitled()
+        window.files = {tag.title: edit_session}
+        tag.update()
+    event_bus.on("activity-not-ready", make_do)
 
     def switchtab(e):
         if tag.title is not e.target.innerHTML:

@@ -1,4 +1,4 @@
-define(["sugar-web/activity/activity"], function (activity) {
+define(["sugar-web/env", "sugar-web/activity/activity"], function (env, activity) {
 
     // Manipulate the DOM only when it is ready.
     require(['domReady!'], function (doc) {
@@ -18,11 +18,19 @@ define(["sugar-web/activity/activity"], function (activity) {
         riot.compile(function() {
           // here tags are compiled and riot.mount works synchronously
           var tags = riot.mount('*')
-          activity.setup()
 
-          setTimeout(function(){
-              event_bus.trigger('activity-ready', activity)
-          })
+          if (!env.isStandalone() || env.isSugarizer()) {
+              activity.setup()
+              setTimeout(function(){
+                  event_bus.trigger('activity-ready', activity)
+              })
+          }
+          else {
+              // No datastore
+              setTimeout(function(){
+                  event_bus.trigger('activity-not-ready')
+              })
+          }
         })
 
     });
