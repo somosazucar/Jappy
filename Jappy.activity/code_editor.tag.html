@@ -89,16 +89,24 @@ this.marker = None
 window.files = {}
 
 def compile(editor):
+    options = {'basedir':'__stdlib__',
+               'omit_baselib':True}
+
+    for file in window.files:
+        if file is not tag.title:
+            RapydScript.file_data['__stdlib__/' + file] = window.files[file].getValue()
+
     session = editor.getSession()
     if tag.marker:
         session.removeMarker(tag.marker)
 
     try:
-        result = compiler.compile(editor.getValue())
+        result = RapydScript.compile(editor.getValue(), tag.title, options)
         if "print;" in result:
             raise SyntaxError('Missing parentheses in call to "print"')
 
     except Exception as e:
+        console.log(e)
         code = "print ('''" + e.name + ": " + e.message + "''')"
         if e.line and e.col:
             Range = ace.require('ace/range').Range
@@ -179,6 +187,8 @@ def init():
             file = tag.title
             index = list(window.files).index(file)
             del window.files[file]
+            if '__stdlib__/' + file in RapydScript.file_data:
+                del RapydScript.file_data['__stdlib__/' + file]
             if index > 0:
                 index = index - 1
             tag.title = list(window.files)[index]
