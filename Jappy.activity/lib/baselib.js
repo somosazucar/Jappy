@@ -3630,7 +3630,7 @@ function xinput() {
         });
         return ρσ_anonfunc;
     })();
-    document.body.append(el);
+    document.body.appendChild(el);
     el.focus();
     return el;
 };
@@ -3641,11 +3641,16 @@ Object.defineProperties(xinput, {
 });
 
 function ρσ_print() {
+    var kwargs = arguments[arguments.length-1];
+    if (kwargs === null || typeof kwargs !== "object" || kwargs [ρσ_kwargs_symbol] !== true) kwargs = {};
     var args = Array.prototype.slice.call(arguments, 0);
-    if (arguments[arguments.length-1] !== null && typeof arguments[arguments.length-1] === "object" && arguments[arguments.length-1] [ρσ_kwargs_symbol] === true) args.pop();
+    if (kwargs !== null && typeof kwargs === "object" && kwargs [ρσ_kwargs_symbol] === true) args.pop();
     var end, sep;
     end = "\n";
     sep = " ";
+    if (ρσ_in("end", kwargs)) {
+        end = kwargs["end"];
+    }
     function printAsync() {
         var element, addition, previous;
         element = document.getElementById("__terminal__");

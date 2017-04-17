@@ -88,8 +88,10 @@ tag = this
 this.marker = None
 window.files = {}
 
-def compile(editor):
+def compile(inputcode=None):
+    editor = window.editor
     options = {'basedir':'__stdlib__',
+               'bare': True,
                'omit_baselib':True}
 
     for file in window.files:
@@ -97,24 +99,25 @@ def compile(editor):
             RapydScript.file_data['__stdlib__/' + file] = window.files[file].getValue()
 
     session = editor.getSession()
-    if tag.marker:
+    if tag.marker and not inputcode:
         session.removeMarker(tag.marker)
 
     try:
-        result = RapydScript.compile(editor.getValue(), tag.title, options)
+        result = RapydScript.compile(inputcode or editor.getValue(), tag.title, options)
         if "print;" in result:
             raise SyntaxError('Missing parentheses in call to "print"')
 
     except Exception as e:
         console.log(e)
         code = "print ('''" + e.name + ": " + e.message + "''')"
-        if e.line and e.col:
+        if e.line and e.col and not inputcode:
             Range = ace.require('ace/range').Range
             tag.marker = session.addMarker(
                     new Range(e.line-1, e.col, e.line-1, e.col+1),
                                 "ace_error-marker", "text")
         result = compiler.compile(code)
     return result
+window.compile = compile
 
 def init():
     editor = ace.edit(this.refs.code)
@@ -176,10 +179,17 @@ def init():
                 editor.focus()
             editbox.onblur = rename_tab
             editbox.onkeyup = def(e):
-                if e.keyCode==13:
+                if e.keyCode==13: # Enter
+                    editor.focus()
+                if e.keyCode==27: # Esc
+                    editbox.value = tag.title
                     editor.focus()
             e.target.parentNode.insertBefore(editbox, e.target)
             editbox.focus()
+            if tag.title.indexOf('.') > 0:
+                editbox.setSelectionRange(0, tag.title.indexOf('.'))
+            else:
+                editbox.select()
     tag.switchtab = switchtab
 
     def closetab(e):
@@ -234,7 +244,7 @@ def init():
         if window.activity:
             event_bus.trigger("activity-save", activity)
         toggle_tray(True)
-        js_output = compile(editor)
+        js_output = compile()
         script = iframe.contentDocument.createElement('script')
         script.innerHTML = js_output
         def write_script():

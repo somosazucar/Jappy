@@ -24,13 +24,15 @@ def xinput(cb=None):
     el.onkeyup = def(e):
         if e.keyCode == 13:
             el.dispatchEvent(new Event('submit'))
-    document.body.append(el)
+    document.body.appendChild(el)
     el.focus()
     return el
 
-def ρσ_print(*args):
+def ρσ_print(*args, **kwargs):
     end = "\n"
     sep = " "
+    if 'end' in kwargs:
+        end = kwargs['end']
 
     def printAsync():
         element = document.getElementById('__terminal__')
