@@ -33,7 +33,7 @@ def interpret(line):
         if result is not undefined:
             printout(result)
     except Exception as e:
-        pass
+        print (e)
     callcount = callcount + 1
     printin()
     editbox.value = ''
