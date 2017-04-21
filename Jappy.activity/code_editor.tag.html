@@ -131,19 +131,20 @@ def init():
     def load_datastore(activity):
         datastore = activity.getDatastoreObject()
         def check_load(error, metadata, data):
-            if (data and type(data)==Object):
-                for file in data:
-                    if data[file]:
-                        new_session = ace.createEditSession(data[file])
+            if (data):
+                try:
+                    parsed_data = JSON.parse(data)
+                except SyntaxError:
+                    # Early versions saved single files
+                    parsed_data = { get_new_untitled(): data }
+                for file in parsed_data:
+                    if parsed_data[file]:
+                        new_session = ace.createEditSession(parsed_data[file])
                         new_session.setNewLineMode("unix");
                         new_session.setMode("ace/mode/python")
                         window.files[file] = new_session
-            else:
-                if(data is not None):
-                    # Early versions saved only one file
-                    edit_session.setValue(data)
             if len(window.files) > 0:
-                tag.title = list(data)[0]
+                tag.title = list(parsed_data)[0]
                 editor.setSession(window.files[tag.title])
             else:            
                 tag.title = get_new_untitled()
@@ -256,7 +257,18 @@ def init():
     event_bus.on("run-code", run)
 
     def break_code():
-        iframe.contentWindow.stop()
+        iwindow = iframe.contentWindow
+        # Set a fake timeout to get the highest timeout id
+        highestTimeoutId = iwindow.setTimeout(';')
+        for i in range(0, highestTimeoutId):
+            iwindow.clearTimeout(i)
+        highestIntervalId = iwindow.setInterval(';')
+        for i in range(0, highestIntervalId):
+            iwindow.clearInterval(i)
+        iwindow.stop()
+        iwindow.setTimeout(def():
+            v'debugger'
+        )
     event_bus.on("break-code", break_code)
 
     def clear_output():
@@ -267,7 +279,7 @@ def init():
         result = {}
         for file in window.files:
             result[file] = window.files[file].getValue()
-        return result
+        return JSON.stringify(result)
 
     def save(activity):
         datastore = activity.getDatastoreObject()
@@ -287,11 +299,13 @@ def init():
             tag.update()
             editor.focus()
             return
-        fetch(window.location.protocol+'examples/'+file).then(
+        url_base = window.location.protocol
+        fetch(url_base + 'examples/' + file).then(
             def(response):
-                if (response.ok):
+                if (response.ok or response.status==0):
                     response.text().then(def(data):
-                        new_session = ace.createEditSession(data)
+                        decoded = decodeURIComponent(data)
+                        new_session = ace.createEditSession(decoded)
                         new_session.setNewLineMode("unix");
                         new_session.setMode("ace/mode/python")
                         files[file] = new_session
