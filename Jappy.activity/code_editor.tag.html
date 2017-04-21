@@ -157,7 +157,7 @@ def init():
             tag.title = get_new_untitled()
             window.files = {tag.title: edit_session}
     this.on('update', update_tabs)
-    event_bus.on("activity-not-ready", update_tabs)
+    event_bus.on("activity-not-ready", tag.update)
 
     def switchtab(e):
         if tag.title is not e.target.innerHTML:
