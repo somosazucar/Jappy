@@ -146,19 +146,18 @@ def init():
             if len(window.files) > 0:
                 tag.title = list(parsed_data)[0]
                 editor.setSession(window.files[tag.title])
-            else:            
-                tag.title = get_new_untitled()
-                window.files = {tag.title: edit_session}
             tag.update()
         datastore.loadAsText(check_load)
+        tag.update()
         window.activity = activity
     event_bus.on("activity-ready", load_datastore)
 
-    def make_do():
-        tag.title = get_new_untitled()
-        window.files = {tag.title: edit_session}
-        tag.update()
-    event_bus.on("activity-not-ready", make_do)
+    def update_tabs():
+        if len(window.files)==0:
+            tag.title = get_new_untitled()
+            window.files = {tag.title: edit_session}
+    this.on('update', update_tabs)
+    event_bus.on("activity-not-ready", update_tabs)
 
     def switchtab(e):
         if tag.title is not e.target.innerHTML:
@@ -304,7 +303,10 @@ def init():
             def(response):
                 if (response.ok or response.status==0):
                     response.text().then(def(data):
-                        decoded = decodeURIComponent(data)
+                        if url_base is 'activity:':
+                            decoded = decodeURIComponent(escape(data))
+                        else:
+                            decoded = data
                         new_session = ace.createEditSession(decoded)
                         new_session.setNewLineMode("unix");
                         new_session.setMode("ace/mode/python")
