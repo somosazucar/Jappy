@@ -132,11 +132,8 @@ def init():
         datastore = activity.getDatastoreObject()
         def check_load(error, metadata, data):
             if (data):
-                try:
-                    parsed_data = JSON.parse(data)
-                except SyntaxError:
-                    # Early versions saved single files
-                    parsed_data = { get_new_untitled(): data }
+                window.files = {}
+                parsed_data = JSON.parse(data)
                 for file in parsed_data:
                     if parsed_data[file]:
                         new_session = ace.createEditSession(parsed_data[file])
@@ -157,7 +154,10 @@ def init():
             tag.title = get_new_untitled()
             window.files = {tag.title: edit_session}
     this.on('update', update_tabs)
-    event_bus.on("activity-not-ready", tag.update)
+
+    def make_do():
+        tag.update()
+    event_bus.on("activity-not-ready", make_do)
 
     def switchtab(e):
         if tag.title is not e.target.innerHTML:
