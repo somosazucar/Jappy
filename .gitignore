@@ -3,3 +3,6 @@ node_modules/
 *.log
 *.pyc
 *.swp
+.buildozer
+bin/
+dist/
