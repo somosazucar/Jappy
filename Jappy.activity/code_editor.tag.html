@@ -303,7 +303,7 @@ def init():
             def(response):
                 if (response.ok or response.status==0):
                     response.text().then(def(data):
-                        if url_base is 'activity:':
+                        if url_base is 'activity:': # WebKit2 needs this
                             decoded = decodeURIComponent(escape(data))
                         else:
                             decoded = data
@@ -323,7 +323,7 @@ def init():
         )
     event_bus.on("example-load", example_load)
 
-    def run_full():
+    def run_fullscreen():
         code_editor = tag.refs.split
         code_editor.style.display = 'none'
         toolbar = document.getElementById('main-toolbar')
@@ -349,12 +349,16 @@ def init():
             restore_button.style.width = restore_button.style.height = '55px'
             iframe.contentDocument.body.appendChild(restore_button)
         iframe.addEventListener('load', add_restore_button)
-    event_bus.on("run-full", run_full)
+    event_bus.on("run-fullscreen", run_fullscreen)
 
     editor.commands.removeCommand('gotoline') # Conflicts with browser hotkey
     editor.commands.addCommand({
             'name': 'Run',
             'bindKey': {'win': 'Ctrl-Enter',  'mac': 'Command-Enter'},
+            'exec': run})
+    editor.commands.addCommand({
+            'name': 'Run',
+            'bindKey': {'win': 'Alt-R',  'mac': 'Alt-R'},
             'exec': run})
 
     this.editor = editor
