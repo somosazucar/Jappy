@@ -351,15 +351,61 @@ def init():
         iframe.addEventListener('load', add_restore_button)
     event_bus.on("run-fullscreen", run_fullscreen)
 
+    def save_zip():
+        if window.activity:
+            event_bus.trigger("activity-save", activity)
+            # TODO get activity palette object title
+            bundle_name = tag.title[:tag.title.indexOf('.')]
+        else:
+            bundle_name = tag.title[:tag.title.indexOf('.')]
+        zip = new JSZip()
+        for name in window.files:
+            zip.file(name, window.files[name].getValue())
+        zip.generateAsync({'type':'blob'}).then(def(blob):
+            saveAs(blob, bundle_name)
+        )
+    event_bus.on("save-as-zip", save_zip)
+
+    def save_html(): 
+        # TODO needs to pull every dependency and src/ dir
+        # Keeping this disabled until it's useful
+        if window.activity:
+            event_bus.trigger("activity-save", activity)
+        js_output = compile()
+
+        url_base = window.location.protocol
+        fetch(url_base + 'template.html').then(
+            def(response):
+                if (response.ok or response.status==0):
+                    response.text().then(def(data):
+                        if url_base is 'activity:': 
+                            # WebKit2 seems to need this to support UTF-8
+                            decoded = decodeURIComponent(escape(data))
+                        else:
+                            decoded = data
+                        script = iframe.contentDocument.createElement('script')
+                        script.innerHTML = js_output
+                        enc_js = script.outerHTML
+                        closing_tag = data.indexOf('</body>')
+                        html = data[:closing_tag] + enc_js + data[closing_tag:]
+                        saveAs(new Blob([html], {type: 'text/javascript'}), 'hello.html')
+                    )
+        )
+    event_bus.on("save-as-html", save_html)
+
     editor.commands.removeCommand('gotoline') # Conflicts with browser hotkey
     editor.commands.addCommand({
-            'name': 'Run',
+            'name': 'Run (IPython key)',
             'bindKey': {'win': 'Ctrl-Enter',  'mac': 'Command-Enter'},
             'exec': run})
     editor.commands.addCommand({
-            'name': 'Run',
-            'bindKey': {'win': 'Alt-R',  'mac': 'Alt-R'},
+            'name': 'Run (Pippy key)',
+            'bindKey': {'win': 'Alt-R',  'mac': 'Option-R'},
             'exec': run})
+    editor.commands.addCommand({
+            'name': 'Toggle canvas',
+            'bindKey': {'win': 'F9',  'mac': 'Option-Command-S'},
+            'exec': toggle_tray})
 
     this.editor = editor
     window.editor = editor

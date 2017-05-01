@@ -13,27 +13,32 @@
       background-image: url(icons/eraser_bw.svg);
   }
   #main-toolbar #example-button {
-      background-image: url(icons/pippy-openoff.svg);
+      background-image: url(icons/load-example.svg);
   }
   #main-toolbar #start-button {
       background-image: url(icons/activity-start.svg);
+  }
+  #main-toolbar #export-button {
+      background-image: url(icons/export-or-publish.svg);
   }
 </style>
 
 <div id="main-toolbar" class="toolbar">
   <button class="toolbutton" id="activity-button" title="Jappy Activity"></button>
 
-  <button class="toolbutton" id="tray-button" title="Show ouput panel" ref="traybutton"></button>
+  <button class="toolbutton" id="tray-button" title="Show ouput canvas" ref="traybutton"></button>
 
-  <button class="toolbutton" id="run-button" title="Run" ref="runbutton"></button>
+  <button class="toolbutton" id="run-button" title="Execute" ref="runbutton"></button>
 
-  <button class="toolbutton" id="break-button" title="Break" ref="breakbutton"></button>
+  <button class="toolbutton" id="break-button" title="Break execution" ref="breakbutton"></button>
 
-  <button class="toolbutton" id="erase-button" title="Clean" ref="erasebutton"></button>
+  <button class="toolbutton" id="erase-button" title="Clear the canvas" ref="erasebutton"></button>
   <hr />
-  <button class="toolbutton" id="example-button" title="Open an example" ref="examplebutton"></button>
+  <button class="toolbutton" id="example-button" title="Load an example" ref="examplebutton"></button>
   <hr />
-  <button class="toolbutton" id="start-button" title="Start" ref="startbutton"></button>
+  <button class="toolbutton" id="start-button" title="Start fullscreen" ref="startbutton"></button>
+
+  <button class="toolbutton" id="export-button" title="Export or publish" ref="exportbutton"></button>
 
   <button class="toolbutton pull-right" id="stop-button" title="Stop" ref="stopbutton"></button>
 </div>
@@ -49,7 +54,7 @@ def init():
     this.refs.runbutton.onclick = def():
         event_bus.trigger("run-code")
     this.refs.startbutton.onclick = def():
-        event_bus.trigger("run-full")
+        event_bus.trigger("run-fullscreen")
     this.refs.breakbutton.onclick = def():
         event_bus.trigger("break-code")
     this.refs.erasebutton.onclick = def():
@@ -70,7 +75,7 @@ def init():
 
     require(["sugar-web/graphics/palette"],
         def(palette):
-            tag.example_palette = new palette.Palette(tag.refs.examplebutton, 'Examples')
+            tag.example_palette = new palette.Palette(tag.refs.examplebutton, 'Load an example')
             items = []
             for i in examples:
                 row = document.createElement('div')
@@ -90,6 +95,35 @@ def init():
                 row.appendChild(item)
                 items.append(row)
             tag.example_palette.setContent(items)
+
+            tag.export_palette = new palette.Palette(tag.refs.exportbutton, 'Export')
+            class as_zip:
+                label = 'Save sources as Zip '
+                icon = 'zip'
+                trigger = 'save-as-zip'
+            class as_html:
+                label = 'Export HTML file'
+                icon = 'html'
+                trigger = 'save-as-html'
+            items = []
+            for i in [as_zip()]:  #, as_html()]: disabled until implemented
+                row = document.createElement('div')
+                row.classList.add('menu')
+                item = document.createElement('button')
+                item.classList.add('icon')
+                span = document.createElement('span')
+                span.classList.add(i.icon)
+                text = document.createTextNode(i.label)
+                item.appendChild(span)
+                item.appendChild(text)
+                def trigger_export(event):
+                    return def():
+                        tag.export_palette.popDown()
+                        event_bus.trigger(event)
+                item.onclick = trigger_export(i.trigger)
+                row.appendChild(item)
+                items.append(row)
+            tag.export_palette.setContent(items)
         )
 this.on('mount', init)
 
