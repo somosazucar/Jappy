@@ -69,6 +69,7 @@ hr {
 
 <div id='vsplit' ref='vsplit'>
     <div id='split' ref='split'>
+        <input ref='file_input' id='file-input' type='file' style='display: none;' />
         <div class='tabs'>
         <button onclick={ this.newtab } id='newtab'>&nbsp;</button><!--
         --><span class={selected: name==parent.title} each={name in list(files)}><!--
@@ -80,7 +81,7 @@ hr {
         <div ref="code"></div>
     </div>
     <div ref="hr"><hr></div>
-    <iframe allowTransparency="false" ref="vmframe" src="template.html"></iframe>
+    <iframe allowTransparency="false" ref="vmframe"></iframe>
 </div>
 
 <script type="text/Rapyd">
@@ -319,6 +320,43 @@ def init():
             editor.focus()
         )
     event_bus.on("example-load", example_load)
+
+    def process_file():
+        file = tag.refs.file_input.files[0]
+        reader = new FileReader()
+
+        if file.type=='application/zip':
+            JSZip.loadAsync(file).then(def(zip):
+                zip.forEach(def(relpath, zippedfile):
+                    if relpath[:4]==('src/') and relpath!='src/':
+                        if relpath[-4:]=='.pyj':
+                            basepath = relpath[4:]
+                            zippedfile.async('text').then(def(data):
+                                new_session = ace.createEditSession(str(data))
+                                new_session.setNewLineMode("unix");
+                                new_session.setMode("ace/mode/python")
+                                window.files[basepath] = new_session
+                                editor.setSession(new_session)
+                                tag.title = basepath
+                                tag.update()
+                            )
+                )
+            )
+        else:
+            reader.onload = (def():
+                return def(evt):
+                    new_session = ace.createEditSession(evt.target.result)
+                    new_session.setNewLineMode("unix");
+                    new_session.setMode("ace/mode/python")
+                    window.files[file.name] = new_session
+                    tag.update()
+            )()
+            reader.readAsText(file)
+    tag.refs.file_input.onchange = process_file
+
+    def import_file():
+        tag.refs.file_input.click()
+    event_bus.on("import-file", import_file)
 
     def run_fullscreen():
         code_editor = tag.refs.split

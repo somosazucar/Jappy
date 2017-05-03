@@ -101,12 +101,12 @@ def init():
                 label = 'Export as zipped HTML'
                 icon = 'html'
                 trigger = 'save-as-zip'
-            class as_html:
-                label = 'Export HTML file'
-                icon = 'html'
-                trigger = 'save-as-html'
+            class import_file:
+                label = 'Import'
+                icon = 'zip'
+                trigger = 'import-file'
             items = []
-            for i in [as_zip()]:  #, as_html()]: disabled until implemented
+            for i in [as_zip(), import_file()]:
                 row = document.createElement('div')
                 row.classList.add('menu')
                 item = document.createElement('button')
