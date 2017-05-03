@@ -86,6 +86,7 @@ hr {
 <script type="text/Rapyd">
 
 print('RapydScript-ng ' + RapydScript.rs_version)
+import re
 
 tag = this
 this.marker = None
@@ -158,7 +159,7 @@ def init():
             window.files = {tag.title: edit_session}
     this.on('update', update_tabs)
 
-    def make_do():
+    def make_do(): # without datastore
         tag.update()
     event_bus.on("activity-not-ready", make_do)
 
@@ -301,28 +302,21 @@ def init():
             tag.update()
             editor.focus()
             return
+
         url_base = window.location.protocol
-        fetch(url_base + 'examples/' + file).then(
-            def(response):
-                if (response.ok or response.status==0):
-                    response.text().then(def(data):
-                        if url_base is 'activity:': # WebKit2 needs this
-                            decoded = decodeURIComponent(escape(data))
-                        else:
-                            decoded = data
-                        new_session = ace.createEditSession(decoded)
-                        new_session.setNewLineMode("unix");
-                        new_session.setMode("ace/mode/python")
-                        files[file] = new_session
-                        editor.setSession(new_session)
-                        tag.title = file
-                        tag.update()
-                        editor.focus()
-                    )
-                else:
-                    error = new Error(response.statusText)
-                    error.response = response
-                    raise error
+        require(['text!examples/' + file], def(data):
+            if url_base is 'activity:': # WebKit2 needs this
+                decoded = decodeURIComponent(escape(data))
+            else:
+                decoded = data
+            new_session = ace.createEditSession(decoded)
+            new_session.setNewLineMode("unix");
+            new_session.setMode("ace/mode/python")
+            files[file] = new_session
+            editor.setSession(new_session)
+            tag.title = file
+            tag.update()
+            editor.focus()
         )
     event_bus.on("example-load", example_load)
 
@@ -361,40 +355,46 @@ def init():
             bundle_name = tag.title[:tag.title.indexOf('.')]
         else:
             bundle_name = tag.title[:tag.title.indexOf('.')]
-        zip = new JSZip()
-        for name in window.files:
-            zip.file(name, window.files[name].getValue())
-        zip.generateAsync({'type':'blob'}).then(def(blob):
-            saveAs(blob, bundle_name)
-        )
-    event_bus.on("save-as-zip", save_zip)
 
-    def save_html(): 
-        # TODO needs to pull every dependency and src/ dir
-        # Keeping this disabled until it's useful
-        if window.activity:
-            event_bus.trigger("activity-save", activity)
         js_output = compile()
 
         url_base = window.location.protocol
-        fetch(url_base + 'template.html').then(
-            def(response):
-                if (response.ok or response.status==0):
-                    response.text().then(def(data):
-                        if url_base is 'activity:': 
-                            # WebKit2 seems to need this to support UTF-8
-                            decoded = decodeURIComponent(escape(data))
-                        else:
-                            decoded = data
-                        script = iframe.contentDocument.createElement('script')
-                        script.innerHTML = js_output
-                        enc_js = script.outerHTML
-                        closing_tag = data.indexOf('</body>')
-                        html = data[:closing_tag] + enc_js + data[closing_tag:]
-                        saveAs(new Blob([html], {type: 'text/javascript'}), 'hello.html')
-                    )
+        require(['text!template'], def(data):
+            if url_base is 'activity:':
+                # WebKit2 seems to need this to support UTF-8
+                decoded = decodeURIComponent(escape(data))
+            else:
+                decoded = data
+            script = iframe.contentDocument.createElement('script')
+            script.innerHTML = js_output
+            enc_js = script.outerHTML + '\n'
+            closing_tag = data.indexOf('</body>')
+            html = data[:closing_tag] + enc_js + data[closing_tag:]
+
+            external_files = []
+            for match in re.findall('script.*src="(.*)"', data):
+                ref = 'text!' + match[match.indexOf('=')+2:-1]
+                ref = ref.replace('lib/', '')
+                external_files.append(ref)
+
+            zip = new JSZip()
+            zip.file('index.html', html)
+            for name in window.files:
+                zip.file('src/' + name, window.files[name].getValue())
+            require(external_files, def(*data):
+                index = 0
+                for file in external_files:
+                    file = file[5:] # remove 'text!'
+                    if '/' not in file:
+                        file = 'lib/' + file
+                    zip.file(file, data[index])
+                    index = index + 1
+                zip.generateAsync({'type':'blob'}).then(def(blob):
+                    saveAs(blob, bundle_name)
+                )
+            )
         )
-    event_bus.on("save-as-html", save_html)
+    event_bus.on("save-as-zip", save_zip)
 
     editor.commands.removeCommand('gotoline') # Conflicts with browser hotkey
     editor.commands.addCommand({

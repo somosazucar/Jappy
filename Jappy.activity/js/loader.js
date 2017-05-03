@@ -1,7 +1,9 @@
 requirejs.config({
     baseUrl: "lib",
     paths: {
-        activity: "../js"
+        activity: "../js",
+        examples: "../examples",
+        template: "../template.html"
     }
 });
 
