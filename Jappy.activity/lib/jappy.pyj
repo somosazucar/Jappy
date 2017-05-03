@@ -12,7 +12,7 @@ def cls():
             element.innerHTML = ''
     setTimeout(asyncCls)
 
-def xinput(cb=None):
+def async_input(cb=None):
     el = document.createElement('input')
     el.onsubmit = def(e):
         if cb:

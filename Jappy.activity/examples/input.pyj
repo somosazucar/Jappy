@@ -1,13 +1,13 @@
 
 print ("Hola, como te llamas?")
-xinput(saluda)
+async_input(recibe)
 
-def saluda(nombre):
+def recibe(nombre):
     if nombre:
         window.nombre = nombre
         print(nombre + "<br>")
         print("Cual es la contraseña?")
-        xinput(verifica)
+        async_input(verifica)
     else:
         return False
         

@@ -1,2 +1,2 @@
 library:
-	rapydscript compile -b library.pyj > lib/baselib.js
+	rapydscript compile -b lib/jappy.pyj > lib/baselib.js

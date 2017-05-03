@@ -3592,8 +3592,8 @@ function cls() {
     setTimeout(asyncCls);
 };
 
-function xinput() {
-    var cb = (arguments[0] === undefined || ( 0 === arguments.length-1 && arguments[arguments.length-1] !== null && typeof arguments[arguments.length-1] === "object" && arguments[arguments.length-1] [ρσ_kwargs_symbol] === true)) ? xinput.__defaults__.cb : arguments[0];
+function async_input() {
+    var cb = (arguments[0] === undefined || ( 0 === arguments.length-1 && arguments[arguments.length-1] !== null && typeof arguments[arguments.length-1] === "object" && arguments[arguments.length-1] [ρσ_kwargs_symbol] === true)) ? async_input.__defaults__.cb : arguments[0];
     var ρσ_kwargs_obj = arguments[arguments.length-1];
     if (ρσ_kwargs_obj === null || typeof ρσ_kwargs_obj !== "object" || ρσ_kwargs_obj [ρσ_kwargs_symbol] !== true) ρσ_kwargs_obj = {};
     if (Object.prototype.hasOwnProperty.call(ρσ_kwargs_obj, "cb")){
@@ -3634,7 +3634,7 @@ function xinput() {
     el.focus();
     return el;
 };
-Object.defineProperties(xinput, {
+Object.defineProperties(async_input, {
     __defaults__ : {value: {cb:null}},
     __handles_kwarg_interpolation__ : {value: true},
     __argnames__ : {value: ["cb"]}
