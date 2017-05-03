@@ -428,7 +428,7 @@ def init():
                     zip.file(file, data[index])
                     index = index + 1
                 zip.generateAsync({'type':'blob'}).then(def(blob):
-                    saveAs(blob, bundle_name)
+                    saveAs(blob, bundle_name + '.zip')
                 )
             )
         )
