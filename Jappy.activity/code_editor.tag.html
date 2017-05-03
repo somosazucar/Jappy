@@ -44,6 +44,9 @@ hr {
 .tabs button.selected {
     background-color: #282828;
 }
+.tabs span.selected {
+    white-space: nowrap;
+}
 #closetab {
     background-image: url(lib/sugar-web/graphics/icons/actions/entry-cancel-active.svg);
     background-repeat: no-repeat;
@@ -68,7 +71,7 @@ hr {
     <div id='split' ref='split'>
         <div class='tabs'>
         <button onclick={ this.newtab } id='newtab'>&nbsp;</button><!--
-        --><span each={name in list(files)}><!--
+        --><span class={selected: name==parent.title} each={name in list(files)}><!--
         --><button class={selected: name==parent.title}
                     onclick={ parent.switchtab }>{str(name)}</button><!--
         --><button if={ name==parent.title && len(files)>1 } id='closetab'
