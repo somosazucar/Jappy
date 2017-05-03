@@ -48,7 +48,8 @@ def hello():
 def bye(*args):
     print ("Bye!")
     socketio.stop()
-    Gtk.main_quit()
+    if not _ANDROID:
+        Gtk.main_quit()
     return 'Bye!'
 
 @socketio.on('connect', namespace='/test')
