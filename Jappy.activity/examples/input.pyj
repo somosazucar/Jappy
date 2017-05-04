@@ -1,20 +1,24 @@
 
-print ("Hola, como te llamas?")
-async_input(recibe)
+print ('<h1>Hello, 🙋</h1>')
+print ('What is your name?')
+async_input(process)
 
-def recibe(nombre):
-    if nombre:
-        window.nombre = nombre
-        print(nombre + "<br>")
-        print("Cual es la contraseña?")
-        async_input(verifica)
+def process(name):
+    if name:
+        window.name = name
+        print(name + '<br>')
+        print('<h2>🔐 What is the password?</h2>', end='')
+        async_input(verify)
     else:
         return False
         
-def verifica(seña):
-    if seña=='lala':
+def verify(passwd):
+    if passwd=='lala':
         cls()
-        print ("Si. Bienvenid@ " + nombre +"!")
+        print('<h2>🔓 Access Granted.</h2>', end='')
+        print('Welcome ' + name + '!')
+        print ('<span style="font-size:100px">👽👽</span>')
         return True
-    print("No. <br>Vamos, intenta leer la <i>seña</i> en el código.")
+    print('<h1>🚫 Access Denied.</h1>')
+    print('Come on, try to find the <i>passwd</i> in the code.')
     return False

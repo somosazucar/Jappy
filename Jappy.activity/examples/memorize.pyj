@@ -1,10 +1,11 @@
 import random
 
-print ("<h1>Memorize</h1><hr>")
+print ("<h1>👥 Memorize</h1><hr>", end='')
 
-window.pairs = 10
-nums = random.shuffle(list(range(1, pairs+1))
-              .concat(list(range(1, pairs+1))))
+pairs = ['🐇','🐈','🐒','🐋','🐎','🐍','🐢','🐝','🐕','🐂']
+count = len(pairs)
+nums = list(random.shuffle(pairs))\
+    .concat(list(random.shuffle(pairs)))
 
 def mem_button(num):
     button = document.createElement('button')
@@ -27,21 +28,31 @@ def show(num):
             window.last_btn.disabled = True
             button.innerHTML=window.last_btn.innerHTML=num
             window.last_btn = Object()
-            window.pairs = pairs - 1
-            if pairs==0:
-                print("Congratulations!")
+            window.count = count - 1
+            if count==0:
+                win()
             return
         window.last_btn.innerHTML = '&nbsp;'
         window.last_btn = button
 
-print("""<style>\
+def win():
+    print('<span id="prize">🏆</h1>')
+    print('<h2>Congratulations!</h2>')
+    for b in document.getElementsByTagName('button'):
+        b.style.display = 'none'
+
+print('''<style>\
     body {\
         text-align: center; }\
+    #prize {\
+        font-size:100pt;\
+        font-family: Noto Emoji;\
+    }\
     button {\
-        font-size: 32pt;\
-        font-weight: bold;\
+        font-size: 48pt;\
+        font-family: Noto Emoji;\
         margin: 1px;\
         width:120px;\
         height:120px;\
         display: inline;\
-    }</style>"""
+    }</style>'''

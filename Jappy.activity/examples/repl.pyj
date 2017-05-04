@@ -1,6 +1,6 @@
-print ("RapydScript " + parent.RapydScript.rs_version)
-print ("Javascript Programming in Python Activity <i>(Jappy)</i>")
-print ("<hr>", end='')
+print ('<h2>🐍 RapydScript ' + parent.RapydScript.rs_version + '</h2>', end='')
+print ('Javascript Programming in Python Activity <i>(Jappy)</i>')
+print ('<hr>', end='')
 
 callcount = 1
 callhistory = []
@@ -44,5 +44,5 @@ def printout(result):
     print ('Out[' + callcount + ']: '  + result)
 
 def printin():
-    print ('<br><b>In [' + callcount + ']: </b>', end='')
+    print ('<br><b>In [' + callcount + '] ⏩ </b>', end='')
 printin()
