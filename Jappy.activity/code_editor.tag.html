@@ -306,11 +306,7 @@ def init():
 
         url_base = window.location.protocol
         require(['text!examples/' + file], def(data):
-            if url_base is 'activity:': # WebKit2 needs this
-                decoded = decodeURIComponent(escape(data))
-            else:
-                decoded = data
-            new_session = ace.createEditSession(decoded)
+            new_session = ace.createEditSession(data)
             new_session.setNewLineMode("unix");
             new_session.setMode("ace/mode/python")
             files[file] = new_session
@@ -372,17 +368,18 @@ def init():
             iframe.removeEventListener('load', add_restore_button)
 
         def add_restore_button():
-            restore_button = iframe.contentDocument.createElement('button')
+            restore_button = document.createElement('button')
             restore_button.onclick = restore
             restore_button.style.opacity = '0.5'
             restore_button.style.position = 'fixed'
             restore_button.style.right = restore_button.style.top = '0'
             restore_button.style.padding = '0px'
+            restore_button.style['border-radius'] = '0px'
             restore_button.style['background-image'] = 'url(icons/view-return.svg)'
             restore_button.style['background-repeat'] = 'no-repeat'
             restore_button.style['background-position'] = 'center'
             restore_button.style.width = restore_button.style.height = '55px'
-            iframe.contentDocument.body.appendChild(restore_button)
+            document.body.appendChild(restore_button)
         iframe.addEventListener('load', add_restore_button)
     event_bus.on("run-fullscreen", run_fullscreen)
 
@@ -398,11 +395,6 @@ def init():
 
         url_base = window.location.protocol
         require(['text!template'], def(data):
-            if url_base is 'activity:':
-                # WebKit2 seems to need this to support UTF-8
-                decoded = decodeURIComponent(escape(data))
-            else:
-                decoded = data
             script = iframe.contentDocument.createElement('script')
             script.innerHTML = js_output
             enc_js = script.outerHTML + '\n'
