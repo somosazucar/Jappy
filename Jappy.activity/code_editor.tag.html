@@ -5,14 +5,17 @@ code-editor {
   display: flex;
   flex: 1 1;
 }
-.ace_editor {
-    width: 100%;
-    font-size: 16pt;
+.CodeMirror {
+    width: auto;
+    height: 100vh;
+    font-size: 14pt;
     font-family: "DejaVu Sans Mono", monospace;
     flex: 1 1;
 }
-.ace_error-marker{
+.error-marker{
     border: 1px solid red;
+    background-color: rgba(255, 0, 0,0.2);
+    border-radius: 3px;
 }
 iframe {
     border: 0px;
@@ -27,6 +30,7 @@ hr {
 }
 #split {
     display: flex;
+    width: 50%;
     flex-direction: column;
     flex: 1 1;
 }
@@ -78,7 +82,7 @@ hr {
         --><button if={ name==parent.title && len(files)>1 } id='closetab'
             onclick={ parent.closetab }>&nbsp;</button></span>
         </div>
-        <div ref="code"></div>
+        <textarea id="code-container" ref="code"></textarea>
     </div>
     <div ref="hr"><hr></div>
     <iframe allowTransparency="false" ref="vmframe"></iframe>
@@ -103,9 +107,9 @@ def compile(inputcode=None):
         if file is not tag.title:
             RapydScript.file_data['__stdlib__/' + file] = window.files[file].getValue()
 
-    session = editor.getSession()
+    session = editor.getDoc()
     if tag.marker and not inputcode:
-        session.removeMarker(tag.marker)
+        tag.marker.clear()
 
     try:
         result = RapydScript.compile(inputcode or editor.getValue(), tag.title, options)
@@ -116,21 +120,25 @@ def compile(inputcode=None):
         console.log(e)
         code = "print ('''" + e.name + ": " + e.message + "''')"
         if e.line and e.col and not inputcode:
-            Range = ace.require('ace/range').Range
-            tag.marker = session.addMarker(
-                    new Range(e.line-1, e.col, e.line-1, e.col+1),
-                                "ace_error-marker", "text")
+            tag.marker = editor.markText( CodeMirror.Pos(e.line-1, e.col),
+                             CodeMirror.Pos(e.line-1, e.col+1),
+                             {'className': 'error-marker'} )
         result = compiler.compile(code)
     return result
 window.compile = compile
 
 def init():
-    editor = ace.edit(this.refs.code)
-    editor.setTheme("ace/theme/solarized_light")
-    edit_session = editor.getSession()
-    edit_session.setNewLineMode("unix");
-    edit_session.setMode("ace/mode/python")
-    editor.$blockScrolling = Infinity
+    editor = CodeMirror.fromTextArea(this.refs.code,
+                    { 'lineNumbers': True,
+                      'mode': 'python',
+                      'theme': 'solarized light' })
+
+    editor.setOption("extraKeys", {
+      'Ctrl-Enter': run,
+      'Alt-R': run,
+      'F9': toggle_tray
+    })
+
     iframe = this.refs.vmframe
 
     def load_datastore(activity):
@@ -141,13 +149,12 @@ def init():
                 parsed_data = JSON.parse(data)
                 for file in parsed_data:
                     if parsed_data[file]:
-                        new_session = ace.createEditSession(parsed_data[file])
-                        new_session.setNewLineMode("unix");
-                        new_session.setMode("ace/mode/python")
+                        new_session = CodeMirror.Doc(parsed_data[file])
                         window.files[file] = new_session
             if len(window.files) > 0:
                 tag.title = list(parsed_data)[0]
-                editor.setSession(window.files[tag.title])
+                editor.swapDoc(window.files[tag.title])
+                editor.setOption('mode', 'python')
             tag.update()
         datastore.loadAsText(check_load)
         tag.update()
@@ -157,7 +164,7 @@ def init():
     def update_tabs():
         if len(window.files)==0:
             tag.title = get_new_untitled()
-            window.files = {tag.title: edit_session}
+            window.files = {tag.title: editor.getDoc()}
     this.on('update', update_tabs)
 
     def make_do(): # without datastore
@@ -167,7 +174,8 @@ def init():
     def switchtab(e):
         if tag.title is not e.target.innerHTML:
             tag.title = e.target.innerHTML
-            editor.setSession(window.files[e.target.innerHTML])
+            editor.swapDoc(window.files[e.target.innerHTML])
+            editor.setOption('mode', 'python')
             editor.focus()
         else:
             e.target.style.display = 'none'
@@ -175,7 +183,7 @@ def init():
             editbox.value = tag.title
             def rename_tab():
                 if editbox.value not in window.files:
-                    window.files[editbox.value] = editor.getSession()
+                    window.files[editbox.value] = editor.getDoc()
                     del window.files[tag.title]
                     tag.title = editbox.value
                 e.target.style.display = 'inline-block'
@@ -207,7 +215,8 @@ def init():
             if index > 0:
                 index = index - 1
             tag.title = list(window.files)[index]
-            editor.setSession(window.files[tag.title])
+            editor.swapDoc(window.files[tag.title])
+            editor.setOption('mode', 'python')
             tag.update()
             editor.focus()
     tag.closetab = closetab
@@ -223,11 +232,10 @@ def init():
 
     def newtab(e):
         file = get_new_untitled()
-        new_session = ace.createEditSession('')
-        new_session.setNewLineMode("unix");
-        new_session.setMode("ace/mode/python")
+        new_session = CodeMirror.Doc('')
         window.files[file] = new_session
-        editor.setSession(new_session)
+        editor.swapDoc(new_session)
+        editor.setOption('mode', 'python')
         editor.focus()
         tag.title = file
         tag.update()
@@ -241,7 +249,6 @@ def init():
         else:
             iframe.style.display='none'
             event_bus.trigger("traybutton-open")
-        editor.resize()
     event_bus.on("toggle-tray", toggle_tray)
     this.refs.hr.onclick = toggle_tray
 
@@ -299,18 +306,18 @@ def init():
     def example_load(file):
         if file in window.files:
             tag.title = file
-            editor.setSession(window.files[file])
+            editor.swapDoc(window.files[file])
+            editor.setOption('mode', 'python')
             tag.update()
             editor.focus()
             return
 
         url_base = window.location.protocol
         require(['text!examples/' + file], def(data):
-            new_session = ace.createEditSession(data)
-            new_session.setNewLineMode("unix");
-            new_session.setMode("ace/mode/python")
+            new_session = CodeMirror.Doc(data)
             files[file] = new_session
-            editor.setSession(new_session)
+            editor.swapDoc(new_session)
+            editor.setOption('mode', 'python')
             tag.title = file
             tag.update()
             editor.focus()
@@ -328,11 +335,10 @@ def init():
                         if relpath[-4:]=='.pyj':
                             basepath = relpath[4:]
                             zippedfile.async('text').then(def(data):
-                                new_session = ace.createEditSession(str(data))
-                                new_session.setNewLineMode("unix");
-                                new_session.setMode("ace/mode/python")
+                                new_session = CodeMirror.Doc(str(data))
                                 window.files[basepath] = new_session
-                                editor.setSession(new_session)
+                                editor.swapDoc(new_session)
+                                editor.setOption('mode', 'python')
                                 tag.title = basepath
                                 tag.update()
                             )
@@ -341,9 +347,7 @@ def init():
         else:
             reader.onload = (def():
                 return def(evt):
-                    new_session = ace.createEditSession(evt.target.result)
-                    new_session.setNewLineMode("unix");
-                    new_session.setMode("ace/mode/python")
+                    new_session = CodeMirror.Doc(evt.target.result)
                     window.files[file.name] = new_session
                     tag.update()
             )()
@@ -425,20 +429,6 @@ def init():
             )
         )
     event_bus.on("save-as-zip", save_zip)
-
-    editor.commands.removeCommand('gotoline') # Conflicts with browser hotkey
-    editor.commands.addCommand({
-            'name': 'Run (IPython key)',
-            'bindKey': {'win': 'Ctrl-Enter',  'mac': 'Command-Enter'},
-            'exec': run})
-    editor.commands.addCommand({
-            'name': 'Run (Pippy key)',
-            'bindKey': {'win': 'Alt-R',  'mac': 'Option-R'},
-            'exec': run})
-    editor.commands.addCommand({
-            'name': 'Toggle canvas',
-            'bindKey': {'win': 'F9',  'mac': 'Option-Command-S'},
-            'exec': toggle_tray})
 
     this.editor = editor
     window.editor = editor
