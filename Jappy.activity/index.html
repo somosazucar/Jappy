@@ -6,8 +6,8 @@
             href="lib/sugar-web/graphics/css/sugar-96dpi.css">
     <link rel="stylesheet" media="screen and (device-width: 1200px) and (device-height: 900px)"
             href="lib/sugar-web/graphics/css/sugar-200dpi.css">
-    <link rel="stylesheet" type="text/css" href="lib/cm/codemirror.css">
     <link rel="stylesheet" type="text/css" href="lib/cm/theme/solarized.css">
+    <link rel="stylesheet" type="text/css" href="lib/cm/codemirror.css">
     <link rel="stylesheet" type="text/css" href="css/activity.css">
     <style>
     body, html {
@@ -30,6 +30,12 @@
         background-image: url(icons/text-html.svg);
     }
     </style>
+
+    <script src="lib/cm/codemirror.js"></script>
+    <script src="lib/cm/addon/selection/active-line.js"></script>
+    <script src="lib/cm/addon/edit/matchbrackets.js"></script>
+    <script src="lib/cm/addon/edit/closebrackets.js"</script>
+    <script src="lib/cm/mode/python/python.js"></script>
 </head>
 <body>
 
@@ -45,9 +51,6 @@
 
     <script src="lib/jszip.min.js"></script>
     <script src="lib/FileSaver.min.js"></script>
-
-    <script src="lib/cm/codemirror.js"></script>
-    <script src="lib/cm/mode/python/python.js"></script>
 
     <script type="riot/tag" data-src="code_editor.tag.html"></script>
     <script type="riot/tag" data-src="toolbar.tag.html"></script>
