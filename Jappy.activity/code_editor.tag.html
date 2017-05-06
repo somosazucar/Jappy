@@ -7,10 +7,9 @@ code-editor {
 }
 .CodeMirror {
     width: auto;
-    height: 100vh;
+    height: calc(100vh - 97px);
     font-size: 14pt;
     font-family: "DejaVu Sans Mono", monospace;
-    flex: 1 1;
 }
 .error-marker{
     border: 1px solid red;
@@ -131,6 +130,7 @@ def init():
     editor = CodeMirror.fromTextArea(this.refs.code,
                     { 'lineNumbers': True,
                       'matchBrackets': True,
+                      'indentUnit': 4,
                       'mode': 'python',
                       'styleActiveLine': True,
                       'theme': 'solarized light' })
