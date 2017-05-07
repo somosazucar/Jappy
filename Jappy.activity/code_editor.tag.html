@@ -7,9 +7,9 @@ code-editor {
 }
 .CodeMirror {
     width: auto;
-    height: calc(100vh - 97px);
     font-size: 14pt;
     font-family: "DejaVu Sans Mono", monospace;
+    flex: 1 1;
 }
 .error-marker{
     border: 1px solid red;
@@ -38,16 +38,16 @@ hr {
     flex-direction: row;
     flex: 1 1;
 }
-.tabs button {
+#tabs button {
     border-radius: 0;
     padding: 10px 10px;
     border: 0px;
     margin: 0px;
 }
-.tabs button.selected {
+#tabs button.selected {
     background-color: #282828;
 }
-.tabs span.selected {
+#tabs span.selected {
     white-space: nowrap;
 }
 #closetab {
@@ -73,7 +73,7 @@ hr {
 <div id='vsplit' ref='vsplit'>
     <div id='split' ref='split'>
         <input ref='file_input' id='file-input' type='file' style='display: none;' />
-        <div class='tabs'>
+        <div id='tabs'>
         <button onclick={ this.newtab } id='newtab'>&nbsp;</button><!--
         --><span class={selected: name==parent.title} each={name in list(files)}><!--
         --><button class={selected: name==parent.title}
@@ -164,10 +164,17 @@ def init():
     event_bus.on("activity-ready", load_datastore)
 
     def update_tabs():
+        toolbar_div = document.getElementById('main-toolbar')
+        toolbar_style = window.getComputedStyle(toolbar_div)
+        tabs_div = document.getElementById('tabs')
+        tabs_style = window.getComputedStyle(tabs_div)
+        target_size = window.innerHeight - int(toolbar_style.height) - int(tabs_style.height)
+        editor.setSize(None, target_size)
         if len(window.files)==0:
             tag.title = get_new_untitled()
             window.files = {tag.title: editor.getDoc()}
     this.on('update', update_tabs)
+    window.addEventListener("resize", update_tabs)
 
     def make_do(): # without datastore
         tag.update()
