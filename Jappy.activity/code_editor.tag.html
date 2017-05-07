@@ -11,6 +11,18 @@ code-editor {
     font-family: "DejaVu Sans Mono", monospace;
     flex: 1 1;
 }
+.CodeMirror-cursor {
+    width: auto;
+    border: 0;
+    background: transparent;
+    background: rgba(0, 200, 0, .4);
+}
+.CodeMirror-linenumber {
+    font-size: 13pt;
+}
+.cm-s-solarized .CodeMirror-cursor {
+    border: 0;
+}
 .error-marker{
     border: 1px solid red;
     background-color: rgba(255, 0, 0,0.2);
@@ -138,7 +150,8 @@ def init():
     editor.setOption("extraKeys", {
       'Ctrl-Enter': run,
       'Alt-R': run,
-      'F9': toggle_tray
+      'F9': toggle_tray,
+      'Tab': def(): return editor.execCommand('insertSoftTab')
     })
 
     iframe = this.refs.vmframe
