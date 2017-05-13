@@ -1,3 +1,7 @@
 #main-toolbar #activity-button {
   background-image: url(../activity/activity-icon.svg);
 }
+@font-face {
+    font-family: "NotoMono Emoji";
+    src: url("fonts/NotoMonoEmoji.woff") format('woff');
+}

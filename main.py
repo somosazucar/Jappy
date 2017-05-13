@@ -10,6 +10,7 @@ import os
 import sys
 import mimetypes
 mimetypes.add_type('image/svg+xml', '.svg')
+mimetypes.add_type('application/x-font-woff', '.woff')
 
 try:
     from urllib import parse as urlparse
