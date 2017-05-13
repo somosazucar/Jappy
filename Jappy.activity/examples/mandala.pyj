@@ -4,9 +4,9 @@ center = { 'x': window.innerWidth / 2,
            'y': window.innerHeight / 2 }
 
 class Mandala:
-    def __init__(self, text='🌻', freq=1, dist=0, \
-                 font_size=20, font='Noto', \
-                 color='black', offset=0):
+    def __init__(self, text, freq=1, dist=0, \
+                 font_size=32, color='black', \
+                 font='"Noto Mono", "Noto Emoji"', offset=0):
         self.text = text
         rad = 360/freq * (Math.PI/180)
         for i in range(freq):
@@ -32,9 +32,9 @@ class Mandala:
         el.style.left = center.x + pos.x - offset_x + 'px'
 
 if __name__=='__main__':
-    Mandala ('🌺', 20, 295, 90, 'Noto Emoji', 'pink')
-    Mandala ('🍎', 22, 220, 60, 'Noto Emoji', 'red')
-    Mandala ('🐜', 20, 160, 50, 'Noto Emoji', 'orange')
-    Mandala ('🐌', 10, 110, 30, 'Noto Emoji', 'green')
-    Mandala ('Azúcar', 6, 70, color='red')
-    Mandala ('Somos', 2, 20, 30, color='blue')
+    Mandala ('🌺', 20, 295, 90, 'pink')
+    Mandala ('🍎', 22, 220, 60, 'red')
+    Mandala ('🐜', 20, 160, 50, 'orange')
+    Mandala ('🐌', 10, 110, 30, 'green')
+    Mandala ('Azúcar', 6, 70, 'red')
+    Mandala ('Somos', 2, 20, 30, 'blue')

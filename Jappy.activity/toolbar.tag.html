@@ -46,7 +46,7 @@
 <script type="text/Rapyd">
 
 tag = this
-examples = ['memorize.pyj', 'mandala.pyj', 'input.pyj', 'repl.pyj', 'unicode.pyj']
+examples = ['memorize.pyj', 'mandala.pyj', 'input.pyj', 'repl.pyj', 'unicode.pyj', 'welcome.pyj']
 
 def init():
     this.refs.traybutton.onclick = def():
@@ -87,10 +87,10 @@ def init():
                 text = document.createTextNode(i)
                 item.appendChild(span)
                 item.appendChild(text)
-                def trigger_load(i):
+                def trigger_load(el):
                     return def():
                         tag.example_palette.popDown()
-                        event_bus.trigger('example-load', i)
+                        event_bus.trigger('example-load', el)
                 item.onclick = trigger_load(i)
                 row.appendChild(item)
                 items.append(row)

@@ -1,3 +1,4 @@
+document.body.style['text-align'] = 'center'
 
 print ('<h1>Hello, 🙋</h1>')
 print ('What is your name?')
