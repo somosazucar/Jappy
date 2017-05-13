@@ -11,11 +11,11 @@
     <link rel="stylesheet" type="text/css" href="css/activity.css">
     <style>
     body, html {
-      display: flex;
-      height: 100%;
-      width: 100%;
-      margin:0;
-      flex-direction: column;
+        /* overflow: hidden; */
+    }
+    .canvas {
+        display: flex;
+        flex-direction: column;
     }
     .palette {
         z-index: 10;
@@ -40,7 +40,9 @@
 
     <tool-bar></tool-bar>
 
-    <code-editor></code-editor>
+    <div id='canvas'>
+        <code-editor></code-editor>
+    </div>
 
     <script src="lib/browser-polyfill.min.js"></script>
     <!-- ^^ This is only necessary for very old browser ^^ (such as Webkit1) -->
@@ -51,7 +53,16 @@
     <script src="lib/jszip.min.js"></script>
     <script src="lib/FileSaver.min.js"></script>
 
+    <script src="js/codeeditor.js"></script>
+    <script src="js/toolbar.js"></script>
+
+    <!-- Precompiled riot tags (either activate these or the next group) -->
+    <!--script src="js/codeeditor.js"></script>
+    <script src="js/toolbar.js"></script-->
+
+    <!-- Embedded compiler -->
     <script type="riot/tag" data-src="code_editor.tag.html"></script>
     <script type="riot/tag" data-src="toolbar.tag.html"></script>
+
     <script data-main="js/loader" src="lib/require.js"></script>
 </body>

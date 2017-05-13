@@ -19,7 +19,7 @@ define(["sugar-web/env", "sugar-web/activity/activity"], function (env, activity
           // here tags are compiled and riot.mount works synchronously
           var tags = riot.mount('*')
 
-          if (!env.isStandalone() || env.isSugarizer()) {
+          if (env.isStandalone() || env.isSugarizer()) {
               activity.setup()
               setTimeout(function(){
                   event_bus.trigger('activity-ready', activity)
