@@ -3,6 +3,6 @@
 }
 @font-face {
     font-family: "Noto Emoji";
-    src: url("fonts/NotoEmoji.woff") format('woff');
+    src: url("../fonts/NotoEmoji.woff") format('woff');
 }
 
