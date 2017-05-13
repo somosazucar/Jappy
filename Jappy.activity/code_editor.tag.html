@@ -8,7 +8,7 @@ code-editor {
 .CodeMirror {
     width: auto;
     font-size: 14pt;
-    font-family: "DejaVu Sans Mono", monospace;
+    font-family: "Noto Mono", "Noto Emoji";
     flex: 1 1;
 }
 .CodeMirror-cursor {
@@ -151,7 +151,11 @@ def init():
       'Ctrl-Enter': run,
       'Alt-R': run,
       'F9': toggle_tray,
-      'Tab': def(): return editor.execCommand('insertSoftTab')
+      'Tab': def():
+                if editor.somethingSelected():
+                    editor.indentSelection("add");
+                else:
+                    editor.execCommand('insertSoftTab')
     })
 
     iframe = this.refs.vmframe
@@ -299,9 +303,6 @@ def init():
         for i in range(0, highestIntervalId):
             iwindow.clearInterval(i)
         iwindow.stop()
-        iwindow.setTimeout(def():
-            v'debugger'
-        )
     event_bus.on("break-code", break_code)
 
     def clear_output():
@@ -385,7 +386,7 @@ def init():
         code_editor.style.display = 'none'
         toolbar = document.getElementById('main-toolbar')
         toolbar.style.display = 'none'
-        iframe = run()
+        run()
 
         def restore(e):
             code_editor.style.display = 'flex'
