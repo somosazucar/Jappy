@@ -2,6 +2,7 @@
   background-image: url(../activity/activity-icon.svg);
 }
 @font-face {
-    font-family: "NotoMono Emoji";
-    src: url("fonts/NotoMonoEmoji.woff") format('woff');
+    font-family: "Noto Emoji";
+    src: url("fonts/NotoEmoji.woff") format('woff');
 }
+
