@@ -850,13 +850,11 @@ emojis = {
   , "zap": "⚡"
   , "zzz": "💤"
   , "tools": "⚒" # Extra symbols added
-  , "xo": ""
   , "medicine": "⚕"
   , "atom": "⚛"
   , "yin_yang": "☯"
   , "justice": "⚖"
   , "peace": "☮"
-  , "long_life_and_prosper": ""
   , "dharma_wheel": "☸"
   , "shinto_shrine": "⛩"
   , "skorpion": "🦂"
@@ -905,7 +903,8 @@ if __name__=='__main__':
                     shown.append(char)
                 print('<span style="white-space: nowrap">' +
                         evt.target.innerHTML + 
-                        '<small><i>&nbsp;' + evt.target.id + '</i></small>' +
+                        '<small><i>&nbsp;' + evt.target.id + 
+                        '</i></small>' +
                         '</span>', end='\t')
             def filter(evt):
                 for item in self.div.childNodes:
