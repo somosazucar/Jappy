@@ -2,13 +2,13 @@
 
 <style type="text/css">
 code-editor {
-  display: flex;
-  flex: 1 1;
+    display: flex;
+    flex: 1 1;
     height: 100%;
 }
 .CodeMirror {
     height: 100%;
-    width: auto;
+    width: 100%;
     font-size: 14pt;
     font-family: "Noto Mono", "Noto Emoji";
     flex: 1 1;
@@ -84,6 +84,13 @@ hr {
     background-position: center;
     background-size: 20px 20px;
 }
+#tray-button {
+    background-image: url(icons/tray-show.svg);
+    background-repeat: no-repeat;
+    width: 28px;
+    background-position: center;
+    background-size: 20px 20px;
+}
 </style>
 
 <div id='vsplit' ref='vsplit'>
@@ -95,7 +102,8 @@ hr {
         --><button class={selected: name==parent.title}
                     onclick={ parent.switchtab }>{str(name)}</button><!--
         --><button if={ name==parent.title && len(files)>1 } id='closetab'
-            onclick={ parent.closetab }>&nbsp;</button></span>
+            onclick={ parent.closetab }>&nbsp;</button></span><!--
+        --><button class="pull-right" id="tray-button" ref="traybutton">&nbsp;</button>
         </div>
         <textarea id="code-container" ref="code"></textarea>
     </div>
@@ -186,6 +194,8 @@ def init():
 
     def update_tabs():
         toolbar_div = document.getElementById('main-toolbar')
+        if getComputedStyle(toolbar_div).display == 'none':
+            return
         toolbar_style = window.getComputedStyle(toolbar_div)
         tabs_div = document.getElementById('tabs')
         tabs_style = window.getComputedStyle(tabs_div)
@@ -280,9 +290,19 @@ def init():
             iframe.style.display='none'
             event_bus.trigger("traybutton-open")
     event_bus.on("toggle-tray", toggle_tray)
-    this.refs.hr.onclick = toggle_tray
+    this.refs.traybutton.onclick = toggle_tray
+
+    def traybutton_open():
+        tag.refs.traybutton.style.backgroundImage = "url(icons/tray-show.svg)"
+    event_bus.on("traybutton-open", traybutton_open)
+
+    def traybutton_close():
+        tag.refs.traybutton.style.backgroundImage = "url(icons/tray-hide.svg)"
+    event_bus.on("traybutton-close", traybutton_close)
 
     def run():
+        window.state = 'run'
+        riot.update()
         if window.activity:
             event_bus.trigger("activity-save", activity)
         toggle_tray(True)
@@ -307,6 +327,13 @@ def init():
         for i in range(0, highestIntervalId):
             iwindow.clearInterval(i)
         iwindow.stop()
+        iwindow.document.body.style.opacity = '0.5'
+        inputs = iwindow.document.getElementsByTagName('input')
+        for i in inputs:
+            i.disabled = True
+        iwindow.addEventListener ('click', def(ev):
+            ev.stopPropagation()
+        , True)
     event_bus.on("break-code", break_code)
 
     def clear_output():
@@ -385,33 +412,36 @@ def init():
         tag.refs.file_input.click()
     event_bus.on("import-file", import_file)
 
-    def run_fullscreen():
+    def run_fullscreen(execute=True):
         code_editor = tag.refs.split
         code_editor.style.display = 'none'
         toolbar = document.getElementById('main-toolbar')
         toolbar.style.display = 'none'
-        run()
+        canvas = document.getElementById('canvas')
+        canvas.style.top = '0'
+        if execute:
+            run()
 
         def restore(e):
             code_editor.style.display = 'flex'
             toolbar.style.display = 'flex'
             e.target.parentNode.removeChild(e.target)
-            iframe.removeEventListener('load', add_restore_button)
+            toolbar_div = document.getElementById('main-toolbar')
+            toolbar_height = window.getComputedStyle(toolbar_div)['height']
+            canvas.style.top = toolbar_height
 
-        def add_restore_button():
-            restore_button = document.createElement('button')
-            restore_button.onclick = restore
-            restore_button.style.opacity = '0.5'
-            restore_button.style.position = 'fixed'
-            restore_button.style.right = restore_button.style.top = '0'
-            restore_button.style.padding = '0px'
-            restore_button.style['border-radius'] = '0px'
-            restore_button.style['background-image'] = 'url(icons/view-return.svg)'
-            restore_button.style['background-repeat'] = 'no-repeat'
-            restore_button.style['background-position'] = 'center'
-            restore_button.style.width = restore_button.style.height = '55px'
-            document.body.appendChild(restore_button)
-        iframe.addEventListener('load', add_restore_button)
+        restore_button = document.createElement('button')
+        restore_button.onclick = restore
+        restore_button.style.opacity = '0.5'
+        restore_button.style.position = 'fixed'
+        restore_button.style.right = restore_button.style.top = '0'
+        restore_button.style.padding = '0px'
+        restore_button.style['border-radius'] = '0px'
+        restore_button.style['background-image'] = 'url(icons/view-return.svg)'
+        restore_button.style['background-repeat'] = 'no-repeat'
+        restore_button.style['background-position'] = 'center'
+        restore_button.style.width = restore_button.style.height = '55px'
+        document.body.appendChild(restore_button)
     event_bus.on("run-fullscreen", run_fullscreen)
 
     def save_zip():

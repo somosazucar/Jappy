@@ -1,8 +1,5 @@
 <tool-bar>
 <style>
-  #main-toolbar #tray-button {
-      background-image: url(icons/tray-show.svg);
-  }
   #main-toolbar #run-button {
       background-image: url(icons/run_bw.svg);
   }
@@ -18,25 +15,33 @@
   #main-toolbar #start-button {
       background-image: url(icons/activity-start.svg);
   }
+  #main-toolbar #full-button {
+      background-image: url(icons/view-fullscreen.svg);
+  }
   #main-toolbar #export-button {
       background-image: url(icons/export-or-publish.svg);
+  }
+  .hidden {
+      display: none !important;
   }
 </style>
 
 <div id="main-toolbar" class="toolbar">
   <button class="toolbutton" id="activity-button" title="Jappy Activity"></button>
 
-  <button class="toolbutton" id="tray-button" title="Show ouput canvas" ref="traybutton"></button>
-
-  <button class="toolbutton" id="run-button" title="Execute" ref="runbutton"></button>
-
-  <button class="toolbutton" id="break-button" title="Break execution" ref="breakbutton"></button>
-
-  <button class="toolbutton" id="erase-button" title="Clear the canvas" ref="erasebutton"></button>
   <hr />
   <button class="toolbutton" id="example-button" title="Load an example" ref="examplebutton"></button>
   <hr />
-  <button class="toolbutton" id="start-button" title="Start fullscreen" ref="startbutton"></button>
+
+  <button class="toolbutton { hidden: window.state=='run' }" id="run-button" title="Execute" ref="runbutton"></button>
+
+  <button class="toolbutton { hidden: window.state=='stopped' } { hidden: window.state=='clean' }" id="break-button" title="Break execution" ref="breakbutton"></button>
+
+  <button class="toolbutton { hidden: window.state=='clean' } { hidden: window.state=='run' }" id="erase-button" title="Clear the canvas" ref="erasebutton"></button>
+
+  <button class="toolbutton { hidden: window.state=='run' }" id="start-button" title="Start fullscreen" ref="startbutton"></button>
+
+  <button class="toolbutton { hidden: window.state=='stopped' } { hidden: window.state=='clean' }" id="full-button" title="View fullscreen" ref="fullbutton"></button>
 
   <button class="toolbutton" id="export-button" title="Export or publish" ref="exportbutton"></button>
 
@@ -46,27 +51,31 @@
 <script type="text/Rapyd">
 
 tag = this
-examples = ['memorize.pyj', 'mandala.pyj', 'input.pyj', 'repl.pyj', 'unicode.pyj', 'welcome.pyj']
+examples = ['welcome.pyj', 'memorize.pyj', 'mandala.pyj', 'input.pyj', 'repl.pyj', 'unicode.pyj']
+window.state = 'clean'
 
 def init():
-    this.refs.traybutton.onclick = def():
-        event_bus.trigger("toggle-tray")
+
     this.refs.runbutton.onclick = def():
+        window.state = 'run'
+        tag.update()
         event_bus.trigger("run-code")
     this.refs.startbutton.onclick = def():
+        window.state = 'run'
+        tag.update()
         event_bus.trigger("run-fullscreen")
+    this.refs.fullbutton.onclick = def():
+        window.state = 'run'
+        tag.update()
+        event_bus.trigger("run-fullscreen", False)
     this.refs.breakbutton.onclick = def():
+        window.state = 'stopped'
+        tag.update()
         event_bus.trigger("break-code")
     this.refs.erasebutton.onclick = def():
+        window.state = 'clean'
+        tag.update()
         event_bus.trigger("clear-output")
-
-    def traybutton_open():
-        tag.refs.traybutton.style.backgroundImage = "url(icons/tray-show.svg)"
-    event_bus.on("traybutton-open", traybutton_open)
-
-    def traybutton_close():
-        tag.refs.traybutton.style.backgroundImage = "url(icons/tray-hide.svg)"
-    event_bus.on("traybutton-close", traybutton_close)
 
     def activity_ready(activity):
         tag.refs.stopbutton.onclick = def():
