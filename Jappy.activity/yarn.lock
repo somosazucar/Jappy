@@ -645,6 +645,10 @@ escape-string-regexp@^1.0.2:
   version "1.0.5"
   resolved "https://registry.yarnpkg.com/escape-string-regexp/-/escape-string-regexp-1.0.5.tgz#1b61c0562190a8dff6ae3bb2cf0200ca130b86d4"
 
+eslint-config-riot@^1.0.0:
+  version "1.0.0"
+  resolved "https://registry.yarnpkg.com/eslint-config-riot/-/eslint-config-riot-1.0.0.tgz#fbd65386980b30fbcd0e1305d4c3fb8614ef2119"
+
 esprima@~3.1.0:
   version "3.1.3"
   resolved "https://registry.yarnpkg.com/esprima/-/esprima-3.1.3.tgz#fdca51cee6133895e3c88d535ce49dbff62a4633"
@@ -1369,7 +1373,7 @@ rc@~1.1.6:
     minimist "^1.2.0"
     strip-json-comments "~2.0.1"
 
-"readable-stream@^2.0.0 || ^1.1.13", readable-stream@^2.0.2, readable-stream@~2.1.4:
+"readable-stream@^2.0.0 || ^1.1.13", readable-stream@~2.1.4:
   version "2.1.5"
   resolved "https://registry.yarnpkg.com/readable-stream/-/readable-stream-2.1.5.tgz#66fa8b720e1438b364681f2ad1a63c618448c9d0"
   dependencies:
@@ -1381,7 +1385,7 @@ rc@~1.1.6:
     string_decoder "~0.10.x"
     util-deprecate "~1.0.1"
 
-readable-stream@~2.0.6:
+readable-stream@^2.0.2, readable-stream@~2.0.6:
   version "2.0.6"
   resolved "https://registry.yarnpkg.com/readable-stream/-/readable-stream-2.0.6.tgz#8f90341e68a53ccc928788dacfcd11b36eb9b78e"
   dependencies:
@@ -1524,19 +1528,19 @@ rimraf@2, rimraf@~2.5.1, rimraf@~2.5.4:
   dependencies:
     glob "^7.0.5"
 
-riot-cli@^3.0.0:
-  version "3.0.0"
-  resolved "https://registry.yarnpkg.com/riot-cli/-/riot-cli-3.0.0.tgz#02c6fc704d5db5655802ea180b68acc83c7df2e6"
+riot-cli@^3.0.1:
+  version "3.0.1"
+  resolved "https://registry.yarnpkg.com/riot-cli/-/riot-cli-3.0.1.tgz#65843bffc12734bc68d1b3d23b4c3f1b0ee450e5"
   dependencies:
     chalk "^1.1.3"
     chokidar "^1.6.1"
     co "^4.6.0"
     optionator "^0.8.2"
-    riot-compiler "^3.0.0"
-    rollup "^0.36.3"
-    shelljs "^0.7.5"
+    riot-compiler "^3.2.1"
+    rollup "^0.41.6"
+    shelljs "^0.7.7"
 
-riot-compiler@^3.0.0, riot-compiler@^3.2.1:
+riot-compiler@^3.2.1:
   version "3.2.1"
   resolved "https://registry.yarnpkg.com/riot-compiler/-/riot-compiler-3.2.1.tgz#c65ce56efb1228572523d665746dc4cc17a19ba9"
 
@@ -1544,24 +1548,26 @@ riot-observable@^3.0.0:
   version "3.0.0"
   resolved "https://registry.yarnpkg.com/riot-observable/-/riot-observable-3.0.0.tgz#8bbd2daf72a2141bb043082df4023dc504bad2eb"
 
-riot-tmpl@^3.0.2:
-  version "3.0.2"
-  resolved "https://registry.yarnpkg.com/riot-tmpl/-/riot-tmpl-3.0.2.tgz#d8c316b4bf3c38aabf914b4db5573e3f04a5e55f"
-
-riot@^3.3.1:
-  version "3.3.1"
-  resolved "https://registry.yarnpkg.com/riot/-/riot-3.3.1.tgz#cd2b72e2976f0e3fb7510da6b905507902ac9535"
+riot-tmpl@^3.0.3:
+  version "3.0.4"
+  resolved "https://registry.yarnpkg.com/riot-tmpl/-/riot-tmpl-3.0.4.tgz#0daeb97c82b5f355e13d976d51ea937fc5118a85"
   dependencies:
-    riot-cli "^3.0.0"
+    eslint-config-riot "^1.0.0"
+
+riot@^3.4.4:
+  version "3.4.4"
+  resolved "https://registry.yarnpkg.com/riot/-/riot-3.4.4.tgz#9741d12f1d529f1557a6949e5773cce3fb7d9aba"
+  dependencies:
+    riot-cli "^3.0.1"
     riot-compiler "^3.2.1"
     riot-observable "^3.0.0"
-    riot-tmpl "^3.0.2"
+    riot-tmpl "^3.0.3"
     simple-dom "0.3.2"
-    simple-html-tokenizer "^0.4.0"
+    simple-html-tokenizer "^0.4.1"
 
-rollup@^0.36.3:
-  version "0.36.4"
-  resolved "https://registry.yarnpkg.com/rollup/-/rollup-0.36.4.tgz#a224494c5386c1d73d38f7bb86f69f5eb011a3d2"
+rollup@^0.41.6:
+  version "0.41.6"
+  resolved "https://registry.yarnpkg.com/rollup/-/rollup-0.41.6.tgz#e0d05497877a398c104d816d2733a718a7a94e2a"
   dependencies:
     source-map-support "^0.4.0"
 
@@ -1577,9 +1583,9 @@ set-immediate-shim@^1.0.1:
   version "1.0.1"
   resolved "https://registry.yarnpkg.com/set-immediate-shim/-/set-immediate-shim-1.0.1.tgz#4b2b1b27eb808a9f8dcc481a58e5e56f599f3f61"
 
-shelljs@^0.7.5:
-  version "0.7.6"
-  resolved "https://registry.yarnpkg.com/shelljs/-/shelljs-0.7.6.tgz#379cccfb56b91c8601e4793356eb5382924de9ad"
+shelljs@^0.7.7:
+  version "0.7.7"
+  resolved "https://registry.yarnpkg.com/shelljs/-/shelljs-0.7.7.tgz#b2f5c77ef97148f4b4f6e22682e10bba8667cff1"
   dependencies:
     glob "^7.0.0"
     interpret "^1.0.0"
@@ -1593,9 +1599,9 @@ simple-dom@0.3.2:
   version "0.3.2"
   resolved "https://registry.yarnpkg.com/simple-dom/-/simple-dom-0.3.2.tgz#0663d10f1556f1500551d518f56e3aba0871371d"
 
-simple-html-tokenizer@^0.4.0:
-  version "0.4.0"
-  resolved "https://registry.yarnpkg.com/simple-html-tokenizer/-/simple-html-tokenizer-0.4.0.tgz#ee41cff5bae6a4333f747e77360e26202fb8313d"
+simple-html-tokenizer@^0.4.1:
+  version "0.4.1"
+  resolved "https://registry.yarnpkg.com/simple-html-tokenizer/-/simple-html-tokenizer-0.4.1.tgz#028988bb7fe8b2e6645676d82052587d440b02d3"
 
 slash@^1.0.0:
   version "1.0.0"
