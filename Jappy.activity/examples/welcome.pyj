@@ -25,10 +25,8 @@ for item in examples:
     button.style.fontSize = "18pt"
     button.style.fontFamily = 'Noto\ Mono, Noto\ Emoji'
     button.onclick = def (ev):
-        parent.event_bus.trigger('example-load', ev.target.dataset.name)
-        setTimeout(def(): 
-                   parent.event_bus.trigger('run-code')
-        , 300)
+        parent.event_bus.trigger('example-load', 
+                                ev.target.dataset.name, True)
     document.body.appendChild(button)
     document.body.appendChild(document.createElement('br'))
 

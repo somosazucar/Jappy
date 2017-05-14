@@ -890,7 +890,7 @@ if __name__=='__main__':
             print ('<h2>🀄 Unicode Emojis</h2>', end='')
             document.body.style['text-align'] = 'center'
             self.div = document.createElement('div')
-            self.entry = async_input()
+            self.entry = inputAsync()
             document.body.appendChild(self.div)
             self.div.style.overflow = 'auto'
             self.load()

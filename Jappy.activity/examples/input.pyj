@@ -2,14 +2,14 @@ document.body.style['text-align'] = 'center'
 
 print ('<h1>Hello, 🙋</h1>')
 print ('What is your name?')
-async_input(process)
+inputAsync(process)
 
 def process(name):
     if name:
         window.name = name
         print(name + '<br>')
         print('<h2>🔐 What is the password?</h2>', end='')
-        async_input(verify)
+        inputAsync(verify)
     else:
         return False
         

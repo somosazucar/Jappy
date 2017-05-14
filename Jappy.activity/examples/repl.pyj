@@ -7,7 +7,7 @@ callhistory = []
 backscroll = 1
 
 # Read
-editbox = async_input(interpret)
+editbox = inputAsync(interpret)
 editbox.addEventListener("keyup", scrollback) 
 def scrollback(e):
     global backscroll, callcount

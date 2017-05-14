@@ -1,5 +1,6 @@
 # Mandalas: lesson 1 'use # to comment code'
 
+cls('black')
 center = { 'x': window.innerWidth / 2, 
            'y': window.innerHeight / 2 }
 
@@ -18,7 +19,7 @@ class Mandala:
     def place(self, pos, rad, font_size, font, color):
         el = document.createElement('span')
         el.innerHTML = self.text
-        el.style['text-shadow'] = '0 0 10px black'
+        el.style['text-shadow'] = '0 0 10px white'
         el.style['color'] = color
         el.style['font-size'] = font_size + 'px'
         el.style['font-family'] = font
@@ -36,5 +37,5 @@ if __name__=='__main__':
     Mandala ('🍎', 22, 220, 60, 'red')
     Mandala ('🐜', 20, 160, 50, 'orange')
     Mandala ('🐌', 10, 110, 30, 'green')
-    Mandala ('Azúcar', 6, 70, 'red')
+    Mandala ('Azúcar', 6, 70, 18, 'yellow')
     Mandala ('Somos', 2, 20, 30, 'blue')

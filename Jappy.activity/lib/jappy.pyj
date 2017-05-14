@@ -5,15 +5,18 @@ strings()
 def input(*args):
     return prompt(args)
 
-def cls():
-    def asyncCls():
+def cls(color=None):
+    def clsAsync():
         element = document.getElementById('__terminal__')
         if element:
             element.innerHTML = ''
-    setTimeout(asyncCls)
+    if color:
+        document.body.style.backgroundColor = color
+    setTimeout(clsAsync)
 
-def async_input(cb=None):
+def inputAsync(cb=None):
     el = document.createElement('input')
+    el.className = '__terminal__'
     el.onsubmit = def(e):
         if cb:
             if cb(el.value) in [undefined, True]:
