@@ -357,13 +357,15 @@ def init():
         datastore.save(check_save)
     event_bus.on("activity-save", save)
 
-    def example_load(file):
+    def example_load(file, execute=False):
         if file in window.files:
             tag.title = file
             editor.swapDoc(window.files[file])
             editor.setOption('mode', 'python')
             tag.update()
             editor.focus()
+            if execute:
+                event_bus.trigger('run-code')
             return
 
         url_base = window.location.protocol
@@ -375,6 +377,8 @@ def init():
             tag.title = file
             tag.update()
             editor.focus()
+            if execute:
+                event_bus.trigger('run-code')
         )
     event_bus.on("example-load", example_load)
 
