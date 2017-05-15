@@ -19,6 +19,8 @@ python dev.py
 ```
 And then open http://localhost:5000/
 
+You may need to install requirements with `pip install -r requirements.txt` first. 
+
 ## References
 
 https://wiki.sugarlabs.org/go/Project/Develop_Activity
@@ -29,7 +31,6 @@ Artisan Workbench
 A *Develop Activity* proposal for Sugar and Sugarizer.
 
 Web Apps for Sugarizer and any Platform
-Templates for Apps:
 
  - Python
  - Game
@@ -41,6 +42,4 @@ Collaboration, Simplicity, Reflection
 Issues
 ======
 
-- I've spent many hours trying to get Fedora 18's Webkit1 renderer to run this (this is the last renderer available on XO hardware). **Doesn't run on XO**
-- Needs different sugar-web for Sugar(Webkit2) vs Sugarizer
 - Might consider method to avoid *infinite loops*. Currently they **crash the tab or browser or PC**.
