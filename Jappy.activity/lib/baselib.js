@@ -3580,14 +3580,14 @@ Object.defineProperties(input, {
     __handles_kwarg_interpolation__ : {value: true}
 });
 
-function cls() {
-    var color = (arguments[0] === undefined || ( 0 === arguments.length-1 && arguments[arguments.length-1] !== null && typeof arguments[arguments.length-1] === "object" && arguments[arguments.length-1] [ρσ_kwargs_symbol] === true)) ? cls.__defaults__.color : arguments[0];
+function clearScreen() {
+    var color = (arguments[0] === undefined || ( 0 === arguments.length-1 && arguments[arguments.length-1] !== null && typeof arguments[arguments.length-1] === "object" && arguments[arguments.length-1] [ρσ_kwargs_symbol] === true)) ? clearScreen.__defaults__.color : arguments[0];
     var ρσ_kwargs_obj = arguments[arguments.length-1];
     if (ρσ_kwargs_obj === null || typeof ρσ_kwargs_obj !== "object" || ρσ_kwargs_obj [ρσ_kwargs_symbol] !== true) ρσ_kwargs_obj = {};
     if (Object.prototype.hasOwnProperty.call(ρσ_kwargs_obj, "color")){
         color = ρσ_kwargs_obj.color;
     }
-    function clsAsync() {
+    function clearScreenAsync() {
         var element;
         element = document.getElementById("__terminal__");
         if (element) {
@@ -3598,9 +3598,9 @@ function cls() {
     if (color) {
         document.body.style.backgroundColor = color;
     }
-    setTimeout(clsAsync);
+    setTimeout(clearScreenAsync);
 };
-Object.defineProperties(cls, {
+Object.defineProperties(clearScreen, {
     __defaults__ : {value: {color:null}},
     __handles_kwarg_interpolation__ : {value: true},
     __argnames__ : {value: ["color"]}

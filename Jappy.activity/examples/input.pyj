@@ -15,7 +15,7 @@ def process(name):
         
 def verify(passwd):
     if passwd=='lala':
-        cls()
+        clearScreen()
         print('<h2>🔓 Access Granted.</h2>', end='')
         print('Welcome ' + name + '!')
         print ('<span style="font-size:100px">👽👽</span>')

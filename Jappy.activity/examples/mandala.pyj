@@ -1,6 +1,5 @@
-# Mandalas: lesson 1 'use # to comment code'
 
-cls('black')
+clearScreen ('black')
 center = { 'x': window.innerWidth / 2, 
            'y': window.innerHeight / 2 }
 

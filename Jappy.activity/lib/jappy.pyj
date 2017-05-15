@@ -5,14 +5,14 @@ strings()
 def input(*args):
     return prompt(args)
 
-def cls(color=None):
-    def clsAsync():
+def clearScreen(color=None):
+    def clearScreenAsync():
         element = document.getElementById('__terminal__')
         if element:
             element.innerHTML = ''
     if color:
         document.body.style.backgroundColor = color
-    setTimeout(clsAsync)
+    setTimeout(clearScreenAsync)
 
 def inputAsync(cb=None):
     el = document.createElement('input')
