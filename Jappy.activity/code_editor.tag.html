@@ -357,7 +357,7 @@ def init():
         datastore.save(check_save)
     event_bus.on("activity-save", save)
 
-    def example_load(file, execute=False):
+    def example_load(file, execute=True):
         if file in window.files:
             tag.title = file
             editor.swapDoc(window.files[file])

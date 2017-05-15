@@ -26,7 +26,7 @@ for item in examples:
     button.style.fontFamily = 'Noto\ Mono, Noto\ Emoji'
     button.onclick = def (ev):
         parent.event_bus.trigger('example-load', 
-                                ev.target.dataset.name, True)
+                                ev.target.dataset.name)
     document.body.appendChild(button)
     document.body.appendChild(document.createElement('br'))
 

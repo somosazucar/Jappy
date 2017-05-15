@@ -2,7 +2,7 @@ import random
 
 print ("<h1>👥 Memorize</h1><hr>", end='')
 
-pairs = ['🐇','🐈','🐒','🐋','🐎','🐍','🐢','🐝','🐕','🐂']
+pairs = ['🐇','🐈','🐒','🐋','🐎','🐍','🐢','🐝','🐂']
 count = len(pairs)
 nums = list(random.shuffle(pairs))\
     .concat(list(random.shuffle(pairs)))

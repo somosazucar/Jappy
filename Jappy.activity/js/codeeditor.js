@@ -1893,7 +1893,7 @@ function init() {
         })());
     };
     if (!example_load.__defaults__) Object.defineProperties(example_load, {
-        __defaults__ : {value: {execute:false}},
+        __defaults__ : {value: {execute:true}},
         __handles_kwarg_interpolation__ : {value: true},
         __argnames__ : {value: ["file", "execute"]}
     });
