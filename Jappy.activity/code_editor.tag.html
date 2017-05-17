@@ -497,5 +497,11 @@ def init():
 
 this.on('mount', init)
 
+if 'Android' in navigator.userAgent:
+    # Android already has same emojis that work better in the editor.
+    android_sheet = document.createElement('style')
+    android_sheet.innerHTML = '.CodeMirror { font-family: "Noto Mono" }'
+    document.body.appendChild(android_sheet)
+
 </script>
 </code-editor>

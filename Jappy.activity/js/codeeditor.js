@@ -1446,7 +1446,7 @@ var ρσ_modules = {};
     ρσ_modules.re.escape = escape;
     ρσ_modules.re.purge = purge;
 })();
-var tag;
+var tag, android_sheet;
 print("RapydScript-ng " + RapydScript.rs_version);
 var re = ρσ_modules.re;
 
@@ -2096,4 +2096,9 @@ function init() {
 };
 
 this.on("mount", init);
+if (ρσ_in("Android", navigator.userAgent)) {
+    android_sheet = document.createElement("style");
+    android_sheet.innerHTML = ".CodeMirror { font-family: \"Noto Mono\" }";
+    document.body.appendChild(android_sheet);
+}
 });
