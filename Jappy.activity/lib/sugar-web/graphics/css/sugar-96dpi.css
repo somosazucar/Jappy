@@ -17,19 +17,12 @@ body {
 .pull-right {
   float: right;
 }
-.toolbar > .pull-right {
-  margin-left: auto !important;
-}
-.toolbar > .pull-right ~ .pull-right {
-  margin-left: 2.5px !important;
-}
 a {
   color: #0076c3;
   text-decoration: none;
 }
 /* Toolbar */
 .toolbar {
-  display: flex;
   height: 55px;
   padding: 0 57px;
   color: white;
@@ -39,17 +32,14 @@ a {
 }
 /* Toolbar separator */
 .toolbar hr {
-  flex-direction: row;
-  display: flex;
-  margin: 0px 0px 0px;
+  display: inline-block;
+  height: 33px;
+  margin: 2.5px;
+  margin-bottom: -17px;
   border: 1px solid #808080;
-  top: 0px;
-  bottom: 0px;
 }
 /* Toolbar toolbutton */
 .toolbar .toolbutton {
-  flex-direction: row;
-  display: flex;
   position: relative;
   width: 47px;
   height: 47px;
@@ -89,6 +79,37 @@ a {
 }
 .toolbar #stop-button {
   background-image: url('../icons/actions/activity-stop.svg');
+}
+/* Alert */
+.alert {
+  position: absolute;
+  top: 55px;
+  z-index: 10;
+  height: 55px;
+  width: 100%;
+  color: white;
+  background-color: black;
+  -webkit-user-select: none;
+  -moz-user-select: none;
+}
+.alert p {
+  padding-left: 11px;
+  vertical-align: middle;
+  width: 80%;
+}
+.alert .button-box {
+  position: fixed;
+  top: 55px;
+  right: 0px;
+  height: 55px;
+  width: 20%;
+  margin: 11px;
+}
+.alert button {
+  float: right;
+}
+.button-box button + button {
+  margin-right: 11px;
 }
 /* Canvas */
 #canvas {
@@ -462,6 +483,6 @@ ul.flat-list.striped li:nth-child(odd) {
 #activity-palette .wrapper {
   width: 271px;
 }
-*:focus {
-  outline: 0;
- }
+#activity-palette textarea {
+  resize: none;
+}
