@@ -1,35 +1,22 @@
 <!doctype html>
 <meta charset="utf-8">
 <head>
-    <meta name="viewport" content="user-scalable=no, initial-scale=1, maximum-scale=1, minimum-scale=1, width=device-width"/>
+    <meta name="viewport" content="user-scalable=yes, initial-scale=1, maximum-scale=5, minimum-scale=1, width=device-width"/>
     <link rel="stylesheet" media="not screen and (device-width: 1200px) and (device-height: 900px)"
             href="lib/sugar-web/graphics/css/sugar-96dpi.css">
     <link rel="stylesheet" media="screen and (device-width: 1200px) and (device-height: 900px)"
             href="lib/sugar-web/graphics/css/sugar-200dpi.css">
+
+    <link rel="stylesheet" type="text/css" media="screen and (max-width: 800px)"
+            href="lib/sugar-web/graphics/css/sugar-72dpi.css">
+    <link rel="stylesheet" type="text/css" media="screen and (max-width: 800px)"
+            href="css/small-screens.css">
+    <link rel="stylesheet" type="text/css" media="screen and (max-width: 420px)"
+            href="css/tiny-screens.css">
+
     <link rel="stylesheet" type="text/css" href="lib/cm/codemirror.css">
     <link rel="stylesheet" type="text/css" href="lib/cm/theme/solarized.css">
     <link rel="stylesheet" type="text/css" href="css/activity.css">
-    <style>
-    body, html {
-        overflow: hidden;
-    }
-    .canvas {
-        display: flex;
-        flex-direction: column;
-    }
-    .palette {
-        z-index: 10;
-    }
-    button.icon span.pyj {
-        background-image: url(activity/activity-icon.svg);
-    }
-    button.icon span.zip {
-        background-image: url(icons/zip-archive.svg);
-    }
-    button.icon span.html {
-        background-image: url(icons/text-html.svg);
-    }
-    </style>
 
     <script src="lib/cm/codemirror.js"></script>
     <script src="lib/cm/addon/selection/active-line.js"></script>
