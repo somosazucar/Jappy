@@ -3606,6 +3606,15 @@ Object.defineProperties(clearScreen, {
     __argnames__ : {value: ["color"]}
 });
 
+function onKeyUp(e) {
+    if ((e.keyCode === 13 || typeof e.keyCode === "object" && ρσ_equals(e.keyCode, 13))) {
+        e.target.dispatchEvent(new Event("submit"));
+    }
+};
+Object.defineProperties(onKeyUp, {
+    __argnames__ : {value: ["e"]}
+});
+
 function inputAsync() {
     var cb = (arguments[0] === undefined || ( 0 === arguments.length-1 && arguments[arguments.length-1] !== null && typeof arguments[arguments.length-1] === "object" && arguments[arguments.length-1] [ρσ_kwargs_symbol] === true)) ? inputAsync.__defaults__.cb : arguments[0];
     var ρσ_kwargs_obj = arguments[arguments.length-1];
@@ -3634,17 +3643,7 @@ function inputAsync() {
         });
         return ρσ_anonfunc;
     })();
-    el.onkeyup = (function() {
-        var ρσ_anonfunc = function (e) {
-            if ((e.keyCode === 13 || typeof e.keyCode === "object" && ρσ_equals(e.keyCode, 13))) {
-                el.dispatchEvent(new Event("submit"));
-            }
-        };
-        Object.defineProperties(ρσ_anonfunc, {
-            __argnames__ : {value: ["e"]}
-        });
-        return ρσ_anonfunc;
-    })();
+    el.onkeyup = onKeyUp;
     document.body.appendChild(el);
     el.focus();
     return el;

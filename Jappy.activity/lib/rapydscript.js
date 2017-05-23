@@ -46,7 +46,7 @@ var builtin_modules = {
             return ctx.eval(code);
         },
 
-        'runInThisContext': eval,
+        'runInThisContext': function run_in_this(code){ return eval(code) },
     },
     'path': {
         'join': function path_join() { return Array.prototype.slice.call(arguments).join('/'); },

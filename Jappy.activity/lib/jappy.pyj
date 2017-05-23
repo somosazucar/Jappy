@@ -14,6 +14,10 @@ def clearScreen(color=None):
         document.body.style.backgroundColor = color
     setTimeout(clearScreenAsync)
 
+def onKeyUp(e):
+    if e.keyCode == 13:
+        e.target.dispatchEvent(new Event('submit'))
+
 def inputAsync(cb=None):
     el = document.createElement('input')
     el.className = '__terminal__'
@@ -24,12 +28,11 @@ def inputAsync(cb=None):
         def scrolldown():
             document.body.scrollTop = document.body.scrollHeight
         setTimeout(scrolldown)
-    el.onkeyup = def(e):
-        if e.keyCode == 13:
-            el.dispatchEvent(new Event('submit'))
+    el.onkeyup = onKeyUp
     document.body.appendChild(el)
     el.focus()
     return el
+
 
 def ρσ_print(*args, **kwargs):
     end = "\n"
