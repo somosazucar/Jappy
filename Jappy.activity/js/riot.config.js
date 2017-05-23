@@ -6,7 +6,7 @@ export default {
 
           var compiler = RapydScript.create_embedded_compiler()
 
-          return (compiler.compile(js))
+          return ( compiler.compile(js, {js_version: 5} ) )
       },
     },
   },
