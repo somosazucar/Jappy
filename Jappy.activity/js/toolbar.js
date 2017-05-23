@@ -26,6 +26,7 @@ function init() {
     };
     this.refs.erasebutton.onclick = function () {
         window.state = "clean";
+        event_bus.trigger("traybutton-close", false);
         tag.update();
         event_bus.trigger("clear-output");
     };
@@ -39,15 +40,24 @@ function init() {
     });
 
     event_bus.on("activity-ready", activity_ready);
+    function enable_standalone() {
+        tag.refs.stopbutton.onclick = function () {
+            var base_url;
+            event_bus.trigger("activity-save", activity);
+            base_url = window.location.protocol + "//" + window.location.host + "/";
+            window.location = base_url + "shutdown";
+        };
+    };
+
+    event_bus.on("enable-standalone", enable_standalone);
     require(ρσ_list_decorate([ "sugar-web/graphics/palette" ]), (function() {
         var ρσ_anonfunc = function (palette) {
             var items, row, item, span, text, i;
             tag.example_palette = new palette.Palette(tag.refs.examplebutton, "Load an example");
             items = ρσ_list_decorate([]);
-            var ρσ_Iter0 = examples;
-            ρσ_Iter0 = ((typeof ρσ_Iter0[Symbol.iterator] === "function") ? (ρσ_Iter0 instanceof Map ? ρσ_Iter0.keys() : ρσ_Iter0) : Object.keys(ρσ_Iter0));
-            for (var ρσ_Index0 of ρσ_Iter0) {
-                i = ρσ_Index0;
+            var ρσ_Iter0 = ρσ_Iterable(examples);
+            for (var ρσ_Index0 = 0; ρσ_Index0 < ρσ_Iter0.length; ρσ_Index0++) {
+                i = ρσ_Iter0[ρσ_Index0];
                 row = document.createElement("div");
                 row.classList.add("menu");
                 item = document.createElement("button");
@@ -108,10 +118,9 @@ function init() {
             import_file.prototype.trigger = "import-file";
 
             items = ρσ_list_decorate([]);
-            var ρσ_Iter1 = ρσ_list_decorate([ new as_zip, new import_file ]);
-            ρσ_Iter1 = ((typeof ρσ_Iter1[Symbol.iterator] === "function") ? (ρσ_Iter1 instanceof Map ? ρσ_Iter1.keys() : ρσ_Iter1) : Object.keys(ρσ_Iter1));
-            for (var ρσ_Index1 of ρσ_Iter1) {
-                i = ρσ_Index1;
+            var ρσ_Iter1 = ρσ_Iterable(ρσ_list_decorate([ new as_zip, new import_file ]));
+            for (var ρσ_Index1 = 0; ρσ_Index1 < ρσ_Iter1.length; ρσ_Index1++) {
+                i = ρσ_Iter1[ρσ_Index1];
                 row = document.createElement("div");
                 row.classList.add("menu");
                 item = document.createElement("button");

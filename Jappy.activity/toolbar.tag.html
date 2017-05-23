@@ -83,6 +83,7 @@ def init():
         event_bus.trigger("break-code")
     this.refs.erasebutton.onclick = def():
         window.state = 'clean'
+        event_bus.trigger("traybutton-close", False)
         tag.update()
         event_bus.trigger("clear-output")
 
@@ -90,6 +91,13 @@ def init():
         tag.refs.stopbutton.onclick = def():
             event_bus.trigger("activity-save", activity)
     event_bus.on("activity-ready", activity_ready)
+
+    def enable_standalone():
+        tag.refs.stopbutton.onclick = def():
+            event_bus.trigger("activity-save", activity)
+            base_url = window.location.protocol + '//' + window.location.host + '/'
+            window.location = base_url + "shutdown"
+    event_bus.on("enable-standalone", enable_standalone)
 
     require(["sugar-web/graphics/palette"],
         def(palette):
