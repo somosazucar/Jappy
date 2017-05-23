@@ -1,4 +1,4 @@
-riot.tag2('code-editor', '<div id="vsplit" ref="vsplit"> <div id="split" ref="split"> <input ref="file_input" id="file-input" type="file" style="display: none;"> <div id="tabs"> <button onclick="{this.newtab}" id="newtab">&nbsp;</button><span class="{selected: name==parent.title}" each="{name in list(files)}"><button class="{selected: name==parent.title}" onclick="{parent.switchtab}">{str(name)}</button><button if="{name==parent.title && len(files)>1}" id="closetab" onclick="{parent.closetab}">&nbsp;</button></span><button class="pull-right" id="tray-button" ref="traybutton">&nbsp;</button> </div> <textarea id="code-container" ref="code"></textarea> </div> <div ref="hr"><hr></div> <iframe allowtransparency="false" ref="vmframe"></iframe> </div>', 'code-editor { display: flex; flex: 1 1; height: 100%; } code-editor .CodeMirror,[data-is="code-editor"] .CodeMirror{ height: 100%; width: 100%; font-size: 14pt; font-family: "Noto Mono", "Noto Emoji"; flex: 1 1; } code-editor .CodeMirror-cursor,[data-is="code-editor"] .CodeMirror-cursor{ width: auto; border: 0; background: transparent; background: rgba(0, 200, 0, .4); } code-editor .CodeMirror-linenumber,[data-is="code-editor"] .CodeMirror-linenumber{ font-size: 13pt; } code-editor .cm-s-solarized .CodeMirror-cursor,[data-is="code-editor"] .cm-s-solarized .CodeMirror-cursor{ border: 0; } code-editor .error-marker,[data-is="code-editor"] .error-marker{ border: 1px solid red; background-color: rgba(255, 0, 0,0.2); border-radius: 3px; } code-editor iframe,[data-is="code-editor"] iframe{ border: 0px; display: none; flex: 1 1; } code-editor hr,[data-is="code-editor"] hr{ border: 3px solid #808080; padding : 0px; border: 0px; margin: 0px; } code-editor #split,[data-is="code-editor"] #split{ display: flex; width: 50%; flex-direction: column; flex: 1 1; height: 100%; } code-editor #vsplit,[data-is="code-editor"] #vsplit{ display: flex; flex-direction: row; flex: 1 1; height: 100%; } code-editor #tabs button,[data-is="code-editor"] #tabs button{ border-radius: 0; padding: 10px 10px; border: 0px; margin: 0px; } code-editor #tabs button.selected,[data-is="code-editor"] #tabs button.selected{ background-color: #282828; } code-editor #tabs span.selected,[data-is="code-editor"] #tabs span.selected{ white-space: nowrap; } code-editor #closetab,[data-is="code-editor"] #closetab{ background-image: url(lib/sugar-web/graphics/icons/actions/entry-cancel-active.svg); background-repeat: no-repeat; background-color: #282828; width: 28px; background-position: center; background-size: 16px 16px; } code-editor #closetab:active,[data-is="code-editor"] #closetab:active{ background-image: url(lib/sugar-web/graphics/icons/actions/entry-cancel.svg); } code-editor #newtab,[data-is="code-editor"] #newtab{ background-image: url(icons/tab-add.svg); background-repeat: no-repeat; width: 28px; background-position: center; background-size: 20px 20px; } code-editor #tray-button,[data-is="code-editor"] #tray-button{ background-image: url(icons/tray-show.svg); background-repeat: no-repeat; width: 28px; background-position: center; background-size: 20px 20px; }', '', function(opts) {
+riot.tag2('code-editor', '<div id="vsplit" ref="vsplit"> <div id="split" ref="split"> <input ref="file_input" id="file-input" type="file" style="display: none;"> <div id="tabs"> <button onclick="{this.newtab}" id="newtab">&nbsp;</button><span class="{selected: name==parent.title}" each="{name in list(files)}"><button class="{selected: name==parent.title}" onclick="{parent.switchtab}">{str(name)}</button><button if="{name==parent.title && len(files)>1}" id="closetab" onclick="{parent.closetab}">&nbsp;</button></span><button class="pull-right" id="tray-button" ref="traybutton">&nbsp;</button> </div> <textarea id="code-container" ref="code"></textarea> </div> <iframe allowtransparency="false" ref="vmframe"></iframe> </div>', 'code-editor { display: flex; flex: 1 1; height: 100%; } code-editor .CodeMirror,[data-is="code-editor"] .CodeMirror{ height: 100%; width: 100%; font-size: 18pt; font-family: "Noto Mono", "DejaVu Sans Mono", monospace; flex: 1 1; } code-editor .CodeMirror-cursor,[data-is="code-editor"] .CodeMirror-cursor{ width: auto; border: 0; background: transparent; background: rgba(0, 200, 0, .4); } code-editor .CodeMirror-linenumber,[data-is="code-editor"] .CodeMirror-linenumber{ font-size: 16pt; } code-editor .cm-s-solarized .CodeMirror-cursor,[data-is="code-editor"] .cm-s-solarized .CodeMirror-cursor{ border: 0; } code-editor .error-marker,[data-is="code-editor"] .error-marker{ border: 1px solid red; background-color: rgba(255, 0, 0,0.2); border-radius: 3px; } code-editor iframe,[data-is="code-editor"] iframe{ border: 0px; display: none; flex: 1 1; } code-editor #split,[data-is="code-editor"] #split{ display: flex; width: 100%; flex-direction: column; flex: 1 1; height: 100%; float: left; } code-editor #vsplit,[data-is="code-editor"] #vsplit{ display: flex; flex-direction: row; flex: 1 1; height: 100%; } code-editor #tabs button,[data-is="code-editor"] #tabs button{ font-size: 13pt; border-radius: 0; padding: 10px 10px; border: 0px; margin: 0px; } code-editor #tabs button.selected,[data-is="code-editor"] #tabs button.selected{ background-color: #282828; } code-editor #tabs span.selected,[data-is="code-editor"] #tabs span.selected{ white-space: nowrap; } code-editor #closetab,[data-is="code-editor"] #closetab{ background-image: url(lib/sugar-web/graphics/icons/actions/entry-cancel-active.svg); background-repeat: no-repeat; background-color: #282828; width: 28px; background-position: center; background-size: 16px 16px; } code-editor #closetab:active,[data-is="code-editor"] #closetab:active{ background-image: url(lib/sugar-web/graphics/icons/actions/entry-cancel.svg); } code-editor #newtab,[data-is="code-editor"] #newtab{ background-image: url(icons/tab-add.svg); background-repeat: no-repeat; width: 28px; background-position: center; background-size: 20px 20px; } code-editor #tray-button,[data-is="code-editor"] #tray-button{ background-image: url(icons/tray-show.svg); background-repeat: no-repeat; width: 28px; background-position: center; background-size: 20px 20px; }', '', function(opts) {
 var ρσ_modules = {};
 ρσ_modules.re = {};
 
@@ -1446,7 +1446,7 @@ var ρσ_modules = {};
     ρσ_modules.re.escape = escape;
     ρσ_modules.re.purge = purge;
 })();
-var tag, android_sheet;
+var tag;
 print("RapydScript-ng " + RapydScript.rs_version);
 var re = ρσ_modules.re;
 
@@ -1466,13 +1466,13 @@ function compile() {
         var ρσ_d = {};
         ρσ_d["basedir"] = "__stdlib__";
         ρσ_d["bare"] = true;
+        ρσ_d["js_version"] = 5;
         ρσ_d["omit_baselib"] = true;
         return ρσ_d;
     }).call(this);
-    var ρσ_Iter0 = window.files;
-    ρσ_Iter0 = ((typeof ρσ_Iter0[Symbol.iterator] === "function") ? (ρσ_Iter0 instanceof Map ? ρσ_Iter0.keys() : ρσ_Iter0) : Object.keys(ρσ_Iter0));
-    for (var ρσ_Index0 of ρσ_Iter0) {
-        file = ρσ_Index0;
+    var ρσ_Iter0 = ρσ_Iterable(window.files);
+    for (var ρσ_Index0 = 0; ρσ_Index0 < ρσ_Iter0.length; ρσ_Index0++) {
+        file = ρσ_Iter0[ρσ_Index0];
         if (file !== tag.title) {
             (ρσ_expr_temp = RapydScript.file_data)[ρσ_bound_index("__stdlib__/" + file, ρσ_expr_temp)] = (ρσ_expr_temp = window.files)[(typeof file === "number" && file < 0) ? ρσ_expr_temp.length + file : file].getValue();
         }
@@ -1541,17 +1541,16 @@ function init() {
     }).call(this));
     iframe = this.refs.vmframe;
     function load_datastore(activity) {
-        var datastore;
+        var datastore, savedSession;
         datastore = activity.getDatastoreObject();
         function check_load(error, metadata, data) {
             var parsed_data, new_session, file;
             if (data) {
                 window.files = {};
                 parsed_data = JSON.parse(data);
-                var ρσ_Iter1 = parsed_data;
-                ρσ_Iter1 = ((typeof ρσ_Iter1[Symbol.iterator] === "function") ? (ρσ_Iter1 instanceof Map ? ρσ_Iter1.keys() : ρσ_Iter1) : Object.keys(ρσ_Iter1));
-                for (var ρσ_Index1 of ρσ_Iter1) {
-                    file = ρσ_Index1;
+                var ρσ_Iter1 = ρσ_Iterable(parsed_data);
+                for (var ρσ_Index1 = 0; ρσ_Index1 < ρσ_Iter1.length; ρσ_Index1++) {
+                    file = ρσ_Iter1[ρσ_Index1];
                     if (parsed_data[(typeof file === "number" && file < 0) ? parsed_data.length + file : file]) {
                         new_session = CodeMirror.Doc(parsed_data[(typeof file === "number" && file < 0) ? parsed_data.length + file : file]);
                         (ρσ_expr_temp = window.files)[(typeof file === "number" && file < 0) ? ρσ_expr_temp.length + file : file] = new_session;
@@ -1569,7 +1568,15 @@ function init() {
             __argnames__ : {value: ["error", "metadata", "data"]}
         });
 
-        datastore.loadAsText(check_load);
+        if (activity && datastore.objectId !== undefined) {
+            datastore.loadAsText(check_load);
+        } else {
+            event_bus.trigger("enable-standalone");
+            savedSession = localStorage.getItem("jappySession");
+            if (savedSession !== null) {
+                check_load(null, null, savedSession);
+            }
+        }
         tag.update();
         window.activity = activity;
     };
@@ -1723,47 +1730,38 @@ function init() {
 
     tag.newtab = newtab;
     function toggle_tray() {
-        var show = (arguments[0] === undefined || ( 0 === arguments.length-1 && arguments[arguments.length-1] !== null && typeof arguments[arguments.length-1] === "object" && arguments[arguments.length-1] [ρσ_kwargs_symbol] === true)) ? toggle_tray.__defaults__.show : arguments[0];
-        var ρσ_kwargs_obj = arguments[arguments.length-1];
-        if (ρσ_kwargs_obj === null || typeof ρσ_kwargs_obj !== "object" || ρσ_kwargs_obj [ρσ_kwargs_symbol] !== true) ρσ_kwargs_obj = {};
-        if (Object.prototype.hasOwnProperty.call(ρσ_kwargs_obj, "show")){
-            show = ρσ_kwargs_obj.show;
-        }
-        if ((show === true || typeof show === "object" && ρσ_equals(show, true)) || (getComputedStyle(iframe).display === "none" || typeof getComputedStyle(iframe).display === "object" && ρσ_equals(getComputedStyle(iframe).display, "none"))) {
-            iframe.style.display = "block";
-            iframe.style.width = "100%";
-            event_bus.trigger("traybutton-close");
-        } else {
-            iframe.style.display = "none";
+        if ((getComputedStyle(iframe).display === "none" || typeof getComputedStyle(iframe).display === "object" && ρσ_equals(getComputedStyle(iframe).display, "none"))) {
             event_bus.trigger("traybutton-open");
+        } else {
+            event_bus.trigger("traybutton-close");
         }
     };
-    if (!toggle_tray.__defaults__) Object.defineProperties(toggle_tray, {
-        __defaults__ : {value: {show:false}},
-        __handles_kwarg_interpolation__ : {value: true},
-        __argnames__ : {value: ["show"]}
-    });
 
     event_bus.on("toggle-tray", toggle_tray);
     this.refs.traybutton.onclick = toggle_tray;
-    function traybutton_open() {
+    function traybutton_close() {
+        iframe.style.display = "none";
+        iframe.style.width = "0%";
+        tag.refs.split.style.width = "100%";
         tag.refs.traybutton.style.backgroundImage = "url(icons/tray-show.svg)";
     };
 
-    event_bus.on("traybutton-open", traybutton_open);
-    function traybutton_close() {
+    event_bus.on("traybutton-close", traybutton_close);
+    function traybutton_open() {
+        iframe.style.display = "block";
+        iframe.style.width = "50%";
+        iframe.style.height = "100%";
+        tag.refs.split.style.width = "50%";
         tag.refs.traybutton.style.backgroundImage = "url(icons/tray-hide.svg)";
     };
 
-    event_bus.on("traybutton-close", traybutton_close);
+    event_bus.on("traybutton-open", traybutton_open);
     function run() {
         var js_output, script;
         window.state = "run";
+        event_bus.trigger("traybutton-open");
         riot.update();
-        if (window.activity) {
-            event_bus.trigger("activity-save", activity);
-        }
-        toggle_tray(true);
+        event_bus.trigger("activity-save");
         js_output = compile();
         script = iframe.contentDocument.createElement("script");
         script.innerHTML = js_output;
@@ -1794,10 +1792,9 @@ function init() {
         iwindow.stop();
         iwindow.document.body.style.opacity = "0.5";
         inputs = iwindow.document.getElementsByTagName("input");
-        var ρσ_Iter4 = inputs;
-        ρσ_Iter4 = ((typeof ρσ_Iter4[Symbol.iterator] === "function") ? (ρσ_Iter4 instanceof Map ? ρσ_Iter4.keys() : ρσ_Iter4) : Object.keys(ρσ_Iter4));
-        for (var ρσ_Index4 of ρσ_Iter4) {
-            i = ρσ_Index4;
+        var ρσ_Iter4 = ρσ_Iterable(inputs);
+        for (var ρσ_Index4 = 0; ρσ_Index4 < ρσ_Iter4.length; ρσ_Index4++) {
+            i = ρσ_Iter4[ρσ_Index4];
             i.disabled = true;
         }
         iwindow.addEventListener("click", (function() {
@@ -1820,33 +1817,50 @@ function init() {
     function serialize() {
         var result, file;
         result = {};
-        var ρσ_Iter5 = window.files;
-        ρσ_Iter5 = ((typeof ρσ_Iter5[Symbol.iterator] === "function") ? (ρσ_Iter5 instanceof Map ? ρσ_Iter5.keys() : ρσ_Iter5) : Object.keys(ρσ_Iter5));
-        for (var ρσ_Index5 of ρσ_Iter5) {
-            file = ρσ_Index5;
+        var ρσ_Iter5 = ρσ_Iterable(window.files);
+        for (var ρσ_Index5 = 0; ρσ_Index5 < ρσ_Iter5.length; ρσ_Index5++) {
+            file = ρσ_Iter5[ρσ_Index5];
             result[(typeof file === "number" && file < 0) ? result.length + file : file] = (ρσ_expr_temp = window.files)[(typeof file === "number" && file < 0) ? ρσ_expr_temp.length + file : file].getValue();
         }
         return JSON.stringify(result);
     };
 
-    function save(activity) {
-        var datastore;
-        datastore = activity.getDatastoreObject();
-        datastore.setDataAsText(serialize());
-        function check_save(error) {
-            if (error === null) {
-                console.log("Saved");
-            } else {
-                console.log("NOT Saved");
-            }
-        };
-        if (!check_save.__argnames__) Object.defineProperties(check_save, {
-            __argnames__ : {value: ["error"]}
-        });
-
-        datastore.save(check_save);
+    function save_without_datastore() {
+        localStorage.jappySession = serialize();
     };
-    if (!save.__argnames__) Object.defineProperties(save, {
+
+    function save() {
+        var activity = (arguments[0] === undefined || ( 0 === arguments.length-1 && arguments[arguments.length-1] !== null && typeof arguments[arguments.length-1] === "object" && arguments[arguments.length-1] [ρσ_kwargs_symbol] === true)) ? save.__defaults__.activity : arguments[0];
+        var ρσ_kwargs_obj = arguments[arguments.length-1];
+        if (ρσ_kwargs_obj === null || typeof ρσ_kwargs_obj !== "object" || ρσ_kwargs_obj [ρσ_kwargs_symbol] !== true) ρσ_kwargs_obj = {};
+        if (Object.prototype.hasOwnProperty.call(ρσ_kwargs_obj, "activity")){
+            activity = ρσ_kwargs_obj.activity;
+        }
+        var datastore;
+        if (activity) {
+            datastore = activity.getDatastoreObject();
+            if (datastore.objectId) {
+                datastore.setDataAsText(serialize());
+                function check_save(error) {
+                    if (error === null) {
+                        console.log("Saved");
+                    } else {
+                        console.log("NOT Saved");
+                    }
+                };
+                if (!check_save.__argnames__) Object.defineProperties(check_save, {
+                    __argnames__ : {value: ["error"]}
+                });
+
+                datastore.save(check_save);
+            }
+        } else {
+            save_without_datastore();
+        }
+    };
+    if (!save.__defaults__) Object.defineProperties(save, {
+        __defaults__ : {value: {activity:window.activity}},
+        __handles_kwarg_interpolation__ : {value: true},
         __argnames__ : {value: ["activity"]}
     });
 
@@ -1867,7 +1881,11 @@ function init() {
             tag.update();
             editor.focus();
             if (execute) {
-                event_bus.trigger("run-code");
+                if (window.innerWidth > 720) {
+                    event_bus.trigger("run-code");
+                } else {
+                    event_bus.trigger("run-fullscreen");
+                }
             }
             return;
         }
@@ -1883,7 +1901,11 @@ function init() {
                 tag.update();
                 editor.focus();
                 if (execute) {
-                    event_bus.trigger("run-code");
+                    if (window.innerWidth > 720) {
+                        event_bus.trigger("run-code");
+                    } else {
+                        event_bus.trigger("run-fullscreen");
+                    }
                 }
             };
             if (!ρσ_anonfunc.__argnames__) Object.defineProperties(ρσ_anonfunc, {
@@ -1966,6 +1988,29 @@ function init() {
     };
 
     event_bus.on("import-file", import_file);
+    function restore(e) {
+        var code_editor, toolbar, toolbar_height, canvas;
+        code_editor = tag.refs.split;
+        code_editor.style.display = "block";
+        toolbar = document.getElementById("main-toolbar");
+        toolbar.style.display = "block";
+        e.target.parentNode.removeChild(e.target);
+        toolbar_height = window.getComputedStyle(toolbar)["height"];
+        canvas = document.getElementById("canvas");
+        canvas.style.top = toolbar_height;
+        if (window.innerWidth > 720) {
+            iframe.style.width = "50%";
+        } else {
+            window.state = "clean";
+            event_bus.trigger("clear-output");
+            event_bus.trigger("traybutton-close");
+            riot.update();
+        }
+    };
+    if (!restore.__argnames__) Object.defineProperties(restore, {
+        __argnames__ : {value: ["e"]}
+    });
+
     function run_fullscreen() {
         var execute = (arguments[0] === undefined || ( 0 === arguments.length-1 && arguments[arguments.length-1] !== null && typeof arguments[arguments.length-1] === "object" && arguments[arguments.length-1] [ρσ_kwargs_symbol] === true)) ? run_fullscreen.__defaults__.execute : arguments[0];
         var ρσ_kwargs_obj = arguments[arguments.length-1];
@@ -1983,19 +2028,6 @@ function init() {
         if (execute) {
             run();
         }
-        function restore(e) {
-            var toolbar_div, toolbar_height;
-            code_editor.style.display = "flex";
-            toolbar.style.display = "flex";
-            e.target.parentNode.removeChild(e.target);
-            toolbar_div = document.getElementById("main-toolbar");
-            toolbar_height = window.getComputedStyle(toolbar_div)["height"];
-            canvas.style.top = toolbar_height;
-        };
-        if (!restore.__argnames__) Object.defineProperties(restore, {
-            __argnames__ : {value: ["e"]}
-        });
-
         restore_button = document.createElement("button");
         restore_button.onclick = restore;
         restore_button.style.opacity = "0.5";
@@ -2008,6 +2040,7 @@ function init() {
         restore_button.style["background-position"] = "center";
         restore_button.style.width = restore_button.style.height = "55px";
         document.body.appendChild(restore_button);
+        iframe.style.width = "100%";
     };
     if (!run_fullscreen.__defaults__) Object.defineProperties(run_fullscreen, {
         __defaults__ : {value: {execute:true}},
@@ -2018,12 +2051,8 @@ function init() {
     event_bus.on("run-fullscreen", run_fullscreen);
     function save_zip() {
         var bundle_name, js_output, url_base;
-        if (window.activity) {
-            event_bus.trigger("activity-save", activity);
-            bundle_name = tag.title.slice(0, tag.title.indexOf("."));
-        } else {
-            bundle_name = tag.title.slice(0, tag.title.indexOf("."));
-        }
+        event_bus.trigger("activity-save", activity);
+        bundle_name = tag.title.slice(0, tag.title.indexOf("."));
         js_output = compile();
         url_base = window.location.protocol;
         require(ρσ_list_decorate([ "text!template" ]), (function() {
@@ -2035,20 +2064,18 @@ function init() {
                 closing_tag = data.indexOf("</body>");
                 html = data.slice(0, closing_tag) + enc_js + data.slice(closing_tag);
                 external_files = ρσ_list_decorate([]);
-                var ρσ_Iter6 = re.findall("script.*src=\"(.*)\"", data);
-                ρσ_Iter6 = ((typeof ρσ_Iter6[Symbol.iterator] === "function") ? (ρσ_Iter6 instanceof Map ? ρσ_Iter6.keys() : ρσ_Iter6) : Object.keys(ρσ_Iter6));
-                for (var ρσ_Index6 of ρσ_Iter6) {
-                    match = ρσ_Index6;
+                var ρσ_Iter6 = ρσ_Iterable(re.findall("script.*src=\"(.*)\"", data));
+                for (var ρσ_Index6 = 0; ρσ_Index6 < ρσ_Iter6.length; ρσ_Index6++) {
+                    match = ρσ_Iter6[ρσ_Index6];
                     ref = "text!" + match.slice(match.indexOf("=") + 2, -1);
                     ref = ref.replace("lib/", "");
                     external_files.append(ref);
                 }
                 zip = new JSZip;
                 zip.file("index.html", html);
-                var ρσ_Iter7 = window.files;
-                ρσ_Iter7 = ((typeof ρσ_Iter7[Symbol.iterator] === "function") ? (ρσ_Iter7 instanceof Map ? ρσ_Iter7.keys() : ρσ_Iter7) : Object.keys(ρσ_Iter7));
-                for (var ρσ_Index7 of ρσ_Iter7) {
-                    name = ρσ_Index7;
+                var ρσ_Iter7 = ρσ_Iterable(window.files);
+                for (var ρσ_Index7 = 0; ρσ_Index7 < ρσ_Iter7.length; ρσ_Index7++) {
+                    name = ρσ_Iter7[ρσ_Index7];
                     zip.file("src/" + name, (ρσ_expr_temp = window.files)[(typeof name === "number" && name < 0) ? ρσ_expr_temp.length + name : name].getValue());
                 }
                 require(external_files, function () {
@@ -2056,10 +2083,9 @@ function init() {
                     if (arguments[arguments.length-1] !== null && typeof arguments[arguments.length-1] === "object" && arguments[arguments.length-1] [ρσ_kwargs_symbol] === true) data.pop();
                     var index, file;
                     index = 0;
-                    var ρσ_Iter8 = external_files;
-                    ρσ_Iter8 = ((typeof ρσ_Iter8[Symbol.iterator] === "function") ? (ρσ_Iter8 instanceof Map ? ρσ_Iter8.keys() : ρσ_Iter8) : Object.keys(ρσ_Iter8));
-                    for (var ρσ_Index8 of ρσ_Iter8) {
-                        file = ρσ_Index8;
+                    var ρσ_Iter8 = ρσ_Iterable(external_files);
+                    for (var ρσ_Index8 = 0; ρσ_Index8 < ρσ_Iter8.length; ρσ_Index8++) {
+                        file = ρσ_Iter8[ρσ_Index8];
                         file = file.slice(5);
                         if (!(ρσ_in("/", file))) {
                             file = "lib/" + file;
@@ -2096,9 +2122,4 @@ function init() {
 };
 
 this.on("mount", init);
-if (ρσ_in("Android", navigator.userAgent)) {
-    android_sheet = document.createElement("style");
-    android_sheet.innerHTML = ".CodeMirror { font-family: \"Noto Mono\" }";
-    document.body.appendChild(android_sheet);
-}
 });

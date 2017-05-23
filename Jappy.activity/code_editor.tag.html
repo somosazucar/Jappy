@@ -9,8 +9,8 @@ code-editor {
 .CodeMirror {
     height: 100%;
     width: 100%;
-    font-size: 14pt;
-    font-family: "Noto Mono", "Noto Emoji";
+    font-size: 18pt;
+    font-family: "Noto Mono", "DejaVu Sans Mono", monospace;
     flex: 1 1;
 }
 .CodeMirror-cursor {
@@ -20,7 +20,7 @@ code-editor {
     background: rgba(0, 200, 0, .4);
 }
 .CodeMirror-linenumber {
-    font-size: 13pt;
+    font-size: 16pt;
 }
 .cm-s-solarized .CodeMirror-cursor {
     border: 0;
@@ -35,18 +35,13 @@ iframe {
     display: none;
     flex: 1 1;
 }
-hr {
-    border: 3px solid #808080;
-    padding : 0px;
-    border: 0px;
-    margin: 0px;
-}
 #split {
     display: flex;
-    width: 50%;
+    width: 100%;
     flex-direction: column;
     flex: 1 1;
     height: 100%;
+    float: left;
 }
 #vsplit {
     display: flex;
@@ -55,6 +50,7 @@ hr {
     height: 100%;
 }
 #tabs button {
+    font-size: 13pt;
     border-radius: 0;
     padding: 10px 10px;
     border: 0px;
@@ -107,7 +103,6 @@ hr {
         </div>
         <textarea id="code-container" ref="code"></textarea>
     </div>
-    <div ref="hr"><hr></div>
     <iframe allowTransparency="false" ref="vmframe"></iframe>
 </div>
 
@@ -124,6 +119,7 @@ def compile(inputcode=None):
     editor = window.editor
     options = {'basedir':'__stdlib__',
                'bare': True,
+               'js_version': 5,
                'omit_baselib':True}
 
     for file in window.files:
@@ -187,7 +183,14 @@ def init():
                 editor.swapDoc(window.files[tag.title])
                 editor.setOption('mode', 'python')
             tag.update()
-        datastore.loadAsText(check_load)
+        if activity and datastore.objectId is not undefined:
+            datastore.loadAsText(check_load)
+        else:
+            # No datastore probably means we need to handle stuff ourselves
+            event_bus.trigger("enable-standalone")
+            savedSession = localStorage.getItem('jappySession')
+            if savedSession is not None:
+                check_load(None, None, savedSession)
         tag.update()
         window.activity = activity
     event_bus.on("activity-ready", load_datastore)
@@ -281,31 +284,34 @@ def init():
         tag.update()
     tag.newtab = newtab
 
-    def toggle_tray(show=False):
-        if show==True or getComputedStyle(iframe).display == 'none':
-            iframe.style.display='block'
-            iframe.style.width='100%'
-            event_bus.trigger("traybutton-close")
-        else:
-            iframe.style.display='none'
+    def toggle_tray():
+        if getComputedStyle(iframe).display == 'none':
             event_bus.trigger("traybutton-open")
+        else:
+            event_bus.trigger("traybutton-close")
     event_bus.on("toggle-tray", toggle_tray)
     this.refs.traybutton.onclick = toggle_tray
 
-    def traybutton_open():
-        tag.refs.traybutton.style.backgroundImage = "url(icons/tray-show.svg)"
-    event_bus.on("traybutton-open", traybutton_open)
-
     def traybutton_close():
-        tag.refs.traybutton.style.backgroundImage = "url(icons/tray-hide.svg)"
+        iframe.style.display = 'none'
+        iframe.style.width = '0%'
+        tag.refs.split.style.width = '100%'
+        tag.refs.traybutton.style.backgroundImage = "url(icons/tray-show.svg)"
     event_bus.on("traybutton-close", traybutton_close)
+
+    def traybutton_open():
+        iframe.style.display = 'block'
+        iframe.style.width = '50%'
+        iframe.style.height = '100%'
+        tag.refs.split.style.width = '50%'
+        tag.refs.traybutton.style.backgroundImage = "url(icons/tray-hide.svg)"
+    event_bus.on("traybutton-open", traybutton_open)
 
     def run():
         window.state = 'run'
+        event_bus.trigger("traybutton-open")
         riot.update()
-        if window.activity:
-            event_bus.trigger("activity-save", activity)
-        toggle_tray(True)
+        event_bus.trigger("activity-save")
         js_output = compile()
         script = iframe.contentDocument.createElement('script')
         script.innerHTML = js_output
@@ -346,15 +352,23 @@ def init():
             result[file] = window.files[file].getValue()
         return JSON.stringify(result)
 
-    def save(activity):
-        datastore = activity.getDatastoreObject()
-        datastore.setDataAsText(serialize())
-        def check_save(error):
-            if error is None:
-                console.log("Saved")
-            else:
-                console.log("NOT Saved")
-        datastore.save(check_save)
+    def save_without_datastore():
+        localStorage.jappySession = serialize()
+
+    def save(activity=window.activity):
+        if activity:
+            datastore = activity.getDatastoreObject()
+            if datastore.objectId:
+                datastore.setDataAsText(serialize())
+                def check_save(error):
+                    if error is None:
+                        console.log("Saved")
+                    else:
+                        console.log("NOT Saved")
+                datastore.save(check_save)
+        else:
+            save_without_datastore()
+
     event_bus.on("activity-save", save)
 
     def example_load(file, execute=True):
@@ -365,7 +379,10 @@ def init():
             tag.update()
             editor.focus()
             if execute:
-                event_bus.trigger('run-code')
+                if window.innerWidth > 720:
+                    event_bus.trigger('run-code')
+                else:
+                    event_bus.trigger('run-fullscreen')
             return
 
         url_base = window.location.protocol
@@ -378,7 +395,10 @@ def init():
             tag.update()
             editor.focus()
             if execute:
-                event_bus.trigger('run-code')
+                if window.innerWidth > 720:
+                    event_bus.trigger('run-code')
+                else:
+                    event_bus.trigger('run-fullscreen')
         )
     event_bus.on("example-load", example_load)
 
@@ -416,6 +436,23 @@ def init():
         tag.refs.file_input.click()
     event_bus.on("import-file", import_file)
 
+    def restore(e):
+        code_editor = tag.refs.split
+        code_editor.style.display = 'block'
+        toolbar = document.getElementById('main-toolbar')
+        toolbar.style.display = 'block'
+        e.target.parentNode.removeChild(e.target)
+        toolbar_height = window.getComputedStyle(toolbar)['height']
+        canvas = document.getElementById('canvas')
+        canvas.style.top = toolbar_height
+        if window.innerWidth > 720:
+            iframe.style.width='50%'
+        else:
+            window.state = 'clean'
+            event_bus.trigger("clear-output")
+            event_bus.trigger('traybutton-close')
+            riot.update()
+
     def run_fullscreen(execute=True):
         code_editor = tag.refs.split
         code_editor.style.display = 'none'
@@ -425,14 +462,6 @@ def init():
         canvas.style.top = '0'
         if execute:
             run()
-
-        def restore(e):
-            code_editor.style.display = 'flex'
-            toolbar.style.display = 'flex'
-            e.target.parentNode.removeChild(e.target)
-            toolbar_div = document.getElementById('main-toolbar')
-            toolbar_height = window.getComputedStyle(toolbar_div)['height']
-            canvas.style.top = toolbar_height
 
         restore_button = document.createElement('button')
         restore_button.onclick = restore
@@ -446,15 +475,14 @@ def init():
         restore_button.style['background-position'] = 'center'
         restore_button.style.width = restore_button.style.height = '55px'
         document.body.appendChild(restore_button)
+
+        iframe.style.width='100%'
     event_bus.on("run-fullscreen", run_fullscreen)
 
     def save_zip():
-        if window.activity:
-            event_bus.trigger("activity-save", activity)
-            # TODO get activity palette object title
-            bundle_name = tag.title[:tag.title.indexOf('.')]
-        else:
-            bundle_name = tag.title[:tag.title.indexOf('.')]
+        event_bus.trigger("activity-save", activity)
+        # TODO get activity palette object title
+        bundle_name = tag.title[:tag.title.indexOf('.')]
 
         js_output = compile()
 
@@ -496,12 +524,6 @@ def init():
     editor.focus()
 
 this.on('mount', init)
-
-if 'Android' in navigator.userAgent:
-    # Android already has same emojis that work better in the editor.
-    android_sheet = document.createElement('style')
-    android_sheet.innerHTML = '.CodeMirror { font-family: "Noto Mono" }'
-    document.body.appendChild(android_sheet)
 
 </script>
 </code-editor>
