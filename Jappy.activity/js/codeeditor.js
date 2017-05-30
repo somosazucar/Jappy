@@ -1,4 +1,4 @@
-riot.tag2('code-editor', '<div id="vsplit" ref="vsplit"> <div id="split" ref="split"> <input ref="file_input" id="file-input" type="file" style="display: none;"> <div id="tabs"> <button onclick="{this.newtab}" id="newtab">&nbsp;</button><span class="{selected: name==parent.title}" each="{name in list(files)}"><button class="{selected: name==parent.title}" onclick="{parent.switchtab}">{str(name)}</button><button if="{name==parent.title && len(files)>1}" id="closetab" onclick="{parent.closetab}">&nbsp;</button></span><button class="pull-right" id="tray-button" ref="traybutton">&nbsp;</button> </div> <textarea id="code-container" ref="code"></textarea> </div> <iframe allowtransparency="false" ref="vmframe"></iframe> </div>', 'code-editor { display: flex; flex: 1 1; height: 100%; } code-editor .CodeMirror,[data-is="code-editor"] .CodeMirror{ height: 100%; width: 100%; font-size: 18pt; font-family: "Noto Mono", "DejaVu Sans Mono", monospace; flex: 1 1; } code-editor .CodeMirror-cursor,[data-is="code-editor"] .CodeMirror-cursor{ width: auto; border: 0; background: transparent; background: rgba(0, 200, 0, .4); } code-editor .CodeMirror-linenumber,[data-is="code-editor"] .CodeMirror-linenumber{ font-size: 16pt; } code-editor .cm-s-solarized .CodeMirror-cursor,[data-is="code-editor"] .cm-s-solarized .CodeMirror-cursor{ border: 0; } code-editor .error-marker,[data-is="code-editor"] .error-marker{ border: 1px solid red; background-color: rgba(255, 0, 0,0.2); border-radius: 3px; } code-editor iframe,[data-is="code-editor"] iframe{ border: 0px; display: none; flex: 1 1; } code-editor #split,[data-is="code-editor"] #split{ display: flex; width: 100%; flex-direction: column; flex: 1 1; height: 100%; float: left; } code-editor #vsplit,[data-is="code-editor"] #vsplit{ display: flex; flex-direction: row; flex: 1 1; height: 100%; } code-editor #tabs button,[data-is="code-editor"] #tabs button{ font-size: 13pt; border-radius: 0; padding: 10px 10px; border: 0px; margin: 0px; } code-editor #tabs button.selected,[data-is="code-editor"] #tabs button.selected{ background-color: #282828; } code-editor #tabs span.selected,[data-is="code-editor"] #tabs span.selected{ white-space: nowrap; } code-editor #closetab,[data-is="code-editor"] #closetab{ background-image: url(lib/sugar-web/graphics/icons/actions/entry-cancel-active.svg); background-repeat: no-repeat; background-color: #282828; width: 28px; background-position: center; background-size: 16px 16px; } code-editor #closetab:active,[data-is="code-editor"] #closetab:active{ background-image: url(lib/sugar-web/graphics/icons/actions/entry-cancel.svg); } code-editor #newtab,[data-is="code-editor"] #newtab{ background-image: url(icons/tab-add.svg); background-repeat: no-repeat; width: 28px; background-position: center; background-size: 20px 20px; } code-editor #tray-button,[data-is="code-editor"] #tray-button{ background-image: url(icons/tray-show.svg); background-repeat: no-repeat; width: 28px; background-position: center; background-size: 20px 20px; }', '', function(opts) {
+riot.tag2('code-editor', '<div id="vsplit" ref="vsplit"> <div id="split" ref="split"> <input ref="file_input" id="file-input" type="file" style="display: none;"> <div id="tabs"> <button onclick="{this.newtab}" id="newtab">&nbsp;</button><span class="{selected: name==parent.title}" each="{name in list(files)}"><button class="{selected: name==parent.title}" onclick="{parent.switchtab}">{str(name)}</button><button if="{name==parent.title && len(files)>1}" id="closetab" onclick="{parent.closetab}">&nbsp;</button></span><button class="pull-right" id="tray-button" ref="traybutton">&nbsp;</button> </div> <textarea id="code-container" ref="code"></textarea> </div> <iframe allowtransparency="false" ref="vmframe"></iframe> </div>', 'code-editor { display: flex; flex: 1 1; height: 100%; } code-editor .CodeMirror,[data-is="code-editor"] .CodeMirror{ height: 100%; width: 100%; font-size: 15pt; font-family: "Noto Mono", "DejaVu Sans Mono", monospace, "Noto Emoji"; flex: 1 1; } code-editor .CodeMirror-cursor,[data-is="code-editor"] .CodeMirror-cursor{ width: auto; border: 0; background: transparent; background: rgba(0, 200, 0, .4); } code-editor .CodeMirror-linenumber,[data-is="code-editor"] .CodeMirror-linenumber{ font-size: 14pt; } code-editor .cm-s-solarized .CodeMirror-cursor,[data-is="code-editor"] .cm-s-solarized .CodeMirror-cursor{ border: 0; } code-editor .error-marker,[data-is="code-editor"] .error-marker{ border: 1px solid red; background-color: rgba(255, 0, 0,0.2); border-radius: 3px; } code-editor iframe,[data-is="code-editor"] iframe{ border: 0px; display: none; flex: 1 1; } code-editor #split,[data-is="code-editor"] #split{ display: flex; width: 100%; flex-direction: column; flex: 1 1; height: 100%; float: left; } code-editor #vsplit,[data-is="code-editor"] #vsplit{ display: flex; flex-direction: row; flex: 1 1; height: 100%; } code-editor #tabs button,[data-is="code-editor"] #tabs button{ font-size: 13pt; border-radius: 0; padding: 10px 10px; border: 0px; margin: 0px; } code-editor #tabs button.selected,[data-is="code-editor"] #tabs button.selected{ background-color: #282828; } code-editor #tabs span.selected,[data-is="code-editor"] #tabs span.selected{ white-space: nowrap; } code-editor #closetab,[data-is="code-editor"] #closetab{ background-image: url(lib/sugar-web/graphics/icons/actions/entry-cancel-active.svg); background-repeat: no-repeat; background-color: #282828; width: 28px; background-position: center; background-size: 16px 16px; } code-editor #closetab:active,[data-is="code-editor"] #closetab:active{ background-image: url(lib/sugar-web/graphics/icons/actions/entry-cancel.svg); } code-editor #newtab,[data-is="code-editor"] #newtab{ background-image: url(icons/tab-add.svg); background-repeat: no-repeat; width: 28px; background-position: center; background-size: 20px 20px; } code-editor #tray-button,[data-is="code-editor"] #tray-button{ background-image: url(icons/tray-show.svg); background-repeat: no-repeat; width: 28px; background-position: center; background-size: 20px 20px; }', '', function(opts) {
 var ρσ_modules = {};
 ρσ_modules.re = {};
 
@@ -1568,7 +1568,7 @@ function init() {
             __argnames__ : {value: ["error", "metadata", "data"]}
         });
 
-        if (activity && datastore.objectId !== undefined) {
+        if (datastore.objectId !== undefined) {
             datastore.loadAsText(check_load);
         } else {
             event_bus.trigger("enable-standalone");
@@ -1837,23 +1837,23 @@ function init() {
             activity = ρσ_kwargs_obj.activity;
         }
         var datastore;
-        if (activity) {
+        if (activity !== undefined) {
             datastore = activity.getDatastoreObject();
-            if (datastore.objectId) {
-                datastore.setDataAsText(serialize());
-                function check_save(error) {
-                    if (error === null) {
-                        console.log("Saved");
-                    } else {
-                        console.log("NOT Saved");
-                    }
-                };
-                if (!check_save.__argnames__) Object.defineProperties(check_save, {
-                    __argnames__ : {value: ["error"]}
-                });
+        }
+        if (activity && datastore.objectId !== undefined) {
+            datastore.setDataAsText(serialize());
+            function check_save(error) {
+                if (error === null) {
+                    console.log("Saved");
+                } else {
+                    console.log("NOT Saved");
+                }
+            };
+            if (!check_save.__argnames__) Object.defineProperties(check_save, {
+                __argnames__ : {value: ["error"]}
+            });
 
-                datastore.save(check_save);
-            }
+            datastore.save(check_save);
         } else {
             save_without_datastore();
         }

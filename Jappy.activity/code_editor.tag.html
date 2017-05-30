@@ -9,8 +9,8 @@ code-editor {
 .CodeMirror {
     height: 100%;
     width: 100%;
-    font-size: 18pt;
-    font-family: "Noto Mono", "DejaVu Sans Mono", monospace;
+    font-size: 15pt;
+    font-family: "Noto Mono", "DejaVu Sans Mono", monospace, "Noto Emoji";
     flex: 1 1;
 }
 .CodeMirror-cursor {
@@ -20,7 +20,7 @@ code-editor {
     background: rgba(0, 200, 0, .4);
 }
 .CodeMirror-linenumber {
-    font-size: 16pt;
+    font-size: 14pt;
 }
 .cm-s-solarized .CodeMirror-cursor {
     border: 0;
@@ -183,7 +183,7 @@ def init():
                 editor.swapDoc(window.files[tag.title])
                 editor.setOption('mode', 'python')
             tag.update()
-        if activity and datastore.objectId is not undefined:
+        if datastore.objectId is not undefined:
             datastore.loadAsText(check_load)
         else:
             # No datastore probably means we need to handle stuff ourselves
@@ -356,19 +356,18 @@ def init():
         localStorage.jappySession = serialize()
 
     def save(activity=window.activity):
-        if activity:
+        if activity is not undefined:
             datastore = activity.getDatastoreObject()
-            if datastore.objectId:
-                datastore.setDataAsText(serialize())
-                def check_save(error):
-                    if error is None:
-                        console.log("Saved")
-                    else:
-                        console.log("NOT Saved")
-                datastore.save(check_save)
+        if activity and datastore.objectId is not undefined:
+            datastore.setDataAsText(serialize())
+            def check_save(error):
+                if error is None:
+                    console.log("Saved")
+                else:
+                    console.log("NOT Saved")
+            datastore.save(check_save)
         else:
             save_without_datastore()
-
     event_bus.on("activity-save", save)
 
     def example_load(file, execute=True):
