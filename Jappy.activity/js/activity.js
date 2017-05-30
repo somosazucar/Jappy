@@ -20,11 +20,14 @@ define(["sugar-web/env", "sugar-web/activity/activity"], function (env, activity
           var tags = riot.mount('*')
 
           try {
-              activity.setup()
+            activity.setup()
+            setTimeout(function(){
               event_bus.trigger('activity-ready', activity)
-          } catch(err) {
-              event_bus.trigger('activity-not-ready', activity)
-              riot.update()
+            }, 100)
+          }
+          catch(err) {
+            // No datastore
+            event_bus.trigger('activity-not-ready', err)
           }
         })
 
