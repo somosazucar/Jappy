@@ -1498,6 +1498,7 @@ function compile() {
                     ρσ_d["className"] = "error-marker";
                     return ρσ_d;
                 }).call(this));
+                editor.scrollIntoView(e.line - 1, e.col + 1);
             }
             result = compiler.compile(code);
         } else {
@@ -1520,6 +1521,7 @@ function init() {
         ρσ_d["lineNumbers"] = true;
         ρσ_d["matchBrackets"] = true;
         ρσ_d["indentUnit"] = 4;
+        ρσ_d["fixedGutter"] = false;
         ρσ_d["mode"] = "python";
         ρσ_d["styleActiveLine"] = true;
         ρσ_d["theme"] = "solarized light";

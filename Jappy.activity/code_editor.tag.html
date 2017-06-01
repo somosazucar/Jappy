@@ -142,6 +142,7 @@ def compile(inputcode=None):
             tag.marker = editor.markText( CodeMirror.Pos(e.line-1, e.col),
                              CodeMirror.Pos(e.line-1, e.col+1),
                              {'className': 'error-marker'} )
+            editor.scrollIntoView(e.line-1, e.col+1)
         result = compiler.compile(code)
     return result
 window.compile = compile
@@ -151,6 +152,7 @@ def init():
                     { 'lineNumbers': True,
                       'matchBrackets': True,
                       'indentUnit': 4,
+                      'fixedGutter': False,
                       'mode': 'python',
                       'styleActiveLine': True,
                       'theme': 'solarized light' })
