@@ -182,8 +182,9 @@ def init():
                         window.files[file] = new_session
             if len(window.files) > 0:
                 tag.title = list(parsed_data)[0]
-                editor.swapDoc(window.files[tag.title])
-                editor.setOption('mode', 'python')
+                if window.files[tag.title]!=undefined:
+                    editor.swapDoc(window.files[tag.title])
+                    editor.setOption('mode', 'python')
             tag.update()
         if datastore.objectId is not undefined:
             datastore.loadAsText(check_load)
@@ -194,10 +195,19 @@ def init():
             if savedSession is not None:
                 check_load(None, None, savedSession)
         tag.update()
+        init_collab()
         window.activity = activity
     event_bus.on("activity-ready", load_datastore)
 
     def update_tabs():
+        if window.y is not undefined: # collaboration
+            for file in y.share.files.keys():
+                if file == tag.title:
+                    if len(y.share.files.get(file)>0):
+                        editor.setValue(y.share.files.get(file))
+                else:
+                    new_session = CodeMirror.Doc(y.share.files.get(file))
+                    window.files[file] = new_session
         toolbar_div = document.getElementById('main-toolbar')
         if getComputedStyle(toolbar_div).display == 'none':
             return
@@ -253,6 +263,8 @@ def init():
     def closetab(e):
         if len(window.files) > 1:
             file = tag.title
+            if window.y is not undefined: # collaboration
+                window.y.share.files.delete(file)
             index = list(window.files).index(file)
             del window.files[file]
             if '__stdlib__/' + file in RapydScript.file_data:
@@ -370,6 +382,9 @@ def init():
             datastore.save(check_save)
         else:
             save_without_datastore()
+        if window.y is not undefined: # collaboration
+            for file in window.files:
+                y.share.files.set(file, window.files[file].getValue())
     event_bus.on("activity-save", save)
 
     def example_load(file, execute=True):
@@ -519,6 +534,33 @@ def init():
             )
         )
     event_bus.on("save-as-zip", save_zip)
+
+    def init_collab():
+        Y({
+            'db':{
+              'name': 'memory'
+            },
+            'connector': {
+              'name': 'websockets-client',
+              'room': 'Jappy',
+              'url': 'ws://localhost:5000'
+            },
+            'share': {
+              'editor': 'Text',
+              'files': 'Map'
+            }
+          }).then(def(y):
+            this.y = y
+            cur_editor = editor.getValue()
+            y.share.editor.bindCodeMirror(editor)
+            if len(cur_editor) > 0:
+                if tag.title not in y.share.files.keys():
+                    editor.setValue(cur_editor)
+            tag.update()
+            for file in window.files:
+                if file not in y.share.files.keys():
+                    y.share.files.set(file, window.files[file].getValue())
+          )
 
     this.editor = editor
     window.editor = editor

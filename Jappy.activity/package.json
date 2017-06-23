@@ -12,6 +12,12 @@
     "rapydscript-ng": "https://github.com/kovidgoyal/rapydscript-ng",
     "riot": "^3.4.4",
     "riot-cli": "^3.0.1",
-    "socket.io": "^1.7.3"
+    "socket.io": "^1.7.3",
+    "y-array": "^10.1.3",
+    "y-map": "^10.1.1",
+    "y-memory": "^8.0.8",
+    "y-text": "^9.4.0",
+    "y-websockets-client": "^8.0.16",
+    "yjs": "^12.3.1"
   }
 }

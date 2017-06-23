@@ -1,14 +1,15 @@
 #!/usr/bin/env python3
 from flask import Flask
 from flask import redirect
-from flask_socketio import SocketIO, emit
-from flask import stream_with_context, Response
+from flask_socketio import SocketIO, emit, join_room, leave_room
+from flask import stream_with_context, Response, request
 from wsgidav.wsgidav_app import DEFAULT_CONFIG, WsgiDAVApp
 from wsgidav.fs_dav_provider import FilesystemProvider
 from werkzeug.wsgi import DispatcherMiddleware
 import os
 import sys
 import mimetypes
+from pprint import pprint
 mimetypes.add_type('image/svg+xml', '.svg')
 mimetypes.add_type('application/x-font-woff', '.woff')
 
@@ -28,11 +29,23 @@ def bye(*args):
     sys.exit()
     return 'Bye!'
 
-@socketio.on('connect', namespace='/test')
+@socketio.on('connect')
 def test_connect():
-    emit('my response', {'data': 'Connected'})
+    print ('CONNECTED')
 
-@socketio.on('disconnect', namespace='/test')
+@socketio.on('joinRoom')
+def joinRoom(room):
+    join_room(room)
+
+@socketio.on('yjsEvent')
+def yjsEvent(message):
+    emit('yjsEvent', message, broadcast=True)
+
+@socketio.on('leaveRoom')
+def leaveRoom(room):
+    leave_room(room)
+
+@socketio.on('disconnect')
 def test_disconnect():
     print('Client disconnected')
 
