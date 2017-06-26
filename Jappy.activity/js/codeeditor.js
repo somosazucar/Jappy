@@ -1582,8 +1582,8 @@ function init() {
             }
         }
         tag.update();
-        init_collab();
         window.activity = activity;
+        init_collab();
     };
     if (!load_datastore.__argnames__) Object.defineProperties(load_datastore, {
         __argnames__ : {value: ["activity"]}
@@ -1591,21 +1591,7 @@ function init() {
 
     event_bus.on("activity-ready", load_datastore);
     function update_tabs() {
-        var new_session, file, toolbar_div, toolbar_style, tabs_div, tabs_style, target_size;
-        if (window.y !== undefined) {
-            var ρσ_Iter2 = ρσ_Iterable(y.share.files.keys());
-            for (var ρσ_Index2 = 0; ρσ_Index2 < ρσ_Iter2.length; ρσ_Index2++) {
-                file = ρσ_Iter2[ρσ_Index2];
-                if ((file === tag.title || typeof file === "object" && ρσ_equals(file, tag.title))) {
-                    if (len(y.share.files.get(file) > 0)) {
-                        editor.setValue(y.share.files.get(file));
-                    }
-                } else {
-                    new_session = CodeMirror.Doc(y.share.files.get(file));
-                    (ρσ_expr_temp = window.files)[(typeof file === "number" && file < 0) ? ρσ_expr_temp.length + file : file] = new_session;
-                }
-            }
-        }
+        var toolbar_div, toolbar_style, tabs_div, tabs_style, target_size;
         toolbar_div = document.getElementById("main-toolbar");
         if ((getComputedStyle(toolbar_div).display === "none" || typeof getComputedStyle(toolbar_div).display === "object" && ρσ_equals(getComputedStyle(toolbar_div).display, "none"))) {
             return;
@@ -1633,82 +1619,119 @@ function init() {
 
     event_bus.on("activity-not-ready", make_do);
     function switchtab(e) {
-        var editbox;
-        if (tag.title !== e.target.innerHTML) {
-            tag.title = e.target.innerHTML;
-            editor.swapDoc((ρσ_expr_temp = window.files)[ρσ_bound_index(e.target.innerHTML, ρσ_expr_temp)]);
+        var filename, editbox;
+        filename = e.target.innerHTML;
+        if (tag.title !== filename) {
+            if (window.y !== undefined) {
+                y.share.files.get(tag.title).unbindCodeMirror(editor);
+            }
+            tag.title = filename;
+            editor.swapDoc((ρσ_expr_temp = window.files)[ρσ_bound_index(tag.title, ρσ_expr_temp)]);
+            if (window.y !== undefined) {
+                if (ρσ_in(filename, y.share.files.keys())) {
+                    y.share.files.get(filename).bindCodeMirror(editor);
+                } else {
+                    y.share.files.set(filename, Y.Text);
+                    y.share.files.get(filename).bindCodeMirror(editor);
+                }
+            }
             editor.setOption("mode", "python");
             editor.focus();
         } else {
-            e.target.style.display = "none";
-            editbox = document.createElement("input");
-            editbox.value = tag.title;
-            function rename_tab() {
-                if (!(ρσ_in(editbox.value, window.files))) {
-                    (ρσ_expr_temp = window.files)[ρσ_bound_index(editbox.value, ρσ_expr_temp)] = editor.getDoc();
-                    ρσ_delitem(window.files, tag.title);
-                    tag.title = editbox.value;
-                }
-                e.target.style.display = "inline-block";
-                e.target.parentNode.removeChild(editbox);
-                tag.update();
-                editor.focus();
-            };
-
-            editbox.onblur = rename_tab;
-            editbox.onkeyup = (function() {
-                var ρσ_anonfunc = function (e) {
-                    if ((e.keyCode === 13 || typeof e.keyCode === "object" && ρσ_equals(e.keyCode, 13))) {
-                        editor.focus();
+            if (e !== null) {
+                e.target.style.display = "none";
+                editbox = document.createElement("input");
+                editbox.value = tag.title;
+                function rename_tab() {
+                    if (!(ρσ_in(editbox.value, window.files))) {
+                        (ρσ_expr_temp = window.files)[ρσ_bound_index(editbox.value, ρσ_expr_temp)] = editor.getDoc();
+                        ρσ_delitem(window.files, tag.title);
+                        tag.title = editbox.value;
                     }
-                    if ((e.keyCode === 27 || typeof e.keyCode === "object" && ρσ_equals(e.keyCode, 27))) {
-                        editbox.value = tag.title;
-                        editor.focus();
-                    }
+                    e.target.style.display = "inline-block";
+                    e.target.parentNode.removeChild(editbox);
+                    tag.update();
+                    editor.focus();
                 };
-                if (!ρσ_anonfunc.__argnames__) Object.defineProperties(ρσ_anonfunc, {
-                    __argnames__ : {value: ["e"]}
-                });
-                return ρσ_anonfunc;
-            })();
-            e.target.parentNode.insertBefore(editbox, e.target);
-            editbox.focus();
-            if (tag.title.indexOf(".") > 0) {
-                editbox.setSelectionRange(0, tag.title.indexOf("."));
-            } else {
-                editbox.select();
+
+                editbox.onblur = rename_tab;
+                editbox.onkeyup = (function() {
+                    var ρσ_anonfunc = function (e) {
+                        if ((e.keyCode === 13 || typeof e.keyCode === "object" && ρσ_equals(e.keyCode, 13))) {
+                            editor.focus();
+                        }
+                        if ((e.keyCode === 27 || typeof e.keyCode === "object" && ρσ_equals(e.keyCode, 27))) {
+                            editbox.value = tag.title;
+                            editor.focus();
+                        }
+                    };
+                    if (!ρσ_anonfunc.__argnames__) Object.defineProperties(ρσ_anonfunc, {
+                        __argnames__ : {value: ["e"]}
+                    });
+                    return ρσ_anonfunc;
+                })();
+                e.target.parentNode.insertBefore(editbox, e.target);
+                editbox.focus();
+                if (tag.title.indexOf(".") > 0) {
+                    editbox.setSelectionRange(0, tag.title.indexOf("."));
+                } else {
+                    editbox.select();
+                }
             }
         }
+        tag.update();
     };
     if (!switchtab.__argnames__) Object.defineProperties(switchtab, {
         __argnames__ : {value: ["e"]}
     });
 
     tag.switchtab = switchtab;
-    function closetab(e) {
-        var file, index;
+    function closetab() {
+        var e = ( 0 === arguments.length-1 && arguments[arguments.length-1] !== null && typeof arguments[arguments.length-1] === "object" && arguments[arguments.length-1] [ρσ_kwargs_symbol] === true) ? undefined : arguments[0];
+        var filename = (arguments[1] === undefined || ( 1 === arguments.length-1 && arguments[arguments.length-1] !== null && typeof arguments[arguments.length-1] === "object" && arguments[arguments.length-1] [ρσ_kwargs_symbol] === true)) ? closetab.__defaults__.filename : arguments[1];
+        var ρσ_kwargs_obj = arguments[arguments.length-1];
+        if (ρσ_kwargs_obj === null || typeof ρσ_kwargs_obj !== "object" || ρσ_kwargs_obj [ρσ_kwargs_symbol] !== true) ρσ_kwargs_obj = {};
+        if (Object.prototype.hasOwnProperty.call(ρσ_kwargs_obj, "filename")){
+            filename = ρσ_kwargs_obj.filename;
+        }
+        var current_title, index;
         if (len(window.files) > 1) {
-            file = tag.title;
-            if (window.y !== undefined) {
-                window.y.share.files.delete(file);
-            }
-            index = list(window.files).index(file);
-            ρσ_delitem(window.files, file);
-            if (ρσ_in("__stdlib__/" + file, RapydScript.file_data)) {
-                ρσ_delitem(RapydScript.file_data, ("__stdlib__/" + file));
+            current_title = tag.title;
+            filename = filename || tag.title;
+            index = list(window.files).index(filename);
+            ρσ_delitem(window.files, filename);
+            if (ρσ_in("__stdlib__/" + filename, RapydScript.file_data)) {
+                ρσ_delitem(RapydScript.file_data, ("__stdlib__/" + filename));
             }
             if (index > 0) {
                 index = index - 1;
             }
             tag.title = (ρσ_expr_temp = list(window.files))[(typeof index === "number" && index < 0) ? ρσ_expr_temp.length + index : index];
+            if (window.y !== undefined) {
+                if (tag.title !== current_title) {
+                    if (ρσ_in(current_title, y.share.files.keys())) {
+                        y.share.files.get(current_title).unbindCodeMirror(editor);
+                    }
+                }
+            }
             editor.swapDoc((ρσ_expr_temp = window.files)[ρσ_bound_index(tag.title, ρσ_expr_temp)]);
             editor.setOption("mode", "python");
+            if (window.y !== undefined) {
+                if (tag.title !== current_title) {
+                    y.share.files.get(tag.title).bindCodeMirror(editor);
+                }
+                if (ρσ_in(filename, y.share.files.keys())) {
+                    y.share.files.delete(filename);
+                }
+            }
             tag.update();
             editor.focus();
         }
     };
-    if (!closetab.__argnames__) Object.defineProperties(closetab, {
-        __argnames__ : {value: ["e"]}
+    if (!closetab.__defaults__) Object.defineProperties(closetab, {
+        __defaults__ : {value: {filename:null}},
+        __handles_kwarg_interpolation__ : {value: true},
+        __argnames__ : {value: ["e", "filename"]}
     });
 
     tag.closetab = closetab;
@@ -1743,6 +1766,11 @@ function init() {
         editor.swapDoc(new_session);
         editor.setOption("mode", "python");
         editor.focus();
+        if (window.y !== undefined) {
+            y.share.files.get(tag.title).unbindCodeMirror(editor);
+            y.share.files.set(file, Y.Text);
+            y.share.files.get(file).bindCodeMirror(editor);
+        }
         tag.title = file;
         tag.update();
     };
@@ -1802,21 +1830,21 @@ function init() {
         var iwindow, highestTimeoutId, i, highestIntervalId, inputs;
         iwindow = iframe.contentWindow;
         highestTimeoutId = iwindow.setTimeout(";");
-        for (var ρσ_Index3 = 0; ρσ_Index3 < highestTimeoutId; ρσ_Index3++) {
-            i = ρσ_Index3;
+        for (var ρσ_Index2 = 0; ρσ_Index2 < highestTimeoutId; ρσ_Index2++) {
+            i = ρσ_Index2;
             iwindow.clearTimeout(i);
         }
         highestIntervalId = iwindow.setInterval(";");
-        for (var ρσ_Index4 = 0; ρσ_Index4 < highestIntervalId; ρσ_Index4++) {
-            i = ρσ_Index4;
+        for (var ρσ_Index3 = 0; ρσ_Index3 < highestIntervalId; ρσ_Index3++) {
+            i = ρσ_Index3;
             iwindow.clearInterval(i);
         }
         iwindow.stop();
         iwindow.document.body.style.opacity = "0.5";
         inputs = iwindow.document.getElementsByTagName("input");
-        var ρσ_Iter5 = ρσ_Iterable(inputs);
-        for (var ρσ_Index5 = 0; ρσ_Index5 < ρσ_Iter5.length; ρσ_Index5++) {
-            i = ρσ_Iter5[ρσ_Index5];
+        var ρσ_Iter4 = ρσ_Iterable(inputs);
+        for (var ρσ_Index4 = 0; ρσ_Index4 < ρσ_Iter4.length; ρσ_Index4++) {
+            i = ρσ_Iter4[ρσ_Index4];
             i.disabled = true;
         }
         iwindow.addEventListener("click", (function() {
@@ -1839,9 +1867,9 @@ function init() {
     function serialize() {
         var result, file;
         result = {};
-        var ρσ_Iter6 = ρσ_Iterable(window.files);
-        for (var ρσ_Index6 = 0; ρσ_Index6 < ρσ_Iter6.length; ρσ_Index6++) {
-            file = ρσ_Iter6[ρσ_Index6];
+        var ρσ_Iter5 = ρσ_Iterable(window.files);
+        for (var ρσ_Index5 = 0; ρσ_Index5 < ρσ_Iter5.length; ρσ_Index5++) {
+            file = ρσ_Iter5[ρσ_Index5];
             result[(typeof file === "number" && file < 0) ? result.length + file : file] = (ρσ_expr_temp = window.files)[(typeof file === "number" && file < 0) ? ρσ_expr_temp.length + file : file].getValue();
         }
         return JSON.stringify(result);
@@ -1858,7 +1886,7 @@ function init() {
         if (Object.prototype.hasOwnProperty.call(ρσ_kwargs_obj, "activity")){
             activity = ρσ_kwargs_obj.activity;
         }
-        var datastore, file;
+        var datastore;
         if (activity !== undefined) {
             datastore = activity.getDatastoreObject();
         }
@@ -1878,13 +1906,6 @@ function init() {
             datastore.save(check_save);
         } else {
             save_without_datastore();
-        }
-        if (window.y !== undefined) {
-            var ρσ_Iter7 = ρσ_Iterable(window.files);
-            for (var ρσ_Index7 = 0; ρσ_Index7 < ρσ_Iter7.length; ρσ_Index7++) {
-                file = ρσ_Iter7[ρσ_Index7];
-                y.share.files.set(file, (ρσ_expr_temp = window.files)[(typeof file === "number" && file < 0) ? ρσ_expr_temp.length + file : file].getValue());
-            }
         }
     };
     if (!save.__defaults__) Object.defineProperties(save, {
@@ -2093,18 +2114,18 @@ function init() {
                 closing_tag = data.indexOf("</body>");
                 html = data.slice(0, closing_tag) + enc_js + data.slice(closing_tag);
                 external_files = ρσ_list_decorate([]);
-                var ρσ_Iter8 = ρσ_Iterable(re.findall("script.*src=\"(.*)\"", data));
-                for (var ρσ_Index8 = 0; ρσ_Index8 < ρσ_Iter8.length; ρσ_Index8++) {
-                    match = ρσ_Iter8[ρσ_Index8];
+                var ρσ_Iter6 = ρσ_Iterable(re.findall("script.*src=\"(.*)\"", data));
+                for (var ρσ_Index6 = 0; ρσ_Index6 < ρσ_Iter6.length; ρσ_Index6++) {
+                    match = ρσ_Iter6[ρσ_Index6];
                     ref = "text!" + match.slice(match.indexOf("=") + 2, -1);
                     ref = ref.replace("lib/", "");
                     external_files.append(ref);
                 }
                 zip = new JSZip;
                 zip.file("index.html", html);
-                var ρσ_Iter9 = ρσ_Iterable(window.files);
-                for (var ρσ_Index9 = 0; ρσ_Index9 < ρσ_Iter9.length; ρσ_Index9++) {
-                    name = ρσ_Iter9[ρσ_Index9];
+                var ρσ_Iter7 = ρσ_Iterable(window.files);
+                for (var ρσ_Index7 = 0; ρσ_Index7 < ρσ_Iter7.length; ρσ_Index7++) {
+                    name = ρσ_Iter7[ρσ_Index7];
                     zip.file("src/" + name, (ρσ_expr_temp = window.files)[(typeof name === "number" && name < 0) ? ρσ_expr_temp.length + name : name].getValue());
                 }
                 require(external_files, function () {
@@ -2112,9 +2133,9 @@ function init() {
                     if (arguments[arguments.length-1] !== null && typeof arguments[arguments.length-1] === "object" && arguments[arguments.length-1] [ρσ_kwargs_symbol] === true) data.pop();
                     var index, file;
                     index = 0;
-                    var ρσ_Iter10 = ρσ_Iterable(external_files);
-                    for (var ρσ_Index10 = 0; ρσ_Index10 < ρσ_Iter10.length; ρσ_Index10++) {
-                        file = ρσ_Iter10[ρσ_Index10];
+                    var ρσ_Iter8 = ρσ_Iterable(external_files);
+                    for (var ρσ_Index8 = 0; ρσ_Index8 < ρσ_Iter8.length; ρσ_Index8++) {
+                        file = ρσ_Iter8[ρσ_Index8];
                         file = file.slice(5);
                         if (!(ρσ_in("/", file))) {
                             file = "lib/" + file;
@@ -2157,35 +2178,57 @@ function init() {
                 var ρσ_d = {};
                 ρσ_d["name"] = "websockets-client";
                 ρσ_d["room"] = "Jappy";
-                ρσ_d["url"] = "ws://localhost:5000";
+                ρσ_d["url"] = "ws://127.0.0.1:5000";
                 return ρσ_d;
             }).call(this);
             ρσ_d["share"] = (function(){
                 var ρσ_d = {};
-                ρσ_d["editor"] = "Text";
                 ρσ_d["files"] = "Map";
                 return ρσ_d;
             }).call(this);
             return ρσ_d;
         }).call(this)).then((function() {
             var ρσ_anonfunc = function (y) {
-                var cur_editor, file;
+                var file, new_session;
                 this.y = y;
-                cur_editor = editor.getValue();
-                y.share.editor.bindCodeMirror(editor);
-                if (len(cur_editor) > 0) {
-                    if (!(ρσ_in(tag.title, y.share.files.keys()))) {
-                        editor.setValue(cur_editor);
+                var ρσ_Iter9 = ρσ_Iterable(window.files);
+                for (var ρσ_Index9 = 0; ρσ_Index9 < ρσ_Iter9.length; ρσ_Index9++) {
+                    file = ρσ_Iter9[ρσ_Index9];
+                    if (!(ρσ_in(file, y.share.files.keys()))) {
+                        y.share.files.set(file, Y.Text);
+                        y.share.files.get(file).insert(0, (ρσ_expr_temp = window.files)[(typeof file === "number" && file < 0) ? ρσ_expr_temp.length + file : file].getValue());
+                    }
+                }
+                y.share.files.get(tag.title).bindCodeMirror(editor);
+                var ρσ_Iter10 = ρσ_Iterable(y.share.files.keys());
+                for (var ρσ_Index10 = 0; ρσ_Index10 < ρσ_Iter10.length; ρσ_Index10++) {
+                    file = ρσ_Iter10[ρσ_Index10];
+                    if (!(ρσ_in(file, window.files))) {
+                        new_session = CodeMirror.Doc("");
+                        (ρσ_expr_temp = window.files)[(typeof file === "number" && file < 0) ? ρσ_expr_temp.length + file : file] = new_session;
                     }
                 }
                 tag.update();
-                var ρσ_Iter11 = ρσ_Iterable(window.files);
-                for (var ρσ_Index11 = 0; ρσ_Index11 < ρσ_Iter11.length; ρσ_Index11++) {
-                    file = ρσ_Iter11[ρσ_Index11];
-                    if (!(ρσ_in(file, y.share.files.keys()))) {
-                        y.share.files.set(file, (ρσ_expr_temp = window.files)[(typeof file === "number" && file < 0) ? ρσ_expr_temp.length + file : file].getValue());
-                    }
-                }
+                y.share.files.observe((function() {
+                    var ρσ_anonfunc = function (event) {
+                        var new_session;
+                        if ((event.type === "delete" || typeof event.type === "object" && ρσ_equals(event.type, "delete"))) {
+                            if (ρσ_in(event.name, window.files)) {
+                                ρσ_interpolate_kwargs.call(this, closetab, [ρσ_desugar_kwargs({filename: event.name})]);
+                            }
+                        } else if ((event.type === "add" || typeof event.type === "object" && ρσ_equals(event.type, "add"))) {
+                            if (!(ρσ_in(event.name, window.files))) {
+                                new_session = CodeMirror.Doc("");
+                                (ρσ_expr_temp = window.files)[ρσ_bound_index(event.name, ρσ_expr_temp)] = new_session;
+                            }
+                        }
+                        tag.update();
+                    };
+                    if (!ρσ_anonfunc.__argnames__) Object.defineProperties(ρσ_anonfunc, {
+                        __argnames__ : {value: ["event"]}
+                    });
+                    return ρσ_anonfunc;
+                })());
             };
             if (!ρσ_anonfunc.__argnames__) Object.defineProperties(ρσ_anonfunc, {
                 __argnames__ : {value: ["y"]}

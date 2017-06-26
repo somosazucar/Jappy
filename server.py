@@ -9,7 +9,6 @@ from werkzeug.wsgi import DispatcherMiddleware
 import os
 import sys
 import mimetypes
-from pprint import pprint
 mimetypes.add_type('image/svg+xml', '.svg')
 mimetypes.add_type('application/x-font-woff', '.woff')
 
@@ -64,7 +63,6 @@ def start_server():
         '/dav' : dav_app
     })
     socketio.run(app, host='0.0.0.0')
-
 
 if __name__ == "__main__":
     start_server()

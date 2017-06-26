@@ -195,19 +195,11 @@ def init():
             if savedSession is not None:
                 check_load(None, None, savedSession)
         tag.update()
-        init_collab()
         window.activity = activity
+        init_collab()
     event_bus.on("activity-ready", load_datastore)
 
     def update_tabs():
-        if window.y is not undefined: # collaboration
-            for file in y.share.files.keys():
-                if file == tag.title:
-                    if len(y.share.files.get(file)>0):
-                        editor.setValue(y.share.files.get(file))
-                else:
-                    new_session = CodeMirror.Doc(y.share.files.get(file))
-                    window.files[file] = new_session
         toolbar_div = document.getElementById('main-toolbar')
         if getComputedStyle(toolbar_div).display == 'none':
             return
@@ -227,53 +219,72 @@ def init():
     event_bus.on("activity-not-ready", make_do)
 
     def switchtab(e):
-        if tag.title is not e.target.innerHTML:
-            tag.title = e.target.innerHTML
-            editor.swapDoc(window.files[e.target.innerHTML])
+        filename = e.target.innerHTML
+        if tag.title is not filename:
+            if window.y is not undefined: # collaboration
+                y.share.files.get(tag.title).unbindCodeMirror(editor)
+            tag.title = filename
+            editor.swapDoc(window.files[tag.title])
+            if window.y is not undefined: # collaboration
+                if filename in y.share.files.keys():
+                    y.share.files.get(filename).bindCodeMirror(editor)
+                else:
+                    y.share.files.set(filename, Y.Text)
+                    y.share.files.get(filename).bindCodeMirror(editor)
             editor.setOption('mode', 'python')
             editor.focus()
         else:
-            e.target.style.display = 'none'
-            editbox = document.createElement('input')
-            editbox.value = tag.title
-            def rename_tab():
-                if editbox.value not in window.files:
-                    window.files[editbox.value] = editor.getDoc()
-                    del window.files[tag.title]
-                    tag.title = editbox.value
-                e.target.style.display = 'inline-block'
-                e.target.parentNode.removeChild(editbox)
-                tag.update()
-                editor.focus()
-            editbox.onblur = rename_tab
-            editbox.onkeyup = def(e):
-                if e.keyCode==13: # Enter
+            if e is not None:
+                e.target.style.display = 'none'
+                editbox = document.createElement('input')
+                editbox.value = tag.title
+                def rename_tab():
+                    if editbox.value not in window.files:
+                        window.files[editbox.value] = editor.getDoc()
+                        del window.files[tag.title]
+                        tag.title = editbox.value
+                    e.target.style.display = 'inline-block'
+                    e.target.parentNode.removeChild(editbox)
+                    tag.update()
                     editor.focus()
-                if e.keyCode==27: # Esc
-                    editbox.value = tag.title
-                    editor.focus()
-            e.target.parentNode.insertBefore(editbox, e.target)
-            editbox.focus()
-            if tag.title.indexOf('.') > 0:
-                editbox.setSelectionRange(0, tag.title.indexOf('.'))
-            else:
-                editbox.select()
+                editbox.onblur = rename_tab
+                editbox.onkeyup = def(e):
+                    if e.keyCode==13: # Enter
+                        editor.focus()
+                    if e.keyCode==27: # Esc
+                        editbox.value = tag.title
+                        editor.focus()
+                e.target.parentNode.insertBefore(editbox, e.target)
+                editbox.focus()
+                if tag.title.indexOf('.') > 0:
+                    editbox.setSelectionRange(0, tag.title.indexOf('.'))
+                else:
+                    editbox.select()
+        tag.update()
     tag.switchtab = switchtab
 
-    def closetab(e):
+    def closetab(e, filename=None):
         if len(window.files) > 1:
-            file = tag.title
-            if window.y is not undefined: # collaboration
-                window.y.share.files.delete(file)
-            index = list(window.files).index(file)
-            del window.files[file]
-            if '__stdlib__/' + file in RapydScript.file_data:
-                del RapydScript.file_data['__stdlib__/' + file]
+            current_title = tag.title
+            filename = filename or tag.title
+            index = list(window.files).index(filename)
+            del window.files[filename]
+            if '__stdlib__/' + filename in RapydScript.file_data:
+                del RapydScript.file_data['__stdlib__/' + filename]
             if index > 0:
                 index = index - 1
             tag.title = list(window.files)[index]
+            if window.y is not undefined: # collaboration
+                if tag.title is not current_title:
+                    if current_title in y.share.files.keys():
+                        y.share.files.get(current_title).unbindCodeMirror(editor)
             editor.swapDoc(window.files[tag.title])
             editor.setOption('mode', 'python')
+            if window.y is not undefined: # collaboration
+                if tag.title is not current_title:
+                    y.share.files.get(tag.title).bindCodeMirror(editor)
+                if filename in y.share.files.keys():
+                    y.share.files.delete(filename)
             tag.update()
             editor.focus()
     tag.closetab = closetab
@@ -294,6 +305,10 @@ def init():
         editor.swapDoc(new_session)
         editor.setOption('mode', 'python')
         editor.focus()
+        if window.y is not undefined: # collaboration
+            y.share.files.get(tag.title).unbindCodeMirror(editor)
+            y.share.files.set(file, Y.Text)
+            y.share.files.get(file).bindCodeMirror(editor)
         tag.title = file
         tag.update()
     tag.newtab = newtab
@@ -382,9 +397,6 @@ def init():
             datastore.save(check_save)
         else:
             save_without_datastore()
-        if window.y is not undefined: # collaboration
-            for file in window.files:
-                y.share.files.set(file, window.files[file].getValue())
     event_bus.on("activity-save", save)
 
     def example_load(file, execute=True):
@@ -536,31 +548,35 @@ def init():
     event_bus.on("save-as-zip", save_zip)
 
     def init_collab():
-        Y({
-            'db':{
-              'name': 'memory'
-            },
-            'connector': {
-              'name': 'websockets-client',
-              'room': 'Jappy',
-              'url': 'ws://localhost:5000'
-            },
-            'share': {
-              'editor': 'Text',
-              'files': 'Map'
-            }
-          }).then(def(y):
-            this.y = y
-            cur_editor = editor.getValue()
-            y.share.editor.bindCodeMirror(editor)
-            if len(cur_editor) > 0:
-                if tag.title not in y.share.files.keys():
-                    editor.setValue(cur_editor)
-            tag.update()
-            for file in window.files:
-                if file not in y.share.files.keys():
-                    y.share.files.set(file, window.files[file].getValue())
-          )
+        Y({'db'       : { 'name': 'memory'},
+           'connector': { 'name': 'websockets-client',
+                          'room': 'Jappy',
+                          'url':  'ws://127.0.0.1:5000'},
+            'share'   : { 'files': 'Map' }}).then(  
+                def(y):
+                    this.y = y
+                    for file in window.files:
+                        if file not in y.share.files.keys():
+                            y.share.files.set(file, Y.Text);
+                            y.share.files.get(file).insert(0, 
+                                                    window.files[file].getValue())
+                    y.share.files.get(tag.title).bindCodeMirror(editor)
+                    for file in y.share.files.keys():
+                        if file not in window.files:
+                            new_session = CodeMirror.Doc('')
+                            window.files[file] = new_session
+                    tag.update()
+                    y.share.files.observe(  def(event): 
+                                if event.type == 'delete':
+                                    if event.name in window.files:
+                                        closetab(filename=event.name)
+                                elif event.type == 'add':
+                                    if event.name not in window.files:
+                                        new_session = CodeMirror.Doc('')
+                                        window.files[event.name] = new_session
+                                tag.update()
+                        )
+        )
 
     this.editor = editor
     window.editor = editor
