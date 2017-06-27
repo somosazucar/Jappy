@@ -1646,6 +1646,12 @@ function init() {
                     if (!(ρσ_in(editbox.value, window.files))) {
                         (ρσ_expr_temp = window.files)[ρσ_bound_index(editbox.value, ρσ_expr_temp)] = editor.getDoc();
                         ρσ_delitem(window.files, tag.title);
+                        if (window.y !== undefined) {
+                            y.share.files.get(tag.title).unbindCodeMirror(editor);
+                            y.share.files.set(editbox.value, Y.Text);
+                            y.share.files.get(editbox.value).bindCodeMirror(editor);
+                            y.share.files.delete(tag.title);
+                        }
                         tag.title = editbox.value;
                     }
                     e.target.style.display = "inline-block";
@@ -1687,10 +1693,13 @@ function init() {
 
     tag.switchtab = switchtab;
     function closetab() {
-        var e = ( 0 === arguments.length-1 && arguments[arguments.length-1] !== null && typeof arguments[arguments.length-1] === "object" && arguments[arguments.length-1] [ρσ_kwargs_symbol] === true) ? undefined : arguments[0];
+        var e = (arguments[0] === undefined || ( 0 === arguments.length-1 && arguments[arguments.length-1] !== null && typeof arguments[arguments.length-1] === "object" && arguments[arguments.length-1] [ρσ_kwargs_symbol] === true)) ? closetab.__defaults__.e : arguments[0];
         var filename = (arguments[1] === undefined || ( 1 === arguments.length-1 && arguments[arguments.length-1] !== null && typeof arguments[arguments.length-1] === "object" && arguments[arguments.length-1] [ρσ_kwargs_symbol] === true)) ? closetab.__defaults__.filename : arguments[1];
         var ρσ_kwargs_obj = arguments[arguments.length-1];
         if (ρσ_kwargs_obj === null || typeof ρσ_kwargs_obj !== "object" || ρσ_kwargs_obj [ρσ_kwargs_symbol] !== true) ρσ_kwargs_obj = {};
+        if (Object.prototype.hasOwnProperty.call(ρσ_kwargs_obj, "e")){
+            e = ρσ_kwargs_obj.e;
+        }
         if (Object.prototype.hasOwnProperty.call(ρσ_kwargs_obj, "filename")){
             filename = ρσ_kwargs_obj.filename;
         }
@@ -1703,12 +1712,14 @@ function init() {
             if (ρσ_in("__stdlib__/" + filename, RapydScript.file_data)) {
                 ρσ_delitem(RapydScript.file_data, ("__stdlib__/" + filename));
             }
-            if (index > 0) {
-                index = index - 1;
+            if ((filename === current_title || typeof filename === "object" && ρσ_equals(filename, current_title))) {
+                if (index > 0) {
+                    index = index - 1;
+                }
+                tag.title = (ρσ_expr_temp = list(window.files))[(typeof index === "number" && index < 0) ? ρσ_expr_temp.length + index : index];
             }
-            tag.title = (ρσ_expr_temp = list(window.files))[(typeof index === "number" && index < 0) ? ρσ_expr_temp.length + index : index];
             if (window.y !== undefined) {
-                if (tag.title !== current_title) {
+                if ((filename === current_title || typeof filename === "object" && ρσ_equals(filename, current_title))) {
                     if (ρσ_in(current_title, y.share.files.keys())) {
                         y.share.files.get(current_title).unbindCodeMirror(editor);
                     }
@@ -1717,11 +1728,11 @@ function init() {
             editor.swapDoc((ρσ_expr_temp = window.files)[ρσ_bound_index(tag.title, ρσ_expr_temp)]);
             editor.setOption("mode", "python");
             if (window.y !== undefined) {
-                if (tag.title !== current_title) {
+                if ((filename === current_title || typeof filename === "object" && ρσ_equals(filename, current_title))) {
                     y.share.files.get(tag.title).bindCodeMirror(editor);
-                }
-                if (ρσ_in(filename, y.share.files.keys())) {
-                    y.share.files.delete(filename);
+                    if (e !== null) {
+                        y.share.files.delete(filename);
+                    }
                 }
             }
             tag.update();
@@ -1729,7 +1740,7 @@ function init() {
         }
     };
     if (!closetab.__defaults__) Object.defineProperties(closetab, {
-        __defaults__ : {value: {filename:null}},
+        __defaults__ : {value: {e:null, filename:null}},
         __handles_kwarg_interpolation__ : {value: true},
         __argnames__ : {value: ["e", "filename"]}
     });

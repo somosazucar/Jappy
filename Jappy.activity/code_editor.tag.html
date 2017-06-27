@@ -242,6 +242,11 @@ def init():
                     if editbox.value not in window.files:
                         window.files[editbox.value] = editor.getDoc()
                         del window.files[tag.title]
+                        if window.y is not undefined: # collaboration
+                            y.share.files.get(tag.title).unbindCodeMirror(editor)
+                            y.share.files.set(editbox.value, Y.Text)
+                            y.share.files.get(editbox.value).bindCodeMirror(editor)
+                            y.share.files.delete(tag.title)
                         tag.title = editbox.value
                     e.target.style.display = 'inline-block'
                     e.target.parentNode.removeChild(editbox)
@@ -263,7 +268,7 @@ def init():
         tag.update()
     tag.switchtab = switchtab
 
-    def closetab(e, filename=None):
+    def closetab(e=None, filename=None):
         if len(window.files) > 1:
             current_title = tag.title
             filename = filename or tag.title
@@ -271,20 +276,21 @@ def init():
             del window.files[filename]
             if '__stdlib__/' + filename in RapydScript.file_data:
                 del RapydScript.file_data['__stdlib__/' + filename]
-            if index > 0:
-                index = index - 1
-            tag.title = list(window.files)[index]
+            if filename == current_title:
+                if index > 0:
+                    index = index - 1
+                tag.title = list(window.files)[index]
             if window.y is not undefined: # collaboration
-                if tag.title is not current_title:
+                if filename == current_title:
                     if current_title in y.share.files.keys():
                         y.share.files.get(current_title).unbindCodeMirror(editor)
             editor.swapDoc(window.files[tag.title])
             editor.setOption('mode', 'python')
             if window.y is not undefined: # collaboration
-                if tag.title is not current_title:
+                if filename == current_title:
                     y.share.files.get(tag.title).bindCodeMirror(editor)
-                if filename in y.share.files.keys():
-                    y.share.files.delete(filename)
+                    if e is not None:
+                        y.share.files.delete(filename)
             tag.update()
             editor.focus()
     tag.closetab = closetab
