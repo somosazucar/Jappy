@@ -2178,6 +2178,19 @@ function init() {
 
     event_bus.on("save-as-zip", save_zip);
     function init_collab() {
+        var address = (arguments[0] === undefined || ( 0 === arguments.length-1 && arguments[arguments.length-1] !== null && typeof arguments[arguments.length-1] === "object" && arguments[arguments.length-1] [ρσ_kwargs_symbol] === true)) ? init_collab.__defaults__.address : arguments[0];
+        var ρσ_kwargs_obj = arguments[arguments.length-1];
+        if (ρσ_kwargs_obj === null || typeof ρσ_kwargs_obj !== "object" || ρσ_kwargs_obj [ρσ_kwargs_symbol] !== true) ρσ_kwargs_obj = {};
+        if (Object.prototype.hasOwnProperty.call(ρσ_kwargs_obj, "address")){
+            address = ρσ_kwargs_obj.address;
+        }
+        if (address === null) {
+            if ((location.protocol === "activity:" || typeof location.protocol === "object" && ρσ_equals(location.protocol, "activity:"))) {
+                address = "0.0.0.0:5000";
+            } else {
+                address = location.hostname + ":" + location.port;
+            }
+        }
         Y((function(){
             var ρσ_d = {};
             ρσ_d["db"] = (function(){
@@ -2189,7 +2202,7 @@ function init() {
                 var ρσ_d = {};
                 ρσ_d["name"] = "websockets-client";
                 ρσ_d["room"] = "Jappy";
-                ρσ_d["url"] = "ws://127.0.0.1:5000";
+                ρσ_d["url"] = "ws://" + address;
                 return ρσ_d;
             }).call(this);
             ρσ_d["share"] = (function(){
@@ -2247,6 +2260,11 @@ function init() {
             return ρσ_anonfunc;
         })());
     };
+    if (!init_collab.__defaults__) Object.defineProperties(init_collab, {
+        __defaults__ : {value: {address:null}},
+        __handles_kwarg_interpolation__ : {value: true},
+        __argnames__ : {value: ["address"]}
+    });
 
     this.editor = editor;
     window.editor = editor;

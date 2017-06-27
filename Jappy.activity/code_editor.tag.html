@@ -553,11 +553,18 @@ def init():
         )
     event_bus.on("save-as-zip", save_zip)
 
-    def init_collab():
+    def init_collab(address=None):
+
+        if address is None:
+            if location.protocol=='activity:':
+                address = '0.0.0.0:5000'
+            else:
+                address = location.hostname + ':' + location.port
+
         Y({'db'       : { 'name': 'memory'},
            'connector': { 'name': 'websockets-client',
                           'room': 'Jappy',
-                          'url':  'ws://127.0.0.1:5000'},
+                          'url':  'ws://' + address },
             'share'   : { 'files': 'Map' }}).then(  
                 def(y):
                     this.y = y
