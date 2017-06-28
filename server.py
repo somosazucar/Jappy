@@ -40,6 +40,10 @@ def joinRoom(room):
 def yjsEvent(message):
     emit('yjsEvent', message, broadcast=True)
 
+@socketio.on('jappyEvent')
+def jappyEvent(message=None):
+    emit('jappyEvent', message, broadcast=True)
+
 @socketio.on('leaveRoom')
 def leaveRoom(room):
     leave_room(room)
@@ -62,7 +66,7 @@ def start_server():
     app.wsgi_app = DispatcherMiddleware(app.wsgi_app, {
         '/dav' : dav_app
     })
-    socketio.run(app, host='0.0.0.0')
+    socketio.run(app, host='0.0.0.0', port=54991)
 
 if __name__ == "__main__":
     start_server()

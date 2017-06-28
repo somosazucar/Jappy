@@ -1958,6 +1958,12 @@ function init() {
                 files[(typeof file === "number" && file < 0) ? files.length + file : file] = new_session;
                 editor.swapDoc(new_session);
                 editor.setOption("mode", "python");
+                if (window.y !== undefined) {
+                    y.share.files.get(tag.title).unbindCodeMirror(editor);
+                    y.share.files.set(file, Y.Text);
+                    y.share.files.get(file).insert(0, data);
+                    y.share.files.get(file).bindCodeMirror(editor);
+                }
                 tag.title = file;
                 tag.update();
                 editor.focus();
@@ -1998,12 +2004,18 @@ function init() {
                                     zippedfile.async("text").then((function() {
                                         var ρσ_anonfunc = function (data) {
                                             var new_session;
-                                            new_session = CodeMirror.Doc(str(data));
-                                            (ρσ_expr_temp = window.files)[(typeof basepath === "number" && basepath < 0) ? ρσ_expr_temp.length + basepath : basepath] = new_session;
-                                            editor.swapDoc(new_session);
-                                            editor.setOption("mode", "python");
-                                            tag.title = basepath;
-                                            tag.update();
+                                            if (!(ρσ_in(basepath, window.files))) {
+                                                new_session = CodeMirror.Doc(str(data));
+                                                (ρσ_expr_temp = window.files)[(typeof basepath === "number" && basepath < 0) ? ρσ_expr_temp.length + basepath : basepath] = new_session;
+                                            } else {
+                                                (ρσ_expr_temp = window.files)[(typeof basepath === "number" && basepath < 0) ? ρσ_expr_temp.length + basepath : basepath].setValue(str(data));
+                                            }
+                                            if (window.y !== undefined) {
+                                                if (!(ρσ_in(basepath, y.share.files.keys()))) {
+                                                    y.share.files.set(basepath, Y.Text);
+                                                    y.share.files.get(basepath).insert(0, str(data));
+                                                }
+                                            }
                                         };
                                         if (!ρσ_anonfunc.__argnames__) Object.defineProperties(ρσ_anonfunc, {
                                             __argnames__ : {value: ["data"]}
@@ -2018,6 +2030,7 @@ function init() {
                         });
                         return ρσ_anonfunc;
                     })());
+                    tag.update();
                 };
                 if (!ρσ_anonfunc.__argnames__) Object.defineProperties(ρσ_anonfunc, {
                     __argnames__ : {value: ["zip"]}
@@ -2031,6 +2044,10 @@ function init() {
                         var new_session;
                         new_session = CodeMirror.Doc(evt.target.result);
                         (ρσ_expr_temp = window.files)[ρσ_bound_index(file.name, ρσ_expr_temp)] = new_session;
+                        if (window.y !== undefined) {
+                            y.share.files.set(file.name, Y.Text);
+                            y.share.files.get(file.name).insert(0, evt.target.result);
+                        }
                         tag.update();
                     };
                     if (!ρσ_anonfunc.__argnames__) Object.defineProperties(ρσ_anonfunc, {
@@ -2186,7 +2203,7 @@ function init() {
         }
         if (address === null) {
             if ((location.protocol === "activity:" || typeof location.protocol === "object" && ρσ_equals(location.protocol, "activity:"))) {
-                address = "0.0.0.0:5000";
+                address = "0.0.0.0:54991";
             } else {
                 address = location.hostname + ":" + location.port;
             }
@@ -2242,7 +2259,7 @@ function init() {
                             }
                         } else if ((event.type === "add" || typeof event.type === "object" && ρσ_equals(event.type, "add"))) {
                             if (!(ρσ_in(event.name, window.files))) {
-                                new_session = CodeMirror.Doc("");
+                                new_session = CodeMirror.Doc(event.object.toString());
                                 (ρσ_expr_temp = window.files)[ρσ_bound_index(event.name, ρσ_expr_temp)] = new_session;
                             }
                         }
@@ -2268,6 +2285,7 @@ function init() {
 
     this.editor = editor;
     window.editor = editor;
+    window.init_collab = init_collab;
     editor.focus();
 };
 
