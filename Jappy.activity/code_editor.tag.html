@@ -211,6 +211,8 @@ def init():
         if len(window.files)==0:
             tag.title = get_new_untitled()
             window.files = {tag.title: editor.getDoc()}
+            if window.y is not undefined: # collaboration
+                    y.share.files.set(tag.title, Y.Text)
     this.on('update', update_tabs)
     window.addEventListener("resize", update_tabs)
 
@@ -591,10 +593,10 @@ def init():
                         if file not in window.files:
                             new_session = CodeMirror.Doc(y.share.files.get(file).toString())
                             window.files[file] = new_session
-                    if tag.title not in window.files:
-                        tag.title = list(window.files)[0]
-                    y.share.files.get(tag.title).bindCodeMirror(editor)
                     tag.update()
+                    if tag.title not in y.share.files.keys():
+                        tag.title = list(y.share.files.keys())[0]
+                    y.share.files.get(tag.title).bindCodeMirror(editor)
                     y.share.files.observe(  def(event): 
                                 if event.type == 'delete':
                                     if event.name in window.files:
