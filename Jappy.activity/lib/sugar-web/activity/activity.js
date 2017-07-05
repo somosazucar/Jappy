@@ -67,6 +67,10 @@ define(["webL10n",
         shortcut.add("Ctrl", "Q", this.close);
 
         env.getEnvironment(function (error, environment) {
+            if (!environment) {
+                console.log("No environment!");
+                return;
+            }
             if (!environment.objectId) {
                 datastoreObject.setMetadata({
                     "title": environment.activityName + " Activity",

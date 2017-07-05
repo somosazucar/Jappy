@@ -6,9 +6,14 @@ define(["sugar-web/env", "sugar-web/bus/sugarizer", "sugar-web/bus/sugaros"], fu
 
     if (env.isSugarizer()) {
         bus = sugarizer;
-    } else {
+    } else if (!env.isStandalone()) {
         bus = sugaros;
     }
 
-    return bus;
+    try {
+        return bus;
+    }
+    catch (error) {
+        console.log ('Warning: No bus!');
+    }
 });
