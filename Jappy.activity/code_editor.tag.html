@@ -216,6 +216,7 @@ def init():
 
     def make_do(): # without datastore
         tag.update()
+        init_collab()
     event_bus.on("activity-not-ready", make_do)
 
     def switchtab(e):
@@ -568,10 +569,7 @@ def init():
     def init_collab(address=None):
 
         if address is None:
-            if location.protocol=='activity:':
-                address = '0.0.0.0:54991'
-            else:
-                address = location.hostname + ':' + location.port
+                address = location.host
 
         Y({'db'       : { 'name': 'memory'},
            'connector': { 'name': 'websockets-client',
@@ -581,15 +579,21 @@ def init():
                 def(y):
                     this.y = y
                     for file in window.files:
+                        if file[:8]==('untitled') \
+                                and len(window.files[file].getValue())==0:
+                            del window.files[file]
+                            continue
                         if file not in y.share.files.keys():
                             y.share.files.set(file, Y.Text);
                             y.share.files.get(file).insert(0, 
                                                     window.files[file].getValue())
-                    y.share.files.get(tag.title).bindCodeMirror(editor)
                     for file in y.share.files.keys():
                         if file not in window.files:
-                            new_session = CodeMirror.Doc('')
+                            new_session = CodeMirror.Doc(y.share.files.get(file).toString())
                             window.files[file] = new_session
+                    if tag.title not in window.files:
+                        tag.title = list(window.files)[0]
+                    y.share.files.get(tag.title).bindCodeMirror(editor)
                     tag.update()
                     y.share.files.observe(  def(event): 
                                 if event.type == 'delete':

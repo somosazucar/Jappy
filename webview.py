@@ -12,7 +12,6 @@ if 'ANDROID_ARGUMENT' in os.environ:
 else:
     _ANDROID = False
 
-
 if sys.platform=='linux2':
     reload(sys)
     sys.setdefaultencoding('utf-8')
@@ -35,7 +34,7 @@ def start_webview():
             response = c.get(uri) # TODO: instead, use c.open stream
             if response.status_code==302: # Handle redirect
                 new_uri = urlparse.urlparse(response.location)
-                new_uri = 'activity://127.0.0.1' + new_uri.path +\
+                new_uri = 'activity://127.0.0.1:54991' + new_uri.path +\
                                     new_uri.params + new_uri.query
                 request.get_web_view().load_uri(new_uri)
             data, mime = response.data, response.mimetype
@@ -59,8 +58,9 @@ def start_webview():
     settings = web_view.get_settings()
     settings.set_property("enable-developer-extras", True)
 
-    web_view.load_uri("activity://127.0.0.1/")
+    web_view.load_uri("activity://127.0.0.1:54991/")
     window.set_title("Jappy")
+    window.set_icon_from_file("Jappy.activity/activity/activity-icon.svg")
     window.show_all()
 
     def shutdown(*args):
@@ -69,10 +69,15 @@ def start_webview():
             Gtk.main_quit()
     window.connect("delete-event", shutdown)
 
+def start_backend():
+    try:
+        start_server()
+    except Exception as e:
+        print ("WARNING: Could not start HTTP service: " + e.strerror)
 
 if __name__ == "__main__":
     if sys.platform.startswith('linux') and not _ANDROID:
-        t = threading.Thread(target=start_server)
+        t = threading.Thread(target=start_backend)
         t.daemon = True
         t.start()
 
