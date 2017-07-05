@@ -1608,6 +1608,9 @@ function init() {
                 ρσ_d[tag.title] = editor.getDoc();
                 return ρσ_d;
             }).call(this);
+            if (window.y !== undefined) {
+                y.share.files.set(tag.title, Y.Text);
+            }
         }
     };
 
@@ -1615,6 +1618,7 @@ function init() {
     window.addEventListener("resize", update_tabs);
     function make_do() {
         tag.update();
+        init_collab();
     };
 
     event_bus.on("activity-not-ready", make_do);
@@ -1629,9 +1633,6 @@ function init() {
             editor.swapDoc((ρσ_expr_temp = window.files)[ρσ_bound_index(tag.title, ρσ_expr_temp)]);
             if (window.y !== undefined) {
                 if (ρσ_in(filename, y.share.files.keys())) {
-                    y.share.files.get(filename).bindCodeMirror(editor);
-                } else {
-                    y.share.files.set(filename, Y.Text);
                     y.share.files.get(filename).bindCodeMirror(editor);
                 }
             }
@@ -1649,6 +1650,7 @@ function init() {
                         if (window.y !== undefined) {
                             y.share.files.get(tag.title).unbindCodeMirror(editor);
                             y.share.files.set(editbox.value, Y.Text);
+                            y.share.files.get(editbox.value).insert(0, editor.getValue());
                             y.share.files.get(editbox.value).bindCodeMirror(editor);
                             y.share.files.delete(tag.title);
                         }
@@ -2202,11 +2204,7 @@ function init() {
             address = ρσ_kwargs_obj.address;
         }
         if (address === null) {
-            if ((location.protocol === "activity:" || typeof location.protocol === "object" && ρσ_equals(location.protocol, "activity:"))) {
-                address = "0.0.0.0:54991";
-            } else {
-                address = location.hostname + ":" + location.port;
-            }
+            address = location.host;
         }
         Y((function(){
             var ρσ_d = {};
@@ -2230,25 +2228,33 @@ function init() {
             return ρσ_d;
         }).call(this)).then((function() {
             var ρσ_anonfunc = function (y) {
-                var file, new_session;
+                var filename, new_session;
                 this.y = y;
                 var ρσ_Iter9 = ρσ_Iterable(window.files);
                 for (var ρσ_Index9 = 0; ρσ_Index9 < ρσ_Iter9.length; ρσ_Index9++) {
-                    file = ρσ_Iter9[ρσ_Index9];
-                    if (!(ρσ_in(file, y.share.files.keys()))) {
-                        y.share.files.set(file, Y.Text);
-                        y.share.files.get(file).insert(0, (ρσ_expr_temp = window.files)[(typeof file === "number" && file < 0) ? ρσ_expr_temp.length + file : file].getValue());
+                    filename = ρσ_Iter9[ρσ_Index9];
+                    if (ρσ_equals(filename.slice(0, 8), "untitled") && ρσ_equals(len((ρσ_expr_temp = window.files)[(typeof filename === "number" && filename < 0) ? ρσ_expr_temp.length + filename : filename].getValue()), 0)) {
+                        ρσ_delitem(window.files, filename);
+                        continue;
+                    }
+                    if (!(ρσ_in(filename, y.share.files.keys()))) {
+                        y.share.files.set(filename, Y.Text);
+                        y.share.files.get(filename).insert(0, (ρσ_expr_temp = window.files)[(typeof filename === "number" && filename < 0) ? ρσ_expr_temp.length + filename : filename].getValue());
                     }
                 }
-                y.share.files.get(tag.title).bindCodeMirror(editor);
                 var ρσ_Iter10 = ρσ_Iterable(y.share.files.keys());
                 for (var ρσ_Index10 = 0; ρσ_Index10 < ρσ_Iter10.length; ρσ_Index10++) {
-                    file = ρσ_Iter10[ρσ_Index10];
-                    if (!(ρσ_in(file, window.files))) {
-                        new_session = CodeMirror.Doc("");
-                        (ρσ_expr_temp = window.files)[(typeof file === "number" && file < 0) ? ρσ_expr_temp.length + file : file] = new_session;
+                    filename = ρσ_Iter10[ρσ_Index10];
+                    if (!(ρσ_in(filename, window.files))) {
+                        new_session = CodeMirror.Doc(y.share.files.get(filename).toString());
+                        (ρσ_expr_temp = window.files)[(typeof filename === "number" && filename < 0) ? ρσ_expr_temp.length + filename : filename] = new_session;
                     }
                 }
+                tag.update();
+                if (!(ρσ_in(tag.title, y.share.files.keys()))) {
+                    tag.title = list(y.share.files.keys())[0];
+                }
+                y.share.files.get(tag.title).bindCodeMirror(editor);
                 tag.update();
                 y.share.files.observe((function() {
                     var ρσ_anonfunc = function (event) {

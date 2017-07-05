@@ -231,9 +231,6 @@ def init():
             if window.y is not undefined: # collaboration
                 if filename in y.share.files.keys():
                     y.share.files.get(filename).bindCodeMirror(editor)
-                else:
-                    y.share.files.set(filename, Y.Text)
-                    y.share.files.get(filename).bindCodeMirror(editor)
             editor.setOption('mode', 'python')
             editor.focus()
         else:
@@ -248,6 +245,7 @@ def init():
                         if window.y is not undefined: # collaboration
                             y.share.files.get(tag.title).unbindCodeMirror(editor)
                             y.share.files.set(editbox.value, Y.Text)
+                            y.share.files.get(editbox.value).insert(0, editor.getValue())
                             y.share.files.get(editbox.value).bindCodeMirror(editor)
                             y.share.files.delete(tag.title)
                         tag.title = editbox.value
@@ -580,23 +578,24 @@ def init():
             'share'   : { 'files': 'Map' }}).then(  
                 def(y):
                     this.y = y
-                    for file in window.files:
-                        if file[:8]==('untitled') \
-                                and len(window.files[file].getValue())==0:
-                            del window.files[file]
+                    for filename in window.files:
+                        if filename[:8]==('untitled') \
+                                and len(window.files[filename].getValue())==0:
+                            del window.files[filename]
                             continue
-                        if file not in y.share.files.keys():
-                            y.share.files.set(file, Y.Text);
-                            y.share.files.get(file).insert(0, 
-                                                    window.files[file].getValue())
-                    for file in y.share.files.keys():
-                        if file not in window.files:
-                            new_session = CodeMirror.Doc(y.share.files.get(file).toString())
-                            window.files[file] = new_session
+                        if filename not in y.share.files.keys():
+                            y.share.files.set(filename, Y.Text);
+                            y.share.files.get(filename).insert(0, 
+                                                    window.files[filename].getValue())
+                    for filename in y.share.files.keys():
+                        if filename not in window.files:
+                            new_session = CodeMirror.Doc(y.share.files.get(filename).toString())
+                            window.files[filename] = new_session
                     tag.update()
                     if tag.title not in y.share.files.keys():
                         tag.title = list(y.share.files.keys())[0]
                     y.share.files.get(tag.title).bindCodeMirror(editor)
+                    tag.update()
                     y.share.files.observe(  def(event): 
                                 if event.type == 'delete':
                                     if event.name in window.files:
