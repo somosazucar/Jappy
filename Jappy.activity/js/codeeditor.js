@@ -1644,11 +1644,12 @@ function init() {
                 }
             }
             tag.title = filename;
-            editor.swapDoc((ρσ_expr_temp = window.files)[ρσ_bound_index(tag.title, ρσ_expr_temp)]);
             if (window.y !== undefined) {
                 if (ρσ_in(tag.title, y.share.files.keys())) {
                     y.share.files.get(tag.title).bindCodeMirror(editor);
                 }
+            } else {
+                editor.swapDoc((ρσ_expr_temp = window.files)[ρσ_bound_index(tag.title, ρσ_expr_temp)]);
             }
             editor.setOption("mode", "python");
             editor.focus();

@@ -229,10 +229,11 @@ def init():
                 if tag.title in y.share.files.keys():
                     y.share.files.get(tag.title).unbindCodeMirror(editor)
             tag.title = filename
-            editor.swapDoc(window.files[tag.title])
             if window.y is not undefined: # collaboration
                 if tag.title in y.share.files.keys():
                     y.share.files.get(tag.title).bindCodeMirror(editor)
+            else:
+                editor.swapDoc(window.files[tag.title])
             editor.setOption('mode', 'python')
             editor.focus()
         else:
