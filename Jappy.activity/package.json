@@ -15,8 +15,8 @@
     "socket.io": "^1.7.3",
     "y-array": "^10.1.3",
     "y-map": "^10.1.1",
-    "y-memory": "^8.0.8",
-    "y-text": "^9.4.0",
+    "y-memory": "^8.0.9",
+    "y-text": "^9.5.0",
     "y-websockets-client": "^8.0.16",
     "yjs": "^12.3.1"
   }

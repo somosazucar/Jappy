@@ -1622,18 +1622,32 @@ function init() {
     };
 
     event_bus.on("activity-not-ready", make_do);
-    function switchtab(e) {
-        var filename, editbox;
-        filename = e.target.innerHTML;
-        if (tag.title !== filename) {
+    function switchtab() {
+        var e = (arguments[0] === undefined || ( 0 === arguments.length-1 && arguments[arguments.length-1] !== null && typeof arguments[arguments.length-1] === "object" && arguments[arguments.length-1] [ρσ_kwargs_symbol] === true)) ? switchtab.__defaults__.e : arguments[0];
+        var filename = (arguments[1] === undefined || ( 1 === arguments.length-1 && arguments[arguments.length-1] !== null && typeof arguments[arguments.length-1] === "object" && arguments[arguments.length-1] [ρσ_kwargs_symbol] === true)) ? switchtab.__defaults__.filename : arguments[1];
+        var ρσ_kwargs_obj = arguments[arguments.length-1];
+        if (ρσ_kwargs_obj === null || typeof ρσ_kwargs_obj !== "object" || ρσ_kwargs_obj [ρσ_kwargs_symbol] !== true) ρσ_kwargs_obj = {};
+        if (Object.prototype.hasOwnProperty.call(ρσ_kwargs_obj, "e")){
+            e = ρσ_kwargs_obj.e;
+        }
+        if (Object.prototype.hasOwnProperty.call(ρσ_kwargs_obj, "filename")){
+            filename = ρσ_kwargs_obj.filename;
+        }
+        var editbox;
+        if (filename === null) {
+            filename = e.target.innerHTML;
+        }
+        if (filename !== tag.title) {
             if (window.y !== undefined) {
-                y.share.files.get(tag.title).unbindCodeMirror(editor);
+                if (ρσ_in(tag.title, y.share.files.keys())) {
+                    y.share.files.get(tag.title).unbindCodeMirror(editor);
+                }
             }
             tag.title = filename;
             editor.swapDoc((ρσ_expr_temp = window.files)[ρσ_bound_index(tag.title, ρσ_expr_temp)]);
             if (window.y !== undefined) {
-                if (ρσ_in(filename, y.share.files.keys())) {
-                    y.share.files.get(filename).bindCodeMirror(editor);
+                if (ρσ_in(tag.title, y.share.files.keys())) {
+                    y.share.files.get(tag.title).bindCodeMirror(editor);
                 }
             }
             editor.setOption("mode", "python");
@@ -1648,7 +1662,7 @@ function init() {
                         (ρσ_expr_temp = window.files)[ρσ_bound_index(editbox.value, ρσ_expr_temp)] = editor.getDoc();
                         ρσ_delitem(window.files, tag.title);
                         if (window.y !== undefined) {
-                            y.share.files.get(tag.title).unbindCodeMirror(editor);
+                            y.share.files.get(tag.title).unbindCodeMirrorAll();
                             y.share.files.set(editbox.value, Y.Text);
                             y.share.files.get(editbox.value).insert(0, editor.getValue());
                             y.share.files.get(editbox.value).bindCodeMirror(editor);
@@ -1689,8 +1703,10 @@ function init() {
         }
         tag.update();
     };
-    if (!switchtab.__argnames__) Object.defineProperties(switchtab, {
-        __argnames__ : {value: ["e"]}
+    if (!switchtab.__defaults__) Object.defineProperties(switchtab, {
+        __defaults__ : {value: {e:null, filename:null}},
+        __handles_kwarg_interpolation__ : {value: true},
+        __argnames__ : {value: ["e", "filename"]}
     });
 
     tag.switchtab = switchtab;
@@ -1705,38 +1721,40 @@ function init() {
         if (Object.prototype.hasOwnProperty.call(ρσ_kwargs_obj, "filename")){
             filename = ρσ_kwargs_obj.filename;
         }
-        var current_title, index;
+        var active_title, index;
         if (len(window.files) > 1) {
-            current_title = tag.title;
-            filename = filename || tag.title;
+            active_title = tag.title;
+            if (filename === null) {
+                filename = tag.title;
+            }
             index = list(window.files).index(filename);
             ρσ_delitem(window.files, filename);
-            if (ρσ_in("__stdlib__/" + filename, RapydScript.file_data)) {
-                ρσ_delitem(RapydScript.file_data, ("__stdlib__/" + filename));
+            if (window.y !== undefined) {
+                if (e !== null) {
+                    if (ρσ_in(filename, y.share.files.keys())) {
+                        y.share.files.get(filename).unbindCodeMirrorAll();
+                        y.share.files.delete(filename);
+                    }
+                }
             }
-            if ((filename === current_title || typeof filename === "object" && ρσ_equals(filename, current_title))) {
+            if ((filename === active_title || typeof filename === "object" && ρσ_equals(filename, active_title))) {
                 if (index > 0) {
                     index = index - 1;
                 }
                 tag.title = (ρσ_expr_temp = list(window.files))[(typeof index === "number" && index < 0) ? ρσ_expr_temp.length + index : index];
             }
+            if (ρσ_in("__stdlib__/" + filename, RapydScript.file_data)) {
+                ρσ_delitem(RapydScript.file_data, ("__stdlib__/" + filename));
+            }
             if (window.y !== undefined) {
-                if ((filename === current_title || typeof filename === "object" && ρσ_equals(filename, current_title))) {
-                    if (ρσ_in(current_title, y.share.files.keys())) {
-                        y.share.files.get(current_title).unbindCodeMirror(editor);
+                if ((filename === active_title || typeof filename === "object" && ρσ_equals(filename, active_title))) {
+                    if (ρσ_in(tag.title, y.share.files.keys())) {
+                        y.share.files.get(tag.title).bindCodeMirror(editor);
                     }
                 }
             }
             editor.swapDoc((ρσ_expr_temp = window.files)[ρσ_bound_index(tag.title, ρσ_expr_temp)]);
             editor.setOption("mode", "python");
-            if (window.y !== undefined) {
-                if ((filename === current_title || typeof filename === "object" && ρσ_equals(filename, current_title))) {
-                    y.share.files.get(tag.title).bindCodeMirror(editor);
-                    if (e !== null) {
-                        y.share.files.delete(filename);
-                    }
-                }
-            }
             tag.update();
             editor.focus();
         }
@@ -1780,7 +1798,9 @@ function init() {
         editor.setOption("mode", "python");
         editor.focus();
         if (window.y !== undefined) {
-            y.share.files.get(tag.title).unbindCodeMirror(editor);
+            if (ρσ_in(tag.title, y.share.files.keys())) {
+                y.share.files.get(tag.title).unbindCodeMirror(editor);
+            }
             y.share.files.set(file, Y.Text);
             y.share.files.get(file).bindCodeMirror(editor);
         }
@@ -2228,13 +2248,16 @@ function init() {
             return ρσ_d;
         }).call(this)).then((function() {
             var ρσ_anonfunc = function (y) {
-                var filename, new_session;
+                var filename, text, new_session;
                 this.y = y;
                 var ρσ_Iter9 = ρσ_Iterable(window.files);
                 for (var ρσ_Index9 = 0; ρσ_Index9 < ρσ_Iter9.length; ρσ_Index9++) {
                     filename = ρσ_Iter9[ρσ_Index9];
                     if (ρσ_equals(filename.slice(0, 8), "untitled") && ρσ_equals(len((ρσ_expr_temp = window.files)[(typeof filename === "number" && filename < 0) ? ρσ_expr_temp.length + filename : filename].getValue()), 0)) {
                         ρσ_delitem(window.files, filename);
+                        if (ρσ_in("__stdlib__/" + filename, RapydScript.file_data)) {
+                            ρσ_delitem(RapydScript.file_data, ("__stdlib__/" + filename));
+                        }
                         continue;
                     }
                     if (!(ρσ_in(filename, y.share.files.keys()))) {
@@ -2246,26 +2269,27 @@ function init() {
                 for (var ρσ_Index10 = 0; ρσ_Index10 < ρσ_Iter10.length; ρσ_Index10++) {
                     filename = ρσ_Iter10[ρσ_Index10];
                     if (!(ρσ_in(filename, window.files))) {
-                        new_session = CodeMirror.Doc(y.share.files.get(filename).toString());
+                        text = y.share.files.get(filename).toString();
+                        new_session = CodeMirror.Doc(text);
                         (ρσ_expr_temp = window.files)[(typeof filename === "number" && filename < 0) ? ρσ_expr_temp.length + filename : filename] = new_session;
                     }
                 }
-                tag.update();
                 if (!(ρσ_in(tag.title, y.share.files.keys()))) {
                     tag.title = list(y.share.files.keys())[0];
                 }
-                y.share.files.get(tag.title).bindCodeMirror(editor);
                 tag.update();
+                y.share.files.get(tag.title).bindCodeMirror(editor);
                 y.share.files.observe((function() {
                     var ρσ_anonfunc = function (event) {
-                        var new_session;
+                        var text, new_session;
                         if ((event.type === "delete" || typeof event.type === "object" && ρσ_equals(event.type, "delete"))) {
                             if (ρσ_in(event.name, window.files)) {
-                                ρσ_interpolate_kwargs.call(this, closetab, [ρσ_desugar_kwargs({filename: event.name})]);
+                                ρσ_interpolate_kwargs.call(this, closetab, [ρσ_desugar_kwargs({e: null, filename: event.name})]);
                             }
                         } else if ((event.type === "add" || typeof event.type === "object" && ρσ_equals(event.type, "add"))) {
                             if (!(ρσ_in(event.name, window.files))) {
-                                new_session = CodeMirror.Doc(event.object.toString());
+                                text = event.object.toString();
+                                new_session = CodeMirror.Doc(text);
                                 (ρσ_expr_temp = window.files)[ρσ_bound_index(event.name, ρσ_expr_temp)] = new_session;
                             }
                         }
