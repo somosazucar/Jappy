@@ -294,8 +294,9 @@ def init():
                 if filename == active_title:
                     if tag.title in y.share.files.keys():
                         y.share.files.get(tag.title).bindCodeMirror(editor)
-            editor.swapDoc(window.files[tag.title])
-            editor.setOption('mode', 'python')
+            if filename is not active_title:
+                editor.swapDoc(window.files[tag.title])
+                editor.setOption('mode', 'python')
             tag.update()
             editor.focus()
     tag.closetab = closetab

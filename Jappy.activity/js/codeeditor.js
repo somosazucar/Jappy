@@ -1754,8 +1754,10 @@ function init() {
                     }
                 }
             }
-            editor.swapDoc((ρσ_expr_temp = window.files)[ρσ_bound_index(tag.title, ρσ_expr_temp)]);
-            editor.setOption("mode", "python");
+            if (filename !== active_title) {
+                editor.swapDoc((ρσ_expr_temp = window.files)[ρσ_bound_index(tag.title, ρσ_expr_temp)]);
+                editor.setOption("mode", "python");
+            }
             tag.update();
             editor.focus();
         }
