@@ -77,36 +77,6 @@ a {
 .toolbar #stop-button {
   background-image: url('../icons/actions/activity-stop.svg');
 }
-.alert {
-  position: absolute;
-  top: 40px;
-  z-index: 10;
-  height: 40px;
-  width: 100%;
-  color: white;
-  background-color: black;
-  -webkit-user-select: none;
-  -moz-user-select: none;
-}
-.alert p {
-  padding-left: 8px;
-  vertical-align: middle;
-  width: 80%;
-}
-.alert .button-box {
-  position: fixed;
-  top: 40px;
-  right: 0px;
-  height: 40px;
-  width: 20%;
-  margin: 8px;
-}
-.alert button {
-  float: right;
-}
-.button-box button + button {
-  margin-right: 8px;
-}
 #canvas {
   position: absolute;
   top: 40px;
@@ -462,7 +432,4 @@ ul.flat-list.striped li:nth-child(odd) {
 }
 #activity-palette .wrapper {
   width: 196px;
-}
-#activity-palette textarea {
-  resize: none;
 }
