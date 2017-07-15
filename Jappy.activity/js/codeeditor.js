@@ -1600,7 +1600,11 @@ function init() {
         tabs_div = document.getElementById("tabs");
         tabs_style = window.getComputedStyle(tabs_div);
         target_size = window.innerHeight - int(toolbar_style.height) - int(tabs_style.height);
-        editor.setSize(null, target_size);
+        if ((getComputedStyle(iframe).display === "none" || typeof getComputedStyle(iframe).display === "object" && ρσ_equals(getComputedStyle(iframe).display, "none"))) {
+            editor.setSize(window.innerWidth, target_size);
+        } else {
+            editor.setSize(window.innerWidth / 2, target_size);
+        }
         if (ρσ_equals(len(window.files), 0)) {
             tag.title = get_new_untitled();
             window.files = (function(){
@@ -1830,6 +1834,7 @@ function init() {
         iframe.style.width = "0%";
         tag.refs.split.style.width = "100%";
         tag.refs.traybutton.style.backgroundImage = "url(icons/tray-show.svg)";
+        tag.update();
     };
 
     event_bus.on("traybutton-close", traybutton_close);
@@ -1839,6 +1844,7 @@ function init() {
         iframe.style.height = "100%";
         tag.refs.split.style.width = "50%";
         tag.refs.traybutton.style.backgroundImage = "url(icons/tray-hide.svg)";
+        tag.update();
     };
 
     event_bus.on("traybutton-open", traybutton_open);

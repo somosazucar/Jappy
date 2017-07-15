@@ -207,7 +207,10 @@ def init():
         tabs_div = document.getElementById('tabs')
         tabs_style = window.getComputedStyle(tabs_div)
         target_size = window.innerHeight - int(toolbar_style.height) - int(tabs_style.height)
-        editor.setSize(None, target_size)
+        if getComputedStyle(iframe).display == 'none':
+            editor.setSize(window.innerWidth, target_size)
+        else:
+            editor.setSize(window.innerWidth/2, target_size)
         if len(window.files)==0:
             tag.title = get_new_untitled()
             window.files = {tag.title: editor.getDoc()}
@@ -339,6 +342,7 @@ def init():
         iframe.style.width = '0%'
         tag.refs.split.style.width = '100%'
         tag.refs.traybutton.style.backgroundImage = "url(icons/tray-show.svg)"
+        tag.update()
     event_bus.on("traybutton-close", traybutton_close)
 
     def traybutton_open():
@@ -347,6 +351,7 @@ def init():
         iframe.style.height = '100%'
         tag.refs.split.style.width = '50%'
         tag.refs.traybutton.style.backgroundImage = "url(icons/tray-hide.svg)"
+        tag.update()
     event_bus.on("traybutton-open", traybutton_open)
 
     def run():
