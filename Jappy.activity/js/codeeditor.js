@@ -2107,7 +2107,7 @@ function init() {
         toolbar_height = window.getComputedStyle(toolbar)["height"];
         canvas = document.getElementById("canvas");
         canvas.style.top = toolbar_height;
-        if (window.innerWidth > 720) {
+        if (window.innerWidth > 420) {
             iframe.style.width = "50%";
         } else {
             window.state = "clean";
