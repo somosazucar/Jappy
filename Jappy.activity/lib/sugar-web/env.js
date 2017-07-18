@@ -62,11 +62,13 @@ define(function () {
 
     env.isStandalone = function () {
         var webActivityURLScheme = "activity:";
+        var fileURLScheme = "file:";
         var currentURLScheme = env.getURLScheme();
 
         // the control of hostname !== '0.0.0.0' is used
         // for compatibility with F18 and webkit1
         return currentURLScheme !== webActivityURLScheme &&
+			currentURLScheme !== fileURLScheme &&
             window.location.hostname !== '0.0.0.0';
     };
     
