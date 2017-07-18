@@ -196,7 +196,7 @@ def init():
                 check_load(None, None, savedSession)
         tag.update()
         window.activity = activity
-        init_collab()
+        # init_collab()
     event_bus.on("activity-ready", load_datastore)
 
     def update_tabs():
@@ -207,6 +207,8 @@ def init():
         tabs_div = document.getElementById('tabs')
         tabs_style = window.getComputedStyle(tabs_div)
         target_size = window.innerHeight - int(toolbar_style.height) - int(tabs_style.height)
+        canvas = document.getElementById('canvas')
+        canvas.style.top = toolbar_style.height
         if getComputedStyle(iframe).display == 'none':
             editor.setSize(window.innerWidth, target_size)
         else:
@@ -218,10 +220,11 @@ def init():
                     y.share.files.set(tag.title, Y.Text)
     this.on('update', update_tabs)
     window.addEventListener("resize", update_tabs)
+    window.addEventListener("orientationchange", update_tabs)
 
     def make_do(): # without datastore
         tag.update()
-        init_collab()
+        # init_collab()
     event_bus.on("activity-not-ready", make_do)
 
     def switchtab(e=None, filename=None):
@@ -297,7 +300,7 @@ def init():
                 if filename == active_title:
                     if tag.title in y.share.files.keys():
                         y.share.files.get(tag.title).bindCodeMirror(editor)
-            if filename is not active_title:
+            if tag.title is not active_title:
                 editor.swapDoc(window.files[tag.title])
                 editor.setOption('mode', 'python')
             tag.update()
@@ -336,6 +339,16 @@ def init():
             event_bus.trigger("traybutton-close")
     event_bus.on("toggle-tray", toggle_tray)
     this.refs.traybutton.onclick = toggle_tray
+
+    def toggle_tray_or_restore():
+        ''' Used by Android `Back` button '''
+        toolbar_div = document.getElementById('main-toolbar')
+        if getComputedStyle(toolbar_div).display == 'none':
+            r = document.getElementById('restore-button')
+            r.click()
+        else:
+            toggle_tray()
+    window.onbackbutton = toggle_tray_or_restore
 
     def traybutton_close():
         iframe.style.display = 'none'
@@ -503,8 +516,13 @@ def init():
         toolbar_height = window.getComputedStyle(toolbar)['height']
         canvas = document.getElementById('canvas')
         canvas.style.top = toolbar_height
+
+        tabs_div = document.getElementById('tabs')
+        tabs_style = window.getComputedStyle(tabs_div)
+        target_size = window.innerHeight - int(toolbar_height) - int(tabs_style.height)
         if window.innerWidth > 420:
             iframe.style.width='50%'
+            editor.setSize( window.innerWidth / 2, target_size )
         else:
             window.state = 'clean'
             event_bus.trigger("clear-output")
@@ -522,6 +540,7 @@ def init():
             run()
 
         restore_button = document.createElement('button')
+        restore_button.id = "restore-button"
         restore_button.onclick = restore
         restore_button.style.opacity = '0.5'
         restore_button.style.position = 'fixed'

@@ -1583,7 +1583,6 @@ function init() {
         }
         tag.update();
         window.activity = activity;
-        init_collab();
     };
     if (!load_datastore.__argnames__) Object.defineProperties(load_datastore, {
         __argnames__ : {value: ["activity"]}
@@ -1591,7 +1590,7 @@ function init() {
 
     event_bus.on("activity-ready", load_datastore);
     function update_tabs() {
-        var toolbar_div, toolbar_style, tabs_div, tabs_style, target_size;
+        var toolbar_div, toolbar_style, tabs_div, tabs_style, target_size, canvas;
         toolbar_div = document.getElementById("main-toolbar");
         if ((getComputedStyle(toolbar_div).display === "none" || typeof getComputedStyle(toolbar_div).display === "object" && ρσ_equals(getComputedStyle(toolbar_div).display, "none"))) {
             return;
@@ -1600,6 +1599,8 @@ function init() {
         tabs_div = document.getElementById("tabs");
         tabs_style = window.getComputedStyle(tabs_div);
         target_size = window.innerHeight - int(toolbar_style.height) - int(tabs_style.height);
+        canvas = document.getElementById("canvas");
+        canvas.style.top = toolbar_style.height;
         if ((getComputedStyle(iframe).display === "none" || typeof getComputedStyle(iframe).display === "object" && ρσ_equals(getComputedStyle(iframe).display, "none"))) {
             editor.setSize(window.innerWidth, target_size);
         } else {
@@ -1620,9 +1621,9 @@ function init() {
 
     this.on("update", update_tabs);
     window.addEventListener("resize", update_tabs);
+    window.addEventListener("orientationchange", update_tabs);
     function make_do() {
         tag.update();
-        init_collab();
     };
 
     event_bus.on("activity-not-ready", make_do);
@@ -1758,7 +1759,7 @@ function init() {
                     }
                 }
             }
-            if (filename !== active_title) {
+            if (tag.title !== active_title) {
                 editor.swapDoc((ρσ_expr_temp = window.files)[ρσ_bound_index(tag.title, ρσ_expr_temp)]);
                 editor.setOption("mode", "python");
             }
@@ -1829,6 +1830,18 @@ function init() {
 
     event_bus.on("toggle-tray", toggle_tray);
     this.refs.traybutton.onclick = toggle_tray;
+    function toggle_tray_or_restore() {
+        var toolbar_div, r;
+        toolbar_div = document.getElementById("main-toolbar");
+        if ((getComputedStyle(toolbar_div).display === "none" || typeof getComputedStyle(toolbar_div).display === "object" && ρσ_equals(getComputedStyle(toolbar_div).display, "none"))) {
+            r = document.getElementById("restore-button");
+            r.click();
+        } else {
+            toggle_tray();
+        }
+    };
+
+    window.onbackbutton = toggle_tray_or_restore;
     function traybutton_close() {
         iframe.style.display = "none";
         iframe.style.width = "0%";
@@ -2098,7 +2111,7 @@ function init() {
 
     event_bus.on("import-file", import_file);
     function restore(e) {
-        var code_editor, toolbar, toolbar_height, canvas;
+        var code_editor, toolbar, toolbar_height, canvas, tabs_div, tabs_style, target_size;
         code_editor = tag.refs.split;
         code_editor.style.display = "block";
         toolbar = document.getElementById("main-toolbar");
@@ -2107,8 +2120,12 @@ function init() {
         toolbar_height = window.getComputedStyle(toolbar)["height"];
         canvas = document.getElementById("canvas");
         canvas.style.top = toolbar_height;
+        tabs_div = document.getElementById("tabs");
+        tabs_style = window.getComputedStyle(tabs_div);
+        target_size = window.innerHeight - int(toolbar_height) - int(tabs_style.height);
         if (window.innerWidth > 420) {
             iframe.style.width = "50%";
+            editor.setSize(window.innerWidth / 2, target_size);
         } else {
             window.state = "clean";
             event_bus.trigger("clear-output");
@@ -2138,6 +2155,7 @@ function init() {
             run();
         }
         restore_button = document.createElement("button");
+        restore_button.id = "restore-button";
         restore_button.onclick = restore;
         restore_button.style.opacity = "0.5";
         restore_button.style.position = "fixed";
