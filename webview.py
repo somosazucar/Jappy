@@ -60,7 +60,7 @@ def start_webview():
 
     web_view.load_uri("activity://127.0.0.1:54991/")
     window.set_title("Jappy")
-    window.set_icon_from_file("Jappy.activity/activity/activity-icon.svg")
+    window.set_icon_from_file("activity/activity-icon.svg")
     window.show_all()
 
     def shutdown(*args):

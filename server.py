@@ -12,9 +12,11 @@ import mimetypes
 mimetypes.add_type('image/svg+xml', '.svg')
 mimetypes.add_type('application/x-font-woff', '.woff')
 
-app_dir = "Jappy.activity"
+app_dir = "."
 
-app = Flask(__name__, static_folder=app_dir)
+app = Flask(__name__, 
+        static_url_path='',
+        static_folder=app_dir)
 socketio = SocketIO(app)
 
 @app.route("/")
@@ -54,7 +56,7 @@ def test_disconnect():
 
 def start_server():
     bundle_dir = os.path.dirname(os.path.realpath(__file__))
-    provider = FilesystemProvider(app_dir)
+    provider = FilesystemProvider('workspace')
     config = DEFAULT_CONFIG.copy()
     config.update({
         "mount_path": "/dav",
