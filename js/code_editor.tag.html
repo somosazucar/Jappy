@@ -11,19 +11,22 @@ code-editor {
     width: 100%;
     font-size: 15pt;
     font-family: "Noto Mono", "DejaVu Sans Mono", monospace, "Noto Emoji";
-    flex: 1 1;
 }
-.CodeMirror-cursor {
-    width: auto;
-    border: 0;
-    background: transparent;
-    background: rgba(0, 200, 0, .4);
+.CodeMirror-scroll {
+    margin-right: 0px;
+    overflow: hidden !important;
 }
 .CodeMirror-linenumber {
     font-size: 14pt;
 }
 .cm-s-solarized .CodeMirror-cursor {
+    width: 4px;
     border: 0;
+    background: transparent;
+    background: rgba(0, 200, 0, .4);
+}
+.CodeMirror-overlayscroll-vertical div, .CodeMirror-overlayscroll-horizontal div {
+    background: #808080;
 }
 .error-marker{
     border: 1px solid red;
@@ -152,8 +155,10 @@ def init():
                     { 'lineNumbers': True,
                       'matchBrackets': True,
                       'indentUnit': 4,
-                      'fixedGutter': False,
+                      'fixedGutter': True,
                       'mode': 'python',
+                      'showCursorWhenSelecting': True,
+                      'scrollbarStyle': 'overlay',
                       'styleActiveLine': True,
                       'theme': 'solarized light' })
 
@@ -356,6 +361,7 @@ def init():
         tag.refs.split.style.width = '100%'
         tag.refs.traybutton.style.backgroundImage = "url(icons/tray-show.svg)"
         tag.update()
+        editor.scrollIntoView()
     event_bus.on("traybutton-close", traybutton_close)
 
     def traybutton_open():
@@ -365,6 +371,7 @@ def init():
         tag.refs.split.style.width = '50%'
         tag.refs.traybutton.style.backgroundImage = "url(icons/tray-hide.svg)"
         tag.update()
+        editor.scrollIntoView()
     event_bus.on("traybutton-open", traybutton_open)
 
     def run():
