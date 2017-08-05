@@ -17,7 +17,7 @@ define(["sugar-web/env", "sugar-web/activity/activity"], function (env, activity
         // Mount web components
         riot.compile(function() {
           // here tags are compiled and riot.mount works synchronously
-          var tags = riot.mount('*')
+          window.tags = riot.mount('*')
 
           try {
             activity.setup()
