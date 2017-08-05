@@ -1,0 +1,779 @@
+<code-editor>
+
+<style type="text/css">
+code-editor {
+    display: flex;
+    flex: 1 1;
+    height: 100%;
+}
+.CodeMirror {
+    height: 100%;
+    width: 100%;
+    font-size: 15pt;
+    font-family: "Noto Mono", "DejaVu Sans Mono", monospace, "Noto Emoji";
+}
+.CodeMirror-scroll {
+    margin-right: 0px;
+    overflow: hidden !important;
+}
+.CodeMirror-linenumber {
+    font-size: 14pt;
+}
+.cm-s-solarized .CodeMirror-cursor {
+    width: 4px;
+    border: 0;
+    background: transparent;
+    background: rgba(0, 200, 0, .4);
+}
+.CodeMirror-overlayscroll-vertical div, .CodeMirror-overlayscroll-horizontal div {
+    background: #808080;
+}
+.error-marker{
+    border: 1px solid red;
+    background-color: rgba(255, 0, 0,0.2);
+    border-radius: 3px;
+}
+iframe {
+    border: 0px;
+    display: none;
+    flex: 1 1;
+}
+#split {
+    display: flex;
+    width: 100%;
+    flex-direction: column;
+    flex: 1 1;
+    height: 100%;
+    float: left;
+}
+#vsplit {
+    display: flex;
+    flex-direction: row;
+    flex: 1 1;
+    height: 100%;
+}
+#tabs button {
+    font-size: 13pt;
+    border-radius: 0;
+    padding: 10px 10px;
+    border: 0px;
+    margin: 0px;
+}
+#tabs button.selected {
+    background-color: #282828;
+}
+#tabs span.selected {
+    white-space: nowrap;
+}
+#closetab {
+    background-image: url(lib/sugar-web/graphics/icons/actions/entry-cancel-active.svg);
+    background-repeat: no-repeat;
+    background-color: #282828;
+    width: 28px;
+    background-position: center;
+    background-size: 16px 16px;
+}
+#closetab:active {
+    background-image: url(lib/sugar-web/graphics/icons/actions/entry-cancel.svg);
+}
+#newtab {
+    background-image: url(icons/tab-add.svg);
+    background-repeat: no-repeat;
+    width: 28px;
+    background-position: center;
+    background-size: 20px 20px;
+}
+#tray-button {
+    background-image: url(icons/tray-show.svg);
+    background-repeat: no-repeat;
+    width: 28px;
+    background-position: center;
+    background-size: 20px 20px;
+}
+</style>
+
+<div id='vsplit' ref='vsplit'>
+    <div id='split' ref='split'>
+        <input ref='file_input' id='file-input' type='file' style='display: none;' />
+        <div id='tabs'>
+        <button onclick={ this.newtab } id='newtab'>&nbsp;</button><!--
+        --><span class={selected: name==parent.title} each={name in list(files)}><!--
+        --><button class={selected: name==parent.title}
+                    onclick={ parent.switchtab }>{str(name)}</button><!--
+        --><button if={ name==parent.title && len(files)>1 } id='closetab'
+            onclick={ parent.closetab }>&nbsp;</button></span><!--
+        --><button class="pull-right" id="tray-button" ref="traybutton">&nbsp;</button>
+        </div>
+        <textarea id="code-container" ref="code"></textarea>
+    </div>
+    <iframe allowTransparency="false" ref="vmframe"></iframe>
+</div>
+
+<script type="text/Rapyd">
+
+print('RapydScript-ng ' + RapydScript.rs_version)
+import re
+
+tag = this
+this.marker = None
+window.files = {}
+
+def compile(inputcode=None):
+    editor = window.editor
+    options = {'basedir':'__stdlib__',
+               'bare': True,
+               'js_version': 5,
+               'omit_baselib':True}
+
+    for file in window.files:
+        if file is not tag.title:
+            RapydScript.file_data['__stdlib__/' + file] = window.files[file].getValue()
+
+    session = editor.getDoc()
+    if tag.marker and not inputcode:
+        tag.marker.clear()
+
+    try:
+        result = RapydScript.compile(inputcode or editor.getValue(), tag.title, options)
+        if "print;" in result:
+            raise SyntaxError('Missing parentheses in call to "print"')
+
+    except Exception as e:
+        console.log(e)
+        code = "print ('''" + e.name + ": " + e.message + "''')"
+        if e.line and e.col and not inputcode:
+            tag.marker = editor.markText( CodeMirror.Pos(e.line-1, e.col),
+                             CodeMirror.Pos(e.line-1, e.col+1),
+                             {'className': 'error-marker'} )
+            editor.scrollIntoView(e.line-1, e.col+1)
+        result = compiler.compile(code)
+    return result
+window.compile = compile
+
+def init():
+    editor = CodeMirror.fromTextArea(this.refs.code,
+                    { 'lineNumbers': True,
+                      'matchBrackets': True,
+                      'indentUnit': 4,
+                      'fixedGutter': True,
+                      'mode': 'python',
+                      'showCursorWhenSelecting': True,
+                      'scrollbarStyle': 'overlay',
+                      'styleActiveLine': True,
+                      'theme': 'solarized light' })
+
+    editor.setOption("extraKeys", {
+      'Ctrl-Enter': run,
+      'Alt-R': run,
+      'F9': toggle_tray,
+      'Tab': def():
+                if editor.somethingSelected():
+                    editor.indentSelection("add");
+                else:
+                    editor.execCommand('insertSoftTab')
+    })
+
+    iframe = this.refs.vmframe
+
+    def load_datastore(activity):
+        datastore = activity.getDatastoreObject()
+        def check_load(error, metadata, data):
+            if (data):
+                window.files = {}
+                parsed_data = JSON.parse(data)
+                for file in parsed_data:
+                    if parsed_data[file]:
+                        new_session = CodeMirror.Doc(parsed_data[file])
+                        window.files[file] = new_session
+            if len(window.files) > 0:
+                tag.title = list(parsed_data)[0]
+                if window.files[tag.title]!=undefined:
+                    editor.swapDoc(window.files[tag.title])
+                    editor.setOption('mode', 'python')
+            tag.update()
+        if datastore.objectId is not undefined:
+            datastore.loadAsText(check_load)
+        else:
+            # No datastore probably means we need to handle stuff ourselves
+            event_bus.trigger("enable-standalone")
+            savedSession = localStorage.getItem('jappySession')
+            if savedSession is not None:
+                check_load(None, None, savedSession)
+        tag.update()
+        window.activity = activity
+    event_bus.on("activity-ready", load_datastore)
+
+    def update_tabs():
+        toolbar_div = document.getElementById('main-toolbar')
+        if getComputedStyle(toolbar_div).display == 'none':
+            return
+        toolbar_style = window.getComputedStyle(toolbar_div)
+        tabs_div = document.getElementById('tabs')
+        tabs_style = window.getComputedStyle(tabs_div)
+        target_size = window.innerHeight - int(toolbar_style.height) - int(tabs_style.height)
+        canvas = document.getElementById('canvas')
+        canvas.style.top = toolbar_style.height
+        if getComputedStyle(iframe).display == 'none':
+            editor.setSize(window.innerWidth, target_size)
+        else:
+            editor.setSize(window.innerWidth/2, target_size)
+        if len(window.files)==0:
+            tag.title = get_new_untitled()
+            window.files = {tag.title: editor.getDoc()}
+            if window.y is not undefined: # collaboration
+                    y.share.files.set(tag.title, Y.Text)
+    this.on('update', update_tabs)
+    window.addEventListener("resize", update_tabs)
+    window.addEventListener("orientationchange", update_tabs)
+
+    def restore_last_session():
+        init_collab()
+        if location.hash:
+            url_base = location.protocol
+            address = url_base + '//' + location.host + '/dav'
+            if window.fs is undefined:
+                window.fs = new WebDAV.Fs(address)
+
+            path = location.hash.slice(1)
+            def got_files(files):
+                recent_files = filter_latest(files)
+                for item in recent_files:
+                    window.fs.file('/' + path + '/' + item.name).read(def(data):
+                            event_bus.trigger('new-from-data', data, item.name)                              
+                    )
+            fs.dir('/' + path).children(got_files)
+        else:
+            tag.update()
+    event_bus.on("activity-not-ready", restore_last_session)
+
+    def switchtab(e=None, filename=None):
+        if filename is None:
+            filename = e.target.innerHTML
+        if filename is not tag.title:
+            if window.y is not undefined: # collaboration
+                if tag.title in y.share.files.keys():
+                    y.share.files.get(tag.title).unbindCodeMirror(editor)
+            tag.title = filename
+            if window.y is not undefined: # collaboration
+                if tag.title in y.share.files.keys():
+                    y.share.files.get(tag.title).bindCodeMirror(editor)
+            else:
+                editor.swapDoc(window.files[tag.title])
+            editor.setOption('mode', 'python')
+            editor.focus()
+        else:
+            if e is not None:
+                e.target.style.display = 'none'
+                editbox = document.createElement('input')
+                editbox.value = tag.title
+                def rename_tab():
+                    if editbox.value not in window.files:
+                        window.files[editbox.value] = editor.getDoc()
+                        del window.files[tag.title]
+                        if window.y is not undefined: # collaboration
+                            y.share.files.get(tag.title).unbindCodeMirrorAll()
+                            y.share.files.set(editbox.value, Y.Text)
+                            y.share.files.get(editbox.value).insert(0, editor.getValue())
+                            y.share.files.get(editbox.value).bindCodeMirror(editor)
+                            y.share.files.delete(tag.title)
+                        tag.title = editbox.value
+                    e.target.style.display = 'inline-block'
+                    e.target.parentNode.removeChild(editbox)
+                    tag.update()
+                    editor.focus()
+                editbox.onblur = rename_tab
+                editbox.onkeyup = def(e):
+                    if e.keyCode==13: # Enter
+                        editor.focus()
+                    if e.keyCode==27: # Esc
+                        editbox.value = tag.title
+                        editor.focus()
+                e.target.parentNode.insertBefore(editbox, e.target)
+                editbox.focus()
+                if tag.title.indexOf('.') > 0:
+                    editbox.setSelectionRange(0, tag.title.indexOf('.'))
+                else:
+                    editbox.select()
+        tag.update()
+    tag.switchtab = switchtab
+
+    def close_all():
+        window.files = []
+        if window.y is not undefined: # collaboration
+            if tag.title in y.share.files.keys():
+                y.share.files.get(tag.title).unbindCodeMirror(editor)
+        new_session = CodeMirror.Doc('')
+        window.files[file] = new_session
+        editor.swapDoc(new_session)
+        editor.setOption('mode', 'python')
+
+    def closetab(e=None, filename=None):
+        if len(window.files) > 1:
+            active_title = tag.title
+            if filename is None:
+                filename = tag.title
+            index = list(window.files).index(filename)
+            del window.files[filename]
+            if window.y is not undefined: # collaboration
+                if e is not None:
+                    if filename in y.share.files.keys():
+                        y.share.files.get(filename).unbindCodeMirrorAll()
+                        y.share.files.delete(filename)
+                else:
+                    if filename in y.share.files.keys():
+                        y.share.files.get(filename).unbindCodeMirrorAll()
+            if filename == active_title:
+                if index > 0:
+                    index = index - 1
+                tag.title = list(window.files)[index]
+            if '__stdlib__/' + filename in RapydScript.file_data:
+                del RapydScript.file_data['__stdlib__/' + filename]
+            if tag.title is not active_title:
+                editor.swapDoc(window.files[tag.title])
+                editor.setOption('mode', 'python')
+            if window.y is not undefined: # collaboration
+                if filename == active_title:
+                    if tag.title in y.share.files.keys():
+                        y.share.files.get(tag.title).bindCodeMirror(editor)
+            tag.update()
+            editor.focus()
+    tag.closetab = closetab
+
+    def get_new_untitled(file='untitled.pyj'):
+        basename = file.substr(0, file.indexOf('.'))
+        extension = file.substr(file.indexOf('.'))
+        i = 1
+        while file in files:
+            file = basename + "-" + i + extension
+            i = i + 1
+        return file
+
+    def newtab(e):
+        file = get_new_untitled()
+        new_session = CodeMirror.Doc('')
+        window.files[file] = new_session
+        editor.swapDoc(new_session)
+        editor.setOption('mode', 'python')
+        editor.focus()
+        if window.y is not undefined: # collaboration
+            if tag.title in y.share.files.keys():
+                y.share.files.get(tag.title).unbindCodeMirror(editor)
+            y.share.files.set(file, Y.Text)
+            y.share.files.get(file).bindCodeMirror(editor)
+        tag.title = file
+        tag.update()
+    tag.newtab = newtab
+
+    def toggle_tray():
+        if getComputedStyle(iframe).display == 'none':
+            event_bus.trigger("traybutton-open")
+        else:
+            event_bus.trigger("traybutton-close")
+    event_bus.on("toggle-tray", toggle_tray)
+    this.refs.traybutton.onclick = toggle_tray
+
+    def toggle_tray_or_restore():
+        ''' Used by Android `Back` button '''
+        toolbar_div = document.getElementById('main-toolbar')
+        if getComputedStyle(toolbar_div).display == 'none':
+            r = document.getElementById('restore-button')
+            r.click()
+        else:
+            toggle_tray()
+    window.onbackbutton = toggle_tray_or_restore
+
+    def traybutton_close():
+        iframe.style.display = 'none'
+        iframe.style.width = '0%'
+        tag.refs.split.style.width = '100%'
+        tag.refs.traybutton.style.backgroundImage = "url(icons/tray-show.svg)"
+        tag.update()
+        editor.scrollIntoView()
+    event_bus.on("traybutton-close", traybutton_close)
+
+    def traybutton_open():
+        iframe.style.display = 'block'
+        iframe.style.width = '50%'
+        iframe.style.height = '100%'
+        tag.refs.split.style.width = '50%'
+        tag.refs.traybutton.style.backgroundImage = "url(icons/tray-hide.svg)"
+        tag.update()
+        editor.scrollIntoView()
+    event_bus.on("traybutton-open", traybutton_open)
+
+    def run():
+        window.state = 'run'
+        event_bus.trigger("traybutton-open")
+        riot.update()
+        event_bus.trigger("activity-save")
+        js_output = compile()
+        script = iframe.contentDocument.createElement('script')
+        script.innerHTML = js_output
+        def write_script():
+            iframe.contentDocument.body.appendChild(script)
+            iframe.contentDocument.close()
+        iframe.onload = write_script
+        iframe.contentWindow.location = 'template.html'
+        return iframe
+    event_bus.on("run-code", run)
+
+    def break_code():
+        iwindow = iframe.contentWindow
+        # Set a fake timeout to get the highest timeout id
+        highestTimeoutId = iwindow.setTimeout(';')
+        for i in range(0, highestTimeoutId):
+            iwindow.clearTimeout(i)
+        highestIntervalId = iwindow.setInterval(';')
+        for i in range(0, highestIntervalId):
+            iwindow.clearInterval(i)
+        iwindow.stop()
+        iwindow.document.body.style.opacity = '0.5'
+        inputs = iwindow.document.getElementsByTagName('input')
+        for i in inputs:
+            i.disabled = True
+        iwindow.addEventListener ('click', def(ev):
+            ev.stopPropagation()
+        , True)
+    event_bus.on("break-code", break_code)
+
+    def clear_output():
+        iframe.contentWindow.location = 'about:blank'
+    event_bus.on("clear-output", clear_output)
+
+    def serialize():
+        result = {}
+        for file in window.files:
+            result[file] = window.files[file].getValue()
+        return JSON.stringify(result)
+
+    def save_without_datastore():
+        localStorage.jappySession = serialize()
+
+        if location.hash:
+            url_base = location.protocol
+            address = url_base + '//' + location.host + '/dav'
+            if window.fs is undefined:
+                window.fs = new WebDAV.Fs(address)
+
+            def file_written(ev):
+                pass
+            path = location.hash.slice(1)
+            for item in window.files:
+                data = window.files[item].getValue() 
+                if data:
+                    filepath = '/' + path + '/' + item
+                    fs.file(filepath).write(data, "text/plain; charset=UTF-8",
+                                                                file_written)
+
+    def save(activity=window.activity):
+        if activity is not undefined:
+            datastore = activity.getDatastoreObject()
+        if activity and datastore.objectId is not undefined:
+            datastore.setDataAsText(serialize())
+            def check_save(error):
+                if error is None:
+                    console.log("Saved")
+                else:
+                    console.log("NOT Saved")
+            datastore.save(check_save)
+        else:
+            save_without_datastore()
+    event_bus.on("activity-save", save)
+
+    def example_load(file, execute=True):
+        if file in window.files:
+            tag.title = file
+            editor.swapDoc(window.files[file])
+            editor.setOption('mode', 'python')
+            tag.update()
+            editor.focus()
+            if execute:
+                if window.innerWidth > 720:
+                    event_bus.trigger('run-code')
+                else:
+                    event_bus.trigger('run-fullscreen')
+            return
+
+        url_base = window.location.protocol
+        require(['text!examples/' + file], def(data):
+            new_session = CodeMirror.Doc(data)
+            files[file] = new_session
+            editor.swapDoc(new_session)
+            editor.setOption('mode', 'python')
+            if window.y is not undefined: # collaboration
+                y.share.files.get(tag.title).unbindCodeMirror(editor)
+                y.share.files.set(file, Y.Text)
+                y.share.files.get(file).insert(0, data)
+                y.share.files.get(file).bindCodeMirror(editor)
+            tag.title = file
+            tag.update()
+            editor.focus()
+            if execute:
+                if window.innerWidth > 720:
+                    event_bus.trigger('run-code')
+                else:
+                    event_bus.trigger('run-fullscreen')
+        )
+    event_bus.on("example-load", example_load)
+
+    def new_from_data(data, filename=None, overwrite=False):
+        if window.y is not undefined: # collaboration
+            if tag.title in y.share.files.keys():
+                y.share.files.get(tag.title).unbindCodeMirror(editor)
+        if filename in window.files:
+            tag.title = filename
+            editor.swapDoc(window.files[filename])
+            editor.setOption('mode', 'python')
+            tag.update()
+            if window.y is not undefined: # collaboration
+                if filename not in y.share.files.keys():
+                    y.share.files.set(filename, Y.Text)
+                y.share.files.get(filename).bindCodeMirror(editor)
+            if overwrite:
+                window.files[filename].setValue(data)
+            editor.focus()
+            return
+        if filename is None:
+            filename = get_new_untitled()
+        new_session = CodeMirror.Doc(data)
+        files[filename] = new_session
+        if overwrite:
+            editor.swapDoc(new_session)
+            editor.setOption('mode', 'python')
+            if window.y is not undefined: # collaboration
+                if filename not in y.share.files.keys():
+                    y.share.files.set(filename, Y.Text)
+                    y.share.files.get(filename).insert(0, data)
+                y.share.files.get(filename).bindCodeMirror(editor)
+            if tag.title is not undefined:
+                if tag.title[:8]==('untitled') \
+                            and len(window.files[tag.title].getValue())==0:
+                    del window.files[tag.title]
+                    if window.y is not undefined: # collaboration
+                        if tag.title in y.share.files.keys():
+                            y.share.files.delete(tag.title)
+            tag.title = filename
+        tag.update()
+        editor.focus()
+    event_bus.on("new-from-data", new_from_data)
+
+    def process_file():
+        file = tag.refs.file_input.files[0]
+        reader = new FileReader()
+
+        if file.type=='application/zip':
+            JSZip.loadAsync(file).then(def(zip):
+                zip.forEach(def(relpath, zippedfile):
+                    if relpath[:4]==('src/') and relpath!='src/':
+                        if relpath[-4:]=='.pyj':
+                            basepath = relpath[4:]
+                            zippedfile.async('text').then(def(data):
+                                if basepath not in window.files:
+                                    new_session = CodeMirror.Doc(str(data))
+                                    window.files[basepath] = new_session
+                                else:
+                                    window.files[basepath].setValue(str(data))
+                                if window.y is not undefined: # collaboration
+                                    if basepath not in y.share.files.keys():
+                                        y.share.files.set(basepath, Y.Text)
+                                        y.share.files.get(basepath).insert(0, str(data))
+                            )
+                )
+                tag.update()
+            )
+        else:
+            reader.onload = (def():
+                return def(evt):
+                    new_session = CodeMirror.Doc(evt.target.result)
+                    window.files[file.name] = new_session
+                    if window.y is not undefined: # collaboration
+                        y.share.files.set(file.name, Y.Text)
+                        y.share.files.get(file.name).insert(0, evt.target.result)
+                    tag.update()
+            )()
+            reader.readAsText(file)
+    tag.refs.file_input.onchange = process_file
+
+    def import_file():
+        tag.refs.file_input.click()
+    event_bus.on("import-file", import_file)
+
+    def restore(e):
+        code_editor = tag.refs.split
+        code_editor.style.display = 'block'
+        toolbar = document.getElementById('main-toolbar')
+        toolbar.style.display = 'block'
+        e.target.parentNode.removeChild(e.target)
+        toolbar_height = window.getComputedStyle(toolbar)['height']
+        canvas = document.getElementById('canvas')
+        canvas.style.top = toolbar_height
+
+        tabs_div = document.getElementById('tabs')
+        tabs_style = window.getComputedStyle(tabs_div)
+        target_size = window.innerHeight - int(toolbar_height) - int(tabs_style.height)
+        if window.innerWidth > 420:
+            iframe.style.width='50%'
+            editor.setSize( window.innerWidth / 2, target_size )
+        else:
+            window.state = 'clean'
+            event_bus.trigger("clear-output")
+            event_bus.trigger('traybutton-close')
+            riot.update()
+
+    def run_fullscreen(execute=True):
+        code_editor = tag.refs.split
+        code_editor.style.display = 'none'
+        toolbar = document.getElementById('main-toolbar')
+        toolbar.style.display = 'none'
+        canvas = document.getElementById('canvas')
+        canvas.style.top = '0'
+        if execute:
+            run()
+
+        restore_button = document.createElement('button')
+        restore_button.id = "restore-button"
+        restore_button.onclick = restore
+        restore_button.style.opacity = '0.5'
+        restore_button.style.position = 'fixed'
+        restore_button.style.right = restore_button.style.top = '0'
+        restore_button.style.padding = '0px'
+        restore_button.style['border-radius'] = '0px'
+        restore_button.style['background-image'] = 'url(icons/view-return.svg)'
+        restore_button.style['background-repeat'] = 'no-repeat'
+        restore_button.style['background-position'] = 'center'
+        restore_button.style.width = restore_button.style.height = '55px'
+        document.body.appendChild(restore_button)
+
+        iframe.style.width='100%'
+    event_bus.on("run-fullscreen", run_fullscreen)
+
+    def save_zip():
+        event_bus.trigger("activity-save", activity)
+        # TODO get activity palette object title
+        bundle_name = tag.title[:tag.title.indexOf('.')]
+
+        js_output = compile()
+
+        url_base = window.location.protocol
+        require(['text!template'], def(data):
+            script = iframe.contentDocument.createElement('script')
+            script.innerHTML = js_output
+            enc_js = script.outerHTML + '\n'
+            closing_tag = data.indexOf('</body>')
+            html = data[:closing_tag] + enc_js + data[closing_tag:]
+
+            external_files = []
+            for match in re.findall('script.*src="(.*)"', data):
+                ref = 'text!' + match[match.indexOf('=')+2:-1]
+                ref = ref.replace('lib/', '')
+                external_files.append(ref)
+
+            zip = new JSZip()
+            zip.file('index.html', html)
+            for name in window.files:
+                zip.file('src/' + name, window.files[name].getValue())
+            require(external_files, def(*data):
+                index = 0
+                for file in external_files:
+                    file = file[5:] # remove 'text!'
+                    if '/' not in file:
+                        file = 'lib/' + file
+                    zip.file(file, data[index])
+                    index = index + 1
+                zip.generateAsync({'type':'blob'}).then(def(blob):
+                    saveAs(blob, bundle_name + '.zip')
+                )
+            )
+        )
+    event_bus.on("save-as-zip", save_zip)
+
+    def reset_collab():
+        close_all()
+        if window.y is not undefined: # collaboration
+            y.destroy()
+            del window.y
+        restore_last_session()
+        event_bus.trigger('update-workspace-menu')
+    window.onhashchange = reset_collab
+
+    def filter_latest(files):
+        ''' This will check files and try to determine by modification time
+        that they were saved together. It's a "clever" and likely broken way
+        to avoid otherwise coding metadata to record session of open files, 
+        etc.
+        '''
+        files.sort(def(a,b): # Latest first
+                       if a.mtime > b.mtime:
+                           return -1
+                       else:
+                           return 1
+                      )
+        return files.reduce(def(result, item):
+                prev = result[0]
+                if prev is undefined:
+                    return result.concat(item)
+                elif item.mtime.getTime() is prev.mtime.getTime():
+                    return result.concat(item)
+                else:
+                    ''' We filter out those that don't have the same mtime
+                    as the first entry.'''
+                    return result
+            , [])
+
+    def init_collab(address=None):
+        if address is None:
+                address = location.host
+        path = location.hash.slice(1)
+
+        Y({'db'       : { 'name': 'memory'},
+           'connector': { 'name': 'websockets-client',
+                          'room': path,
+                          'url':  'ws://' + address },
+            'share'   : { 'files': 'Map' }}).then(  
+                def(y):
+                    this.y = y
+                    for filename in window.files:
+                        if filename[:8]==('untitled') \
+                                and len(window.files[filename].getValue())==0:
+                            del window.files[filename]
+                            if '__stdlib__/' + filename in RapydScript.file_data:
+                                del RapydScript.file_data['__stdlib__/' + filename]
+                            continue
+                        if filename not in y.share.files.keys():
+                            y.share.files.set(filename, Y.Text);
+                            y.share.files.get(filename).insert(0, 
+                                                    window.files[filename].getValue())
+                    for filename in y.share.files.keys():
+                        if filename not in window.files:
+                            text = y.share.files.get(filename).toString()
+                            new_session = CodeMirror.Doc(text)
+                            window.files[filename] = new_session
+                    if tag.title not in y.share.files.keys():
+                        tag.title = list(y.share.files.keys())[0]
+                    tag.update()
+                    y.share.files.get(tag.title).bindCodeMirror(editor)
+                    y.share.files.observe(  def(event): 
+                                if event.type == 'delete':
+                                    if event.name in window.files:
+                                        closetab(e=None, filename=event.name)
+                                elif event.type == 'add':
+                                    if event.name not in window.files:
+                                        text = event.object.toString()
+                                        new_session = CodeMirror.Doc(text)
+                                        window.files[event.name] = new_session
+                                tag.update()
+                        )
+                    y.connector.whenSynced( def():
+                                           console.log('Synchronized.')
+                                )
+        )
+
+    this.editor = editor
+    window.editor = editor
+    window.init_collab = init_collab
+    editor.focus()
+
+this.on('mount', init)
+
+</script>
+</code-editor>
