@@ -303,7 +303,6 @@ def init():
             if tag.title in y.share.files.keys():
                 y.share.files.get(tag.title).unbindCodeMirror(editor)
         new_session = CodeMirror.Doc('')
-        window.files[file] = new_session
         editor.swapDoc(new_session)
         editor.setOption('mode', 'python')
 

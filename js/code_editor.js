@@ -1760,7 +1760,6 @@ function init() {
             }
         }
         new_session = CodeMirror.Doc("");
-        (ρσ_expr_temp = window.files)[(typeof file === "number" && file < 0) ? ρσ_expr_temp.length + file : file] = new_session;
         editor.swapDoc(new_session);
         editor.setOption("mode", "python");
     };
