@@ -201,7 +201,6 @@ def init():
                 check_load(None, None, savedSession)
         tag.update()
         window.activity = activity
-        # init_collab()
     event_bus.on("activity-ready", load_datastore)
 
     def update_tabs():
@@ -227,10 +226,25 @@ def init():
     window.addEventListener("resize", update_tabs)
     window.addEventListener("orientationchange", update_tabs)
 
-    def make_do(): # without datastore
-        tag.update()
-        # init_collab()
-    event_bus.on("activity-not-ready", make_do)
+    def restore_last_session():
+        init_collab()
+        if location.hash:
+            url_base = location.protocol
+            address = url_base + '//' + location.host + '/dav'
+            if window.fs is undefined:
+                window.fs = new WebDAV.Fs(address)
+
+            path = location.hash.slice(1)
+            def got_files(files):
+                recent_files = filter_latest(files)
+                for item in recent_files:
+                    window.fs.file('/' + path + '/' + item.name).read(def(data):
+                            event_bus.trigger('new-from-data', data, item.name)                              
+                    )
+            fs.dir('/' + path).children(got_files)
+        else:
+            tag.update()
+    event_bus.on("activity-not-ready", restore_last_session)
 
     def switchtab(e=None, filename=None):
         if filename is None:
@@ -283,6 +297,16 @@ def init():
         tag.update()
     tag.switchtab = switchtab
 
+    def close_all():
+        window.files = []
+        if window.y is not undefined: # collaboration
+            if tag.title in y.share.files.keys():
+                y.share.files.get(tag.title).unbindCodeMirror(editor)
+        new_session = CodeMirror.Doc('')
+        window.files[file] = new_session
+        editor.swapDoc(new_session)
+        editor.setOption('mode', 'python')
+
     def closetab(e=None, filename=None):
         if len(window.files) > 1:
             active_title = tag.title
@@ -295,19 +319,22 @@ def init():
                     if filename in y.share.files.keys():
                         y.share.files.get(filename).unbindCodeMirrorAll()
                         y.share.files.delete(filename)
+                else:
+                    if filename in y.share.files.keys():
+                        y.share.files.get(filename).unbindCodeMirrorAll()
             if filename == active_title:
                 if index > 0:
                     index = index - 1
                 tag.title = list(window.files)[index]
             if '__stdlib__/' + filename in RapydScript.file_data:
                 del RapydScript.file_data['__stdlib__/' + filename]
+            if tag.title is not active_title:
+                editor.swapDoc(window.files[tag.title])
+                editor.setOption('mode', 'python')
             if window.y is not undefined: # collaboration
                 if filename == active_title:
                     if tag.title in y.share.files.keys():
                         y.share.files.get(tag.title).bindCodeMirror(editor)
-            if tag.title is not active_title:
-                editor.swapDoc(window.files[tag.title])
-                editor.setOption('mode', 'python')
             tag.update()
             editor.focus()
     tag.closetab = closetab
@@ -422,6 +449,22 @@ def init():
     def save_without_datastore():
         localStorage.jappySession = serialize()
 
+        if location.hash:
+            url_base = location.protocol
+            address = url_base + '//' + location.host + '/dav'
+            if window.fs is undefined:
+                window.fs = new WebDAV.Fs(address)
+
+            def file_written(ev):
+                pass
+            path = location.hash.slice(1)
+            for item in window.files:
+                data = window.files[item].getValue() 
+                if data:
+                    filepath = '/' + path + '/' + item
+                    fs.file(filepath).write(data, "text/plain; charset=UTF-8",
+                                                                file_written)
+
     def save(activity=window.activity):
         if activity is not undefined:
             datastore = activity.getDatastoreObject()
@@ -472,6 +515,47 @@ def init():
                     event_bus.trigger('run-fullscreen')
         )
     event_bus.on("example-load", example_load)
+
+    def new_from_data(data, filename=None, overwrite=False):
+        if window.y is not undefined: # collaboration
+            if tag.title in y.share.files.keys():
+                y.share.files.get(tag.title).unbindCodeMirror(editor)
+        if filename in window.files:
+            tag.title = filename
+            editor.swapDoc(window.files[filename])
+            editor.setOption('mode', 'python')
+            tag.update()
+            if window.y is not undefined: # collaboration
+                if filename not in y.share.files.keys():
+                    y.share.files.set(filename, Y.Text)
+                y.share.files.get(filename).bindCodeMirror(editor)
+            if overwrite:
+                window.files[filename].setValue(data)
+            editor.focus()
+            return
+        if filename is None:
+            filename = get_new_untitled()
+        new_session = CodeMirror.Doc(data)
+        files[filename] = new_session
+        if overwrite:
+            editor.swapDoc(new_session)
+            editor.setOption('mode', 'python')
+            if window.y is not undefined: # collaboration
+                if filename not in y.share.files.keys():
+                    y.share.files.set(filename, Y.Text)
+                    y.share.files.get(filename).insert(0, data)
+                y.share.files.get(filename).bindCodeMirror(editor)
+            if tag.title is not undefined:
+                if tag.title[:8]==('untitled') \
+                            and len(window.files[tag.title].getValue())==0:
+                    del window.files[tag.title]
+                    if window.y is not undefined: # collaboration
+                        if tag.title in y.share.files.keys():
+                            y.share.files.delete(tag.title)
+            tag.title = filename
+        tag.update()
+        editor.focus()
+    event_bus.on("new-from-data", new_from_data)
 
     def process_file():
         file = tag.refs.file_input.files[0]
@@ -603,13 +687,47 @@ def init():
         )
     event_bus.on("save-as-zip", save_zip)
 
+    def reset_collab():
+        close_all()
+        if window.y is not undefined: # collaboration
+            y.destroy()
+            del window.y
+        restore_last_session()
+        event_bus.trigger('update-workspace-menu')
+    window.onhashchange = reset_collab
+
+    def filter_latest(files):
+        ''' This will check files and try to determine by modification time
+        that they were saved together. It's a "clever" and likely broken way
+        to avoid otherwise coding metadata to record session of open files, 
+        etc.
+        '''
+        files.sort(def(a,b): # Latest first
+                       if a.mtime > b.mtime:
+                           return -1
+                       else:
+                           return 1
+                      )
+        return files.reduce(def(result, item):
+                prev = result[0]
+                if prev is undefined:
+                    return result.concat(item)
+                elif item.mtime.getTime() is prev.mtime.getTime():
+                    return result.concat(item)
+                else:
+                    ''' We filter out those that don't have the same mtime
+                    as the first entry.'''
+                    return result
+            , [])
+
     def init_collab(address=None):
         if address is None:
                 address = location.host
+        path = location.hash.slice(1)
 
         Y({'db'       : { 'name': 'memory'},
            'connector': { 'name': 'websockets-client',
-                          'room': 'Jappy',
+                          'room': path,
                           'url':  'ws://' + address },
             'share'   : { 'files': 'Map' }}).then(  
                 def(y):
@@ -645,6 +763,9 @@ def init():
                                         window.files[event.name] = new_session
                                 tag.update()
                         )
+                    y.connector.whenSynced( def():
+                                           console.log('Synchronized.')
+                                )
         )
 
     this.editor = editor

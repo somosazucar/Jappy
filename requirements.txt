@@ -1,3 +1,4 @@
 WsgiDAV
 Flask
 Flask-SocketIO
+wsgicors

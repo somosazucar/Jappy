@@ -21,6 +21,9 @@
   #main-toolbar #example-button {
       background-image: url(icons/load-example.svg);
   }
+  #main-toolbar #workspace-button {
+      background-image: url(icons/user-documents.svg);
+  }
   #main-toolbar #start-button {
       background-image: url(icons/activity-start.svg);
   }
@@ -40,6 +43,8 @@
 
   <hr />
   <button class="toolbutton" id="example-button" title="Load an example" ref="examplebutton"></button>
+
+  <button show={ location.hash } class="toolbutton" id="workspace-button" title="Workspace" ref="workspacebutton"></button>
   <hr />
 
   <button class="toolbutton { colored: window.state!='run' }" id="run-button" title="Execute" ref="runbutton"></button>
@@ -59,9 +64,68 @@
 
 <script type="text/Rapyd">
 
+from elementmaker import E
 tag = this
+url_base = location.protocol
+address = url_base + '//' + location.host + '/dav'
+if location.hash:
+    window.fs = new WebDAV.Fs(address)
+
 examples = ['welcome.pyj', 'memorize.pyj', 'mandala.pyj', 'input.pyj', 'repl.pyj', 'unicode.pyj']
 window.state = 'clean'
+
+def load_file(ev):
+    tag.workspace_palette.popDown()
+    target_file = ev.target.getAttribute('data-uri')
+    path = location.hash.slice(1)
+    fs.file('/' + path + '/' + target_file).read(def(data):
+            event_bus.trigger('new-from-data', data, target_file, True)
+    )
+
+def update_workspace_menu():
+    if window.fs is undefined:
+        return
+    path = location.hash.slice(1)
+    def list_files(found_files):
+        found_files.sort(def(a,b): # Latest first
+                       if a.mtime > b.mtime:
+                           return -1
+                       else:
+                           return 1
+                      )
+        items = []
+        palette = tag.workspace_palette.getPalette()
+        container = palette.getElementsByClassName('container')[0]
+        container.innerHTML = ''
+        for file in found_files:
+            if file.name[0]=='.':
+                continue
+            row = document.createElement('div')
+            row.classList.add('menu')
+            item = document.createElement('button')
+            item.classList.add('icon')
+            span = document.createElement('span')
+            span.classList.add('pyj')
+            text = document.createTextNode(str(file.name))
+            item.appendChild(span)
+            item.appendChild(text)
+            item.setAttribute('data-uri', file.name)
+            item.addEventListener('click', load_file)
+            row.appendChild(item)
+            items.append(row)
+        items.append(E.hr(class_='header-separator'))
+        browse_button = E.button(class_='icon', E.span(class_='folder'), 'Browse...')
+        browse_button.onclick = def():
+            tag.workspace_palette.popDown()
+            window.open('dav://' + location.host + '/dav/' + path)
+        lastrow = E.div(class_='menu', browse_button)
+        items.append(lastrow)
+        tag.workspace_palette.setContent(items)
+    def try_make_dir(body, existed_previously):
+        fs.dir('/' + path).children(list_files)
+    fs.dir('/' + path).mkdir(try_make_dir)
+tag.update_workspace_menu = update_workspace_menu
+event_bus.on("update-workspace-menu", update_workspace_menu)
 
 def init():
 
@@ -95,8 +159,8 @@ def init():
     def enable_standalone():
         tag.refs.stopbutton.onclick = def():
             event_bus.trigger("activity-save", activity)
-            base_url = window.location.protocol + '//' + window.location.host + '/'
-            window.location = base_url + "shutdown"
+            base_url = location.protocol + '//' + location.host + '/'
+            fetch (base_url + "shutdown")
     event_bus.on("enable-standalone", enable_standalone)
 
     require(["sugar-web/graphics/palette"],
@@ -121,6 +185,9 @@ def init():
                 row.appendChild(item)
                 items.append(row)
             tag.example_palette.setContent(items)
+
+            tag.workspace_palette = new palette.Palette(tag.refs.workspacebutton, 'Workspace')
+            update_workspace_menu()
 
             tag.export_palette = new palette.Palette(tag.refs.exportbutton, 'Export')
             class as_zip:

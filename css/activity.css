@@ -11,6 +11,9 @@ body, html {
 button.icon span.pyj {
     background-image: url(../activity/activity-icon.svg);
 }
+button.icon span.folder {
+    background-image: url(../icons/user-documents.svg);
+}
 button.icon span.zip {
     background-image: url(../icons/zip-archive.svg);
 }

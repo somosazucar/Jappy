@@ -1624,11 +1624,44 @@ function init() {
     this.on("update", update_tabs);
     window.addEventListener("resize", update_tabs);
     window.addEventListener("orientationchange", update_tabs);
-    function make_do() {
-        tag.update();
+    function restore_last_session() {
+        var url_base, address, path;
+        init_collab();
+        if (location.hash) {
+            url_base = location.protocol;
+            address = url_base + "//" + location.host + "/dav";
+            if (window.fs === undefined) {
+                window.fs = new WebDAV.Fs(address);
+            }
+            path = location.hash.slice(1);
+            function got_files(files) {
+                var recent_files, item;
+                recent_files = filter_latest(files);
+                var ρσ_Iter2 = ρσ_Iterable(recent_files);
+                for (var ρσ_Index2 = 0; ρσ_Index2 < ρσ_Iter2.length; ρσ_Index2++) {
+                    item = ρσ_Iter2[ρσ_Index2];
+                    window.fs.file("/" + path + "/" + item.name).read((function() {
+                        var ρσ_anonfunc = function (data) {
+                            event_bus.trigger("new-from-data", data, item.name);
+                        };
+                        if (!ρσ_anonfunc.__argnames__) Object.defineProperties(ρσ_anonfunc, {
+                            __argnames__ : {value: ["data"]}
+                        });
+                        return ρσ_anonfunc;
+                    })());
+                }
+            };
+            if (!got_files.__argnames__) Object.defineProperties(got_files, {
+                __argnames__ : {value: ["files"]}
+            });
+
+            fs.dir("/" + path).children(got_files);
+        } else {
+            tag.update();
+        }
     };
 
-    event_bus.on("activity-not-ready", make_do);
+    event_bus.on("activity-not-ready", restore_last_session);
     function switchtab() {
         var e = (arguments[0] === undefined || ( 0 === arguments.length-1 && arguments[arguments.length-1] !== null && typeof arguments[arguments.length-1] === "object" && arguments[arguments.length-1] [ρσ_kwargs_symbol] === true)) ? switchtab.__defaults__.e : arguments[0];
         var filename = (arguments[1] === undefined || ( 1 === arguments.length-1 && arguments[arguments.length-1] !== null && typeof arguments[arguments.length-1] === "object" && arguments[arguments.length-1] [ρσ_kwargs_symbol] === true)) ? switchtab.__defaults__.filename : arguments[1];
@@ -1718,6 +1751,20 @@ function init() {
     });
 
     tag.switchtab = switchtab;
+    function close_all() {
+        var new_session;
+        window.files = ρσ_list_decorate([]);
+        if (window.y !== undefined) {
+            if (ρσ_in(tag.title, y.share.files.keys())) {
+                y.share.files.get(tag.title).unbindCodeMirror(editor);
+            }
+        }
+        new_session = CodeMirror.Doc("");
+        (ρσ_expr_temp = window.files)[(typeof file === "number" && file < 0) ? ρσ_expr_temp.length + file : file] = new_session;
+        editor.swapDoc(new_session);
+        editor.setOption("mode", "python");
+    };
+
     function closetab() {
         var e = (arguments[0] === undefined || ( 0 === arguments.length-1 && arguments[arguments.length-1] !== null && typeof arguments[arguments.length-1] === "object" && arguments[arguments.length-1] [ρσ_kwargs_symbol] === true)) ? closetab.__defaults__.e : arguments[0];
         var filename = (arguments[1] === undefined || ( 1 === arguments.length-1 && arguments[arguments.length-1] !== null && typeof arguments[arguments.length-1] === "object" && arguments[arguments.length-1] [ρσ_kwargs_symbol] === true)) ? closetab.__defaults__.filename : arguments[1];
@@ -1743,6 +1790,10 @@ function init() {
                         y.share.files.get(filename).unbindCodeMirrorAll();
                         y.share.files.delete(filename);
                     }
+                } else {
+                    if (ρσ_in(filename, y.share.files.keys())) {
+                        y.share.files.get(filename).unbindCodeMirrorAll();
+                    }
                 }
             }
             if ((filename === active_title || typeof filename === "object" && ρσ_equals(filename, active_title))) {
@@ -1754,16 +1805,16 @@ function init() {
             if (ρσ_in("__stdlib__/" + filename, RapydScript.file_data)) {
                 ρσ_delitem(RapydScript.file_data, ("__stdlib__/" + filename));
             }
+            if (tag.title !== active_title) {
+                editor.swapDoc((ρσ_expr_temp = window.files)[ρσ_bound_index(tag.title, ρσ_expr_temp)]);
+                editor.setOption("mode", "python");
+            }
             if (window.y !== undefined) {
                 if ((filename === active_title || typeof filename === "object" && ρσ_equals(filename, active_title))) {
                     if (ρσ_in(tag.title, y.share.files.keys())) {
                         y.share.files.get(tag.title).bindCodeMirror(editor);
                     }
                 }
-            }
-            if (tag.title !== active_title) {
-                editor.swapDoc((ρσ_expr_temp = window.files)[ρσ_bound_index(tag.title, ρσ_expr_temp)]);
-                editor.setOption("mode", "python");
             }
             tag.update();
             editor.focus();
@@ -1889,21 +1940,21 @@ function init() {
         var iwindow, highestTimeoutId, i, highestIntervalId, inputs;
         iwindow = iframe.contentWindow;
         highestTimeoutId = iwindow.setTimeout(";");
-        for (var ρσ_Index2 = 0; ρσ_Index2 < highestTimeoutId; ρσ_Index2++) {
-            i = ρσ_Index2;
+        for (var ρσ_Index3 = 0; ρσ_Index3 < highestTimeoutId; ρσ_Index3++) {
+            i = ρσ_Index3;
             iwindow.clearTimeout(i);
         }
         highestIntervalId = iwindow.setInterval(";");
-        for (var ρσ_Index3 = 0; ρσ_Index3 < highestIntervalId; ρσ_Index3++) {
-            i = ρσ_Index3;
+        for (var ρσ_Index4 = 0; ρσ_Index4 < highestIntervalId; ρσ_Index4++) {
+            i = ρσ_Index4;
             iwindow.clearInterval(i);
         }
         iwindow.stop();
         iwindow.document.body.style.opacity = "0.5";
         inputs = iwindow.document.getElementsByTagName("input");
-        var ρσ_Iter4 = ρσ_Iterable(inputs);
-        for (var ρσ_Index4 = 0; ρσ_Index4 < ρσ_Iter4.length; ρσ_Index4++) {
-            i = ρσ_Iter4[ρσ_Index4];
+        var ρσ_Iter5 = ρσ_Iterable(inputs);
+        for (var ρσ_Index5 = 0; ρσ_Index5 < ρσ_Iter5.length; ρσ_Index5++) {
+            i = ρσ_Iter5[ρσ_Index5];
             i.disabled = true;
         }
         iwindow.addEventListener("click", (function() {
@@ -1926,16 +1977,40 @@ function init() {
     function serialize() {
         var result, file;
         result = {};
-        var ρσ_Iter5 = ρσ_Iterable(window.files);
-        for (var ρσ_Index5 = 0; ρσ_Index5 < ρσ_Iter5.length; ρσ_Index5++) {
-            file = ρσ_Iter5[ρσ_Index5];
+        var ρσ_Iter6 = ρσ_Iterable(window.files);
+        for (var ρσ_Index6 = 0; ρσ_Index6 < ρσ_Iter6.length; ρσ_Index6++) {
+            file = ρσ_Iter6[ρσ_Index6];
             result[(typeof file === "number" && file < 0) ? result.length + file : file] = (ρσ_expr_temp = window.files)[(typeof file === "number" && file < 0) ? ρσ_expr_temp.length + file : file].getValue();
         }
         return JSON.stringify(result);
     };
 
     function save_without_datastore() {
+        var url_base, address, path, data, filepath, item;
         localStorage.jappySession = serialize();
+        if (location.hash) {
+            url_base = location.protocol;
+            address = url_base + "//" + location.host + "/dav";
+            if (window.fs === undefined) {
+                window.fs = new WebDAV.Fs(address);
+            }
+            function file_written(ev) {
+            };
+            if (!file_written.__argnames__) Object.defineProperties(file_written, {
+                __argnames__ : {value: ["ev"]}
+            });
+
+            path = location.hash.slice(1);
+            var ρσ_Iter7 = ρσ_Iterable(window.files);
+            for (var ρσ_Index7 = 0; ρσ_Index7 < ρσ_Iter7.length; ρσ_Index7++) {
+                item = ρσ_Iter7[ρσ_Index7];
+                data = (ρσ_expr_temp = window.files)[(typeof item === "number" && item < 0) ? ρσ_expr_temp.length + item : item].getValue();
+                if (data) {
+                    filepath = "/" + path + "/" + item;
+                    fs.file(filepath).write(data, "text/plain; charset=UTF-8", file_written);
+                }
+            }
+        }
     };
 
     function save() {
@@ -2036,6 +2111,78 @@ function init() {
     });
 
     event_bus.on("example-load", example_load);
+    function new_from_data() {
+        var data = ( 0 === arguments.length-1 && arguments[arguments.length-1] !== null && typeof arguments[arguments.length-1] === "object" && arguments[arguments.length-1] [ρσ_kwargs_symbol] === true) ? undefined : arguments[0];
+        var filename = (arguments[1] === undefined || ( 1 === arguments.length-1 && arguments[arguments.length-1] !== null && typeof arguments[arguments.length-1] === "object" && arguments[arguments.length-1] [ρσ_kwargs_symbol] === true)) ? new_from_data.__defaults__.filename : arguments[1];
+        var overwrite = (arguments[2] === undefined || ( 2 === arguments.length-1 && arguments[arguments.length-1] !== null && typeof arguments[arguments.length-1] === "object" && arguments[arguments.length-1] [ρσ_kwargs_symbol] === true)) ? new_from_data.__defaults__.overwrite : arguments[2];
+        var ρσ_kwargs_obj = arguments[arguments.length-1];
+        if (ρσ_kwargs_obj === null || typeof ρσ_kwargs_obj !== "object" || ρσ_kwargs_obj [ρσ_kwargs_symbol] !== true) ρσ_kwargs_obj = {};
+        if (Object.prototype.hasOwnProperty.call(ρσ_kwargs_obj, "filename")){
+            filename = ρσ_kwargs_obj.filename;
+        }
+        if (Object.prototype.hasOwnProperty.call(ρσ_kwargs_obj, "overwrite")){
+            overwrite = ρσ_kwargs_obj.overwrite;
+        }
+        var new_session;
+        if (window.y !== undefined) {
+            if (ρσ_in(tag.title, y.share.files.keys())) {
+                y.share.files.get(tag.title).unbindCodeMirror(editor);
+            }
+        }
+        if (ρσ_in(filename, window.files)) {
+            tag.title = filename;
+            editor.swapDoc((ρσ_expr_temp = window.files)[(typeof filename === "number" && filename < 0) ? ρσ_expr_temp.length + filename : filename]);
+            editor.setOption("mode", "python");
+            tag.update();
+            if (window.y !== undefined) {
+                if (!(ρσ_in(filename, y.share.files.keys()))) {
+                    y.share.files.set(filename, Y.Text);
+                }
+                y.share.files.get(filename).bindCodeMirror(editor);
+            }
+            if (overwrite) {
+                (ρσ_expr_temp = window.files)[(typeof filename === "number" && filename < 0) ? ρσ_expr_temp.length + filename : filename].setValue(data);
+            }
+            editor.focus();
+            return;
+        }
+        if (filename === null) {
+            filename = get_new_untitled();
+        }
+        new_session = CodeMirror.Doc(data);
+        files[(typeof filename === "number" && filename < 0) ? files.length + filename : filename] = new_session;
+        if (overwrite) {
+            editor.swapDoc(new_session);
+            editor.setOption("mode", "python");
+            if (window.y !== undefined) {
+                if (!(ρσ_in(filename, y.share.files.keys()))) {
+                    y.share.files.set(filename, Y.Text);
+                    y.share.files.get(filename).insert(0, data);
+                }
+                y.share.files.get(filename).bindCodeMirror(editor);
+            }
+            if (tag.title !== undefined) {
+                if (ρσ_equals(tag.title.slice(0, 8), "untitled") && ρσ_equals(len((ρσ_expr_temp = window.files)[ρσ_bound_index(tag.title, ρσ_expr_temp)].getValue()), 0)) {
+                    ρσ_delitem(window.files, tag.title);
+                    if (window.y !== undefined) {
+                        if (ρσ_in(tag.title, y.share.files.keys())) {
+                            y.share.files.delete(tag.title);
+                        }
+                    }
+                }
+            }
+            tag.title = filename;
+        }
+        tag.update();
+        editor.focus();
+    };
+    if (!new_from_data.__defaults__) Object.defineProperties(new_from_data, {
+        __defaults__ : {value: {filename:null, overwrite:false}},
+        __handles_kwarg_interpolation__ : {value: true},
+        __argnames__ : {value: ["data", "filename", "overwrite"]}
+    });
+
+    event_bus.on("new-from-data", new_from_data);
     function process_file() {
         var file, reader;
         file = tag.refs.file_input.files[0];
@@ -2195,18 +2342,18 @@ function init() {
                 closing_tag = data.indexOf("</body>");
                 html = data.slice(0, closing_tag) + enc_js + data.slice(closing_tag);
                 external_files = ρσ_list_decorate([]);
-                var ρσ_Iter6 = ρσ_Iterable(re.findall("script.*src=\"(.*)\"", data));
-                for (var ρσ_Index6 = 0; ρσ_Index6 < ρσ_Iter6.length; ρσ_Index6++) {
-                    match = ρσ_Iter6[ρσ_Index6];
+                var ρσ_Iter8 = ρσ_Iterable(re.findall("script.*src=\"(.*)\"", data));
+                for (var ρσ_Index8 = 0; ρσ_Index8 < ρσ_Iter8.length; ρσ_Index8++) {
+                    match = ρσ_Iter8[ρσ_Index8];
                     ref = "text!" + match.slice(match.indexOf("=") + 2, -1);
                     ref = ref.replace("lib/", "");
                     external_files.append(ref);
                 }
                 zip = new JSZip;
                 zip.file("index.html", html);
-                var ρσ_Iter7 = ρσ_Iterable(window.files);
-                for (var ρσ_Index7 = 0; ρσ_Index7 < ρσ_Iter7.length; ρσ_Index7++) {
-                    name = ρσ_Iter7[ρσ_Index7];
+                var ρσ_Iter9 = ρσ_Iterable(window.files);
+                for (var ρσ_Index9 = 0; ρσ_Index9 < ρσ_Iter9.length; ρσ_Index9++) {
+                    name = ρσ_Iter9[ρσ_Index9];
                     zip.file("src/" + name, (ρσ_expr_temp = window.files)[(typeof name === "number" && name < 0) ? ρσ_expr_temp.length + name : name].getValue());
                 }
                 require(external_files, function () {
@@ -2214,9 +2361,9 @@ function init() {
                     if (arguments[arguments.length-1] !== null && typeof arguments[arguments.length-1] === "object" && arguments[arguments.length-1] [ρσ_kwargs_symbol] === true) data.pop();
                     var index, file;
                     index = 0;
-                    var ρσ_Iter8 = ρσ_Iterable(external_files);
-                    for (var ρσ_Index8 = 0; ρσ_Index8 < ρσ_Iter8.length; ρσ_Index8++) {
-                        file = ρσ_Iter8[ρσ_Index8];
+                    var ρσ_Iter10 = ρσ_Iterable(external_files);
+                    for (var ρσ_Index10 = 0; ρσ_Index10 < ρσ_Iter10.length; ρσ_Index10++) {
+                        file = ρσ_Iter10[ρσ_Index10];
                         file = file.slice(5);
                         if (!(ρσ_in("/", file))) {
                             file = "lib/" + file;
@@ -2247,6 +2394,54 @@ function init() {
     };
 
     event_bus.on("save-as-zip", save_zip);
+    function reset_collab() {
+        close_all();
+        if (window.y !== undefined) {
+            y.destroy();
+            delete window.y;
+        }
+        restore_last_session();
+        event_bus.trigger("update-workspace-menu");
+    };
+
+    window.onhashchange = reset_collab;
+    function filter_latest(files) {
+        files.sort((function() {
+            var ρσ_anonfunc = function (a, b) {
+                if (a.mtime > b.mtime) {
+                    return -1;
+                } else {
+                    return 1;
+                }
+            };
+            if (!ρσ_anonfunc.__argnames__) Object.defineProperties(ρσ_anonfunc, {
+                __argnames__ : {value: ["a", "b"]}
+            });
+            return ρσ_anonfunc;
+        })());
+        return files.reduce((function() {
+            var ρσ_anonfunc = function (result, item) {
+                var prev;
+                prev = result[0];
+                if (prev === undefined) {
+                    return result.concat(item);
+                } else if (item.mtime.getTime() === prev.mtime.getTime()) {
+                    return result.concat(item);
+                } else {
+                    " We filter out those that don't have the same mtime\n                    as the first entry.";
+                    return result;
+                }
+            };
+            if (!ρσ_anonfunc.__argnames__) Object.defineProperties(ρσ_anonfunc, {
+                __argnames__ : {value: ["result", "item"]}
+            });
+            return ρσ_anonfunc;
+        })(), ρσ_list_decorate([]));
+    };
+    if (!filter_latest.__argnames__) Object.defineProperties(filter_latest, {
+        __argnames__ : {value: ["files"]}
+    });
+
     function init_collab() {
         var address = (arguments[0] === undefined || ( 0 === arguments.length-1 && arguments[arguments.length-1] !== null && typeof arguments[arguments.length-1] === "object" && arguments[arguments.length-1] [ρσ_kwargs_symbol] === true)) ? init_collab.__defaults__.address : arguments[0];
         var ρσ_kwargs_obj = arguments[arguments.length-1];
@@ -2254,9 +2449,11 @@ function init() {
         if (Object.prototype.hasOwnProperty.call(ρσ_kwargs_obj, "address")){
             address = ρσ_kwargs_obj.address;
         }
+        var path;
         if (address === null) {
             address = location.host;
         }
+        path = location.hash.slice(1);
         Y((function(){
             var ρσ_d = {};
             ρσ_d["db"] = (function(){
@@ -2267,7 +2464,7 @@ function init() {
             ρσ_d["connector"] = (function(){
                 var ρσ_d = {};
                 ρσ_d["name"] = "websockets-client";
-                ρσ_d["room"] = "Jappy";
+                ρσ_d["room"] = path;
                 ρσ_d["url"] = "ws://" + address;
                 return ρσ_d;
             }).call(this);
@@ -2281,9 +2478,9 @@ function init() {
             var ρσ_anonfunc = function (y) {
                 var filename, text, new_session;
                 this.y = y;
-                var ρσ_Iter9 = ρσ_Iterable(window.files);
-                for (var ρσ_Index9 = 0; ρσ_Index9 < ρσ_Iter9.length; ρσ_Index9++) {
-                    filename = ρσ_Iter9[ρσ_Index9];
+                var ρσ_Iter11 = ρσ_Iterable(window.files);
+                for (var ρσ_Index11 = 0; ρσ_Index11 < ρσ_Iter11.length; ρσ_Index11++) {
+                    filename = ρσ_Iter11[ρσ_Index11];
                     if (ρσ_equals(filename.slice(0, 8), "untitled") && ρσ_equals(len((ρσ_expr_temp = window.files)[(typeof filename === "number" && filename < 0) ? ρσ_expr_temp.length + filename : filename].getValue()), 0)) {
                         ρσ_delitem(window.files, filename);
                         if (ρσ_in("__stdlib__/" + filename, RapydScript.file_data)) {
@@ -2296,9 +2493,9 @@ function init() {
                         y.share.files.get(filename).insert(0, (ρσ_expr_temp = window.files)[(typeof filename === "number" && filename < 0) ? ρσ_expr_temp.length + filename : filename].getValue());
                     }
                 }
-                var ρσ_Iter10 = ρσ_Iterable(y.share.files.keys());
-                for (var ρσ_Index10 = 0; ρσ_Index10 < ρσ_Iter10.length; ρσ_Index10++) {
-                    filename = ρσ_Iter10[ρσ_Index10];
+                var ρσ_Iter12 = ρσ_Iterable(y.share.files.keys());
+                for (var ρσ_Index12 = 0; ρσ_Index12 < ρσ_Iter12.length; ρσ_Index12++) {
+                    filename = ρσ_Iter12[ρσ_Index12];
                     if (!(ρσ_in(filename, window.files))) {
                         text = y.share.files.get(filename).toString();
                         new_session = CodeMirror.Doc(text);
@@ -2331,6 +2528,9 @@ function init() {
                     });
                     return ρσ_anonfunc;
                 })());
+                y.connector.whenSynced(function () {
+                    console.log("Synchronized.");
+                });
             };
             if (!ρσ_anonfunc.__argnames__) Object.defineProperties(ρσ_anonfunc, {
                 __argnames__ : {value: ["y"]}

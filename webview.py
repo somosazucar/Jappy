@@ -1,5 +1,12 @@
-import os
+#!/usr/bin/env python3
 import sys
+import threading
+import gi
+gi.require_version('WebKit2', '4.0')
+from gi.repository import WebKit2
+from gi.repository import Gtk
+from gi.repository import Gio
+
 try:
     from urllib import parse as urlparse
 except ImportError:
@@ -7,24 +14,14 @@ except ImportError:
 
 from server import start_server, bye, app
 
-if 'ANDROID_ARGUMENT' in os.environ:
-    _ANDROID = True
-else:
-    _ANDROID = False
-
 if sys.platform=='linux2':
     reload(sys)
     sys.setdefaultencoding('utf-8')
-if sys.platform.startswith('linux') and not _ANDROID:
-    import threading
-    import gi
-    gi.require_version('WebKit2', '4.0')
-    from gi.repository import WebKit2
-    from gi.repository import Gtk
-    from gi.repository import Gio
 
-    import signal
-    signal.signal(signal.SIGINT, signal.SIG_DFL)
+base_uri = 'http://0.0.0.0:54991#Jappy'
+
+import signal
+signal.signal(signal.SIGINT, signal.SIG_DFL)
 
 
 def start_webview():
@@ -34,7 +31,7 @@ def start_webview():
             response = c.get(uri) # TODO: instead, use c.open stream
             if response.status_code==302: # Handle redirect
                 new_uri = urlparse.urlparse(response.location)
-                new_uri = 'activity://127.0.0.1:54991' + new_uri.path +\
+                new_uri = base_uri + '/' + new_uri.path +\
                                     new_uri.params + new_uri.query
                 request.get_web_view().load_uri(new_uri)
             data, mime = response.data, response.mimetype
@@ -44,6 +41,7 @@ def start_webview():
         request.finish( input_stream, len(data), mime )
 
     context = WebKit2.WebContext.get_default()
+    context.clear_cache()
     context.register_uri_scheme("activity", _app_scheme_cb, None)
 
     window = Gtk.Window()
@@ -56,17 +54,18 @@ def start_webview():
     window.add(web_view)
 
     settings = web_view.get_settings()
-    settings.set_property("enable-developer-extras", True)
+    settings.set_property('enable-developer-extras', True)
+    #settings.set_property('enable-xss-auditor', False)
+    settings.set_enable_xss_auditor(False)
 
-    web_view.load_uri("activity://127.0.0.1:54991/")
+    web_view.load_uri(base_uri)
     window.set_title("Jappy")
-    window.set_icon_from_file("activity/activity-icon.svg")
+    window.set_icon_from_file("activity/app-icon.png")
     window.show_all()
 
     def shutdown(*args):
         bye()
-        if not _ANDROID:
-            Gtk.main_quit()
+        Gtk.main_quit()
     window.connect("delete-event", shutdown)
 
 def start_backend():
@@ -76,11 +75,10 @@ def start_backend():
         print ("WARNING: Could not start HTTP service: " + e.strerror)
 
 if __name__ == "__main__":
-    if sys.platform.startswith('linux') and not _ANDROID:
-        t = threading.Thread(target=start_backend)
-        t.daemon = True
-        t.start()
+    t = threading.Thread(target=start_backend)
+    t.daemon = True
+    t.start()
 
-        start_webview()
-        Gtk.main()
+    start_webview()
+    Gtk.main()
     sys.exit()
