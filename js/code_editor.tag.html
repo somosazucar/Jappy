@@ -228,7 +228,6 @@ def init():
     window.addEventListener("orientationchange", update_tabs)
 
     def restore_last_session():
-        init_collab()
         if location.hash:
             url_base = location.protocol
             address = url_base + '//' + location.host + '/dav'
@@ -240,12 +239,12 @@ def init():
                 recent_files = filter_latest(files)
                 for item in recent_files:
                     window.fs.file('/' + path + '/' + item.name).read(def(data):
-                            event_bus.trigger('new-from-data', data, item.name)                              
+                            event_bus.trigger('new-from-data', data, item.name, True)
                     )
             fs.dir('/' + path).children(got_files)
         else:
             tag.update()
-    event_bus.on("activity-not-ready", restore_last_session)
+    event_bus.on("collaboration-ready", restore_last_session)
 
     def switchtab(e=None, filename=None):
         if filename is None:
@@ -538,7 +537,8 @@ def init():
                     y.share.files.set(filename, Y.Text)
                 y.share.files.get(filename).bindCodeMirror(editor)
             if overwrite:
-                window.files[filename].setValue(data)
+                if filename in window.files:
+                    window.files[filename].setValue(data)
             editor.focus()
             return
         if filename is None:
@@ -695,12 +695,12 @@ def init():
         )
     event_bus.on("save-as-zip", save_zip)
 
-    def reset_collab():
+    def reset_collab(ev):
         close_all()
         if window.y is not undefined: # collaboration
             y.destroy()
             del window.y
-        restore_last_session()
+        init_collab()
         event_bus.trigger('update-workspace-menu')
     window.onhashchange = reset_collab
 
@@ -728,8 +728,8 @@ def init():
                     return result
             , [])
 
-    def init_collab(address=None):
-        if address is None:
+    def init_collab():
+        if address is undefined:
                 address = location.host
         path = location.hash.slice(1)
 
@@ -772,7 +772,8 @@ def init():
                                 tag.update()
                         )
                     y.connector.whenSynced( def():
-                                           console.log('Synchronized.')
+                                            console.log('Synchronized.')
+                                            event_bus.trigger("collaboration-ready")
                                 )
                     y.connector.socket.on('jappyEvent', def(msg):
                             event = msg.event
@@ -780,6 +781,7 @@ def init():
                             event_bus.trigger(event, data)
                         )
         )
+    event_bus.on("activity-not-ready", init_collab)
 
     this.editor = editor
     window.editor = editor

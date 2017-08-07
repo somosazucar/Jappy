@@ -1627,7 +1627,6 @@ function init() {
     window.addEventListener("orientationchange", update_tabs);
     function restore_last_session() {
         var url_base, address, path;
-        init_collab();
         if (location.hash) {
             url_base = location.protocol;
             address = url_base + "//" + location.host + "/dav";
@@ -1643,7 +1642,7 @@ function init() {
                     item = ρσ_Iter2[ρσ_Index2];
                     window.fs.file("/" + path + "/" + item.name).read((function() {
                         var ρσ_anonfunc = function (data) {
-                            event_bus.trigger("new-from-data", data, item.name);
+                            event_bus.trigger("new-from-data", data, item.name, true);
                         };
                         if (!ρσ_anonfunc.__argnames__) Object.defineProperties(ρσ_anonfunc, {
                             __argnames__ : {value: ["data"]}
@@ -1662,7 +1661,7 @@ function init() {
         }
     };
 
-    event_bus.on("activity-not-ready", restore_last_session);
+    event_bus.on("collaboration-ready", restore_last_session);
     function switchtab() {
         var e = (arguments[0] === undefined || ( 0 === arguments.length-1 && arguments[arguments.length-1] !== null && typeof arguments[arguments.length-1] === "object" && arguments[arguments.length-1] [ρσ_kwargs_symbol] === true)) ? switchtab.__defaults__.e : arguments[0];
         var filename = (arguments[1] === undefined || ( 1 === arguments.length-1 && arguments[arguments.length-1] !== null && typeof arguments[arguments.length-1] === "object" && arguments[arguments.length-1] [ρσ_kwargs_symbol] === true)) ? switchtab.__defaults__.filename : arguments[1];
@@ -2154,7 +2153,9 @@ function init() {
                 y.share.files.get(filename).bindCodeMirror(editor);
             }
             if (overwrite) {
-                (ρσ_expr_temp = window.files)[(typeof filename === "number" && filename < 0) ? ρσ_expr_temp.length + filename : filename].setValue(data);
+                if (ρσ_in(filename, window.files)) {
+                    (ρσ_expr_temp = window.files)[(typeof filename === "number" && filename < 0) ? ρσ_expr_temp.length + filename : filename].setValue(data);
+                }
             }
             editor.focus();
             return;
@@ -2407,15 +2408,18 @@ function init() {
     };
 
     event_bus.on("save-as-zip", save_zip);
-    function reset_collab() {
+    function reset_collab(ev) {
         close_all();
         if (window.y !== undefined) {
             y.destroy();
             delete window.y;
         }
-        restore_last_session();
+        init_collab();
         event_bus.trigger("update-workspace-menu");
     };
+    if (!reset_collab.__argnames__) Object.defineProperties(reset_collab, {
+        __argnames__ : {value: ["ev"]}
+    });
 
     window.onhashchange = reset_collab;
     function filter_latest(files) {
@@ -2456,14 +2460,8 @@ function init() {
     });
 
     function init_collab() {
-        var address = (arguments[0] === undefined || ( 0 === arguments.length-1 && arguments[arguments.length-1] !== null && typeof arguments[arguments.length-1] === "object" && arguments[arguments.length-1] [ρσ_kwargs_symbol] === true)) ? init_collab.__defaults__.address : arguments[0];
-        var ρσ_kwargs_obj = arguments[arguments.length-1];
-        if (ρσ_kwargs_obj === null || typeof ρσ_kwargs_obj !== "object" || ρσ_kwargs_obj [ρσ_kwargs_symbol] !== true) ρσ_kwargs_obj = {};
-        if (Object.prototype.hasOwnProperty.call(ρσ_kwargs_obj, "address")){
-            address = ρσ_kwargs_obj.address;
-        }
-        var path;
-        if (address === null) {
+        var address, path;
+        if (address === undefined) {
             address = location.host;
         }
         path = location.hash.slice(1);
@@ -2543,6 +2541,7 @@ function init() {
                 })());
                 y.connector.whenSynced(function () {
                     console.log("Synchronized.");
+                    event_bus.trigger("collaboration-ready");
                 });
                 y.connector.socket.on("jappyEvent", (function() {
                     var ρσ_anonfunc = function (msg) {
@@ -2563,12 +2562,8 @@ function init() {
             return ρσ_anonfunc;
         })());
     };
-    if (!init_collab.__defaults__) Object.defineProperties(init_collab, {
-        __defaults__ : {value: {address:null}},
-        __handles_kwarg_interpolation__ : {value: true},
-        __argnames__ : {value: ["address"]}
-    });
 
+    event_bus.on("activity-not-ready", init_collab);
     this.editor = editor;
     window.editor = editor;
     window.init_collab = init_collab;
