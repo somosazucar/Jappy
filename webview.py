@@ -72,7 +72,7 @@ def start_backend():
     try:
         start_server()
     except Exception as e:
-        print ("WARNING: Could not start HTTP service: " + e.strerror)
+        print ("WARNING: Could not start HTTP service: " + str(e))
 
 if __name__ == "__main__":
     t = threading.Thread(target=start_backend)

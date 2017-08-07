@@ -1619,6 +1619,7 @@ function init() {
                 y.share.files.set(tag.title, Y.Text);
             }
         }
+        window.document.title = tag.title;
     };
 
     this.on("update", update_tabs);

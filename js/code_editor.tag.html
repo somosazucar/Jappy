@@ -222,6 +222,7 @@ def init():
             window.files = {tag.title: editor.getDoc()}
             if window.y is not undefined: # collaboration
                     y.share.files.set(tag.title, Y.Text)
+        window.document.title = tag.title
     this.on('update', update_tabs)
     window.addEventListener("resize", update_tabs)
     window.addEventListener("orientationchange", update_tabs)
