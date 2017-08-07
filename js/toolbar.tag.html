@@ -126,6 +126,7 @@ def update_workspace_menu():
     fs.dir('/' + path).mkdir(try_make_dir)
 tag.update_workspace_menu = update_workspace_menu
 event_bus.on("update-workspace-menu", update_workspace_menu)
+event_bus.on("file-event", update_workspace_menu)
 
 def init():
 

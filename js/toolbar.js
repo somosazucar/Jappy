@@ -400,6 +400,7 @@ function update_workspace_menu() {
 
 tag.update_workspace_menu = update_workspace_menu;
 event_bus.on("update-workspace-menu", update_workspace_menu);
+event_bus.on("file-event", update_workspace_menu);
 function init() {
     this.refs.runbutton.onclick = function () {
         window.state = "run";

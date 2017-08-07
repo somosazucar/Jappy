@@ -1775,11 +1775,24 @@ function init() {
         if (Object.prototype.hasOwnProperty.call(ρσ_kwargs_obj, "filename")){
             filename = ρσ_kwargs_obj.filename;
         }
-        var active_title, index;
+        var active_title, path, index;
         if (len(window.files) > 1) {
             active_title = tag.title;
             if (filename === null) {
                 filename = tag.title;
+            }
+            if (ρσ_equals(len((ρσ_expr_temp = window.files)[ρσ_bound_index(tag.title, ρσ_expr_temp)].getValue()), 0)) {
+                if (window.fs) !undefined;
+                {
+                    path = location.hash.slice(1);
+                    function file_removed(ev) {
+                    };
+                    if (!file_removed.__argnames__) Object.defineProperties(file_removed, {
+                        __argnames__ : {value: ["ev"]}
+                    });
+
+                    window.fs.file("/" + path + "/" + filename).rm(file_removed);
+                }
             }
             index = list(window.files).index(filename);
             ρσ_delitem(window.files, filename);
@@ -2530,6 +2543,18 @@ function init() {
                 y.connector.whenSynced(function () {
                     console.log("Synchronized.");
                 });
+                y.connector.socket.on("jappyEvent", (function() {
+                    var ρσ_anonfunc = function (msg) {
+                        var event, data;
+                        event = msg.event;
+                        data = msg.data;
+                        event_bus.trigger(event, data);
+                    };
+                    if (!ρσ_anonfunc.__argnames__) Object.defineProperties(ρσ_anonfunc, {
+                        __argnames__ : {value: ["msg"]}
+                    });
+                    return ρσ_anonfunc;
+                })());
             };
             if (!ρσ_anonfunc.__argnames__) Object.defineProperties(ρσ_anonfunc, {
                 __argnames__ : {value: ["y"]}

@@ -2,3 +2,5 @@ WsgiDAV
 Flask
 Flask-SocketIO
 wsgicors
+gevent-websocket
+pyinotify

@@ -1,15 +1,18 @@
 #!/usr/bin/env python3
 from flask import Flask
-from flask import redirect, abort
+from flask import redirect
 from flask_socketio import SocketIO, emit, join_room, leave_room
 from flask import request
 from wsgidav.wsgidav_app import DEFAULT_CONFIG, WsgiDAVApp
 from wsgidav.fs_dav_provider import FilesystemProvider
 from werkzeug.wsgi import DispatcherMiddleware
+from werkzeug.exceptions import Unauthorized
 from wsgicors import CORS
 import sys
-import threading
 import mimetypes
+import pyinotify
+import signal
+signal.signal(signal.SIGINT, signal.SIG_DFL)
 mimetypes.add_type('image/svg+xml', '.svg')
 mimetypes.add_type('application/x-font-woff', '.woff')
 
@@ -47,7 +50,7 @@ def yjsEvent(message):
 
 @socketio.on('jappyEvent')
 def jappyEvent(message=None):
-    emit('jappyEvent', message, broadcast=True)
+    print ('Got jappyEvent')
 
 @socketio.on('leaveRoom')
 def leaveRoom(room):
@@ -63,14 +66,17 @@ class DAVFilterMiddleWare(object):
         self.app = app
 
     def __call__(self, environ, start_response):
-        def wrapped_response(status, response_headers, what):
-            if environ.get('PATH_INFO') in ['', '/']:
-                response = redirect('/') # We don't want to list all
-                return response(environ, start_response)
-            return start_response(status, response_headers, what)
-        return self.app(environ, wrapped_response)
+        if environ.get('PATH_INFO') in ['', '/'] and \
+                environ.get('REQUEST_METHOD')=='PROPFIND':
+            return Unauthorized()(environ, start_response)
+        elif environ.get('PATH_INFO').count('/') < 2 and \
+                environ.get('REQUEST_METHOD')=='DELETE':
+            # Let's disallow removing project directories
+            return Unauthorized()(environ, start_response)
+        return self.app(environ, start_response)
 
 def start_server():
+    launch_file_monitor()
     provider = FilesystemProvider('workspace')
     config = DEFAULT_CONFIG.copy()
     config.update({
@@ -86,6 +92,33 @@ def start_server():
         '/dav' : filtered_dav_app
     })
     socketio.run(app, host='0.0.0.0', port=54991)
+
+class EventHandler(pyinotify.ProcessEvent):
+    def process_IN_CREATE(self, event):
+        room = event.path[10:]
+        socketio.emit('jappyEvent', { 'event': 'file-event',
+                                         'data': {
+                                            'maskname':event.maskname,
+                                            'filename':event.name }
+                                         },
+                                      room=room, broadcast=True)
+
+    def process_IN_DELETE(self, event):
+        room = event.path[10:]
+        socketio.emit('jappyEvent', { 'event': 'file-event',
+                                         'data': {
+                                            'maskname':event.maskname,
+                                            'filename':event.name }
+                                         },
+                                      room=room, broadcast=True)
+
+def launch_file_monitor():
+    print ('Starting file monitor...')
+    mask = pyinotify.IN_DELETE | pyinotify.IN_CREATE  # watched events
+    wm = pyinotify.WatchManager()
+    notifier = pyinotify.ThreadedNotifier(wm, EventHandler())
+    wm.add_watch('workspace', mask, rec=True, auto_add=True)
+    notifier.start()
 
 if __name__ == "__main__":
     start_server()
