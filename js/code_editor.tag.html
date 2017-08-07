@@ -729,6 +729,10 @@ def init():
             , [])
 
     def init_collab():
+        if not location.hash:
+            console.log('Add a hash id to synchronize.')
+            tag.update()
+            return
         if address is undefined:
                 address = location.host
         path = location.hash.slice(1)

@@ -2461,6 +2461,11 @@ function init() {
 
     function init_collab() {
         var address, path;
+        if (!location.hash) {
+            console.log("Add a hash id to synchronize.");
+            tag.update();
+            return;
+        }
         if (address === undefined) {
             address = location.host;
         }
