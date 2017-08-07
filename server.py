@@ -2,12 +2,14 @@
 from flask import Flask
 from flask import redirect
 from flask_socketio import SocketIO, emit, join_room, leave_room
-from flask import request
+from flask import request, abort
 from wsgidav.wsgidav_app import DEFAULT_CONFIG, WsgiDAVApp
 from wsgidav.fs_dav_provider import FilesystemProvider
 from werkzeug.wsgi import DispatcherMiddleware
 from werkzeug.exceptions import Unauthorized
+from werkzeug.wrappers import Response
 from wsgicors import CORS
+import os
 import sys
 import mimetypes
 import pyinotify
@@ -73,6 +75,12 @@ class DAVFilterMiddleWare(object):
                 environ.get('REQUEST_METHOD')=='DELETE':
             # Let's disallow removing project directories
             return Unauthorized()(environ, start_response)
+        elif environ.get('PATH_INFO').count('/') < 2 and \
+                environ.get('REQUEST_METHOD')=='MKCOL':
+            dirname = 'workspace' + environ.get('PATH_INFO')
+            if os.path.exists(dirname):
+                response = Response('Already exists.')
+                return response(environ, start_response)
         return self.app(environ, start_response)
 
 def start_server():
