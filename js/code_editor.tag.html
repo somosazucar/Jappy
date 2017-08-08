@@ -614,9 +614,13 @@ def init():
     event_bus.on("run-fullscreen", run_fullscreen)
 
     def save_zip():
-        event_bus.trigger("activity-save", activity)
+        event_bus.trigger("activity-save")
+
         # TODO get activity palette object title
-        bundle_name = tag.title[:tag.title.indexOf('.')]
+        if location.hash:
+            bundle_name = location.hash.slice(1)
+        else:
+            bundle_name = tag.title[:tag.title.indexOf('.')]
 
         js_output = compile()
 

@@ -2265,8 +2265,12 @@ function init() {
     event_bus.on("run-fullscreen", run_fullscreen);
     function save_zip() {
         var bundle_name, js_output, url_base;
-        event_bus.trigger("activity-save", activity);
-        bundle_name = tag.title.slice(0, tag.title.indexOf("."));
+        event_bus.trigger("activity-save");
+        if (location.hash) {
+            bundle_name = location.hash.slice(1);
+        } else {
+            bundle_name = tag.title.slice(0, tag.title.indexOf("."));
+        }
         js_output = compile();
         url_base = window.location.protocol;
         require(ρσ_list_decorate([ "text!template" ]), (function() {
