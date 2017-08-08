@@ -220,6 +220,9 @@ def init():
             fetch (base_url + "shutdown")
     event_bus.on("enable-standalone", enable_standalone)
 
+    if window.RapydScript is not undefined:
+        enable_run()
+
     require(["sugar-web/graphics/palette"],
         def(palette):
             tag.example_palette = new palette.Palette(tag.refs.examplebutton, 'Load an example')

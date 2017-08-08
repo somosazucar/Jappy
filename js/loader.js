@@ -9,7 +9,8 @@ requirejs.config({
 		"rapydscript": {
 			exports: 'RapydScript'
 		}
-	}
+	},
+	waitSeconds: 20,
 });
 
 requirejs(["activity/activity"]);
