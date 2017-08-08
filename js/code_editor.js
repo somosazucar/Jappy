@@ -1447,73 +1447,11 @@ var ρσ_modules = {};
     ρσ_modules.re.purge = purge;
 })();
 var tag;
-print("RapydScript-ng " + RapydScript.rs_version);
 var re = ρσ_modules.re;
 
 tag = this;
 this.marker = null;
 window.files = {};
-function compile() {
-    var inputcode = (arguments[0] === undefined || ( 0 === arguments.length-1 && arguments[arguments.length-1] !== null && typeof arguments[arguments.length-1] === "object" && arguments[arguments.length-1] [ρσ_kwargs_symbol] === true)) ? compile.__defaults__.inputcode : arguments[0];
-    var ρσ_kwargs_obj = arguments[arguments.length-1];
-    if (ρσ_kwargs_obj === null || typeof ρσ_kwargs_obj !== "object" || ρσ_kwargs_obj [ρσ_kwargs_symbol] !== true) ρσ_kwargs_obj = {};
-    if (Object.prototype.hasOwnProperty.call(ρσ_kwargs_obj, "inputcode")){
-        inputcode = ρσ_kwargs_obj.inputcode;
-    }
-    var editor, options, file, session, result, code;
-    editor = window.editor;
-    options = (function(){
-        var ρσ_d = {};
-        ρσ_d["basedir"] = "__stdlib__";
-        ρσ_d["bare"] = true;
-        ρσ_d["js_version"] = 5;
-        ρσ_d["omit_baselib"] = true;
-        return ρσ_d;
-    }).call(this);
-    var ρσ_Iter0 = ρσ_Iterable(window.files);
-    for (var ρσ_Index0 = 0; ρσ_Index0 < ρσ_Iter0.length; ρσ_Index0++) {
-        file = ρσ_Iter0[ρσ_Index0];
-        if (file !== tag.title) {
-            (ρσ_expr_temp = RapydScript.file_data)[ρσ_bound_index("__stdlib__/" + file, ρσ_expr_temp)] = (ρσ_expr_temp = window.files)[(typeof file === "number" && file < 0) ? ρσ_expr_temp.length + file : file].getValue();
-        }
-    }
-    session = editor.getDoc();
-    if (tag.marker && !inputcode) {
-        tag.marker.clear();
-    }
-    try {
-        result = RapydScript.compile(inputcode || editor.getValue(), tag.title, options);
-        if (ρσ_in("print;", result)) {
-            throw new SyntaxError("Missing parentheses in call to \"print\"");
-        }
-    } catch (ρσ_Exception) {
-        ρσ_last_exception = ρσ_Exception;
-        if (ρσ_Exception instanceof Error) {
-            var e = ρσ_Exception;
-            console.log(e);
-            code = "print ('''" + e.name + ": " + e.message + "''')";
-            if (e.line && e.col && !inputcode) {
-                tag.marker = editor.markText(CodeMirror.Pos(e.line - 1, e.col), CodeMirror.Pos(e.line - 1, e.col + 1), (function(){
-                    var ρσ_d = {};
-                    ρσ_d["className"] = "error-marker";
-                    return ρσ_d;
-                }).call(this));
-                editor.scrollIntoView(e.line - 1, e.col + 1);
-            }
-            result = compiler.compile(code);
-        } else {
-            throw ρσ_Exception;
-        }
-    }
-    return result;
-};
-if (!compile.__defaults__) Object.defineProperties(compile, {
-    __defaults__ : {value: {inputcode:null}},
-    __handles_kwarg_interpolation__ : {value: true},
-    __argnames__ : {value: ["inputcode"]}
-});
-
-window.compile = compile;
 function init() {
     var editor, iframe;
     editor = CodeMirror.fromTextArea(this.refs.code, (function(){
@@ -1552,9 +1490,9 @@ function init() {
             if (data) {
                 window.files = {};
                 parsed_data = JSON.parse(data);
-                var ρσ_Iter1 = ρσ_Iterable(parsed_data);
-                for (var ρσ_Index1 = 0; ρσ_Index1 < ρσ_Iter1.length; ρσ_Index1++) {
-                    file = ρσ_Iter1[ρσ_Index1];
+                var ρσ_Iter0 = ρσ_Iterable(parsed_data);
+                for (var ρσ_Index0 = 0; ρσ_Index0 < ρσ_Iter0.length; ρσ_Index0++) {
+                    file = ρσ_Iter0[ρσ_Index0];
                     if (parsed_data[(typeof file === "number" && file < 0) ? parsed_data.length + file : file]) {
                         new_session = CodeMirror.Doc(parsed_data[(typeof file === "number" && file < 0) ? parsed_data.length + file : file]);
                         (ρσ_expr_temp = window.files)[(typeof file === "number" && file < 0) ? ρσ_expr_temp.length + file : file] = new_session;
@@ -1625,43 +1563,6 @@ function init() {
     this.on("update", update_tabs);
     window.addEventListener("resize", update_tabs);
     window.addEventListener("orientationchange", update_tabs);
-    function restore_last_session() {
-        var url_base, address, path;
-        if (location.hash) {
-            url_base = location.protocol;
-            address = url_base + "//" + location.host + "/dav";
-            if (window.fs === undefined) {
-                window.fs = new WebDAV.Fs(address);
-            }
-            path = location.hash.slice(1);
-            function got_files(files) {
-                var recent_files, item;
-                recent_files = filter_latest(files);
-                var ρσ_Iter2 = ρσ_Iterable(recent_files);
-                for (var ρσ_Index2 = 0; ρσ_Index2 < ρσ_Iter2.length; ρσ_Index2++) {
-                    item = ρσ_Iter2[ρσ_Index2];
-                    window.fs.file("/" + path + "/" + item.name).read((function() {
-                        var ρσ_anonfunc = function (data) {
-                            event_bus.trigger("new-from-data", data, item.name, true);
-                        };
-                        if (!ρσ_anonfunc.__argnames__) Object.defineProperties(ρσ_anonfunc, {
-                            __argnames__ : {value: ["data"]}
-                        });
-                        return ρσ_anonfunc;
-                    })());
-                }
-            };
-            if (!got_files.__argnames__) Object.defineProperties(got_files, {
-                __argnames__ : {value: ["files"]}
-            });
-
-            fs.dir("/" + path).children(got_files);
-        } else {
-            tag.update();
-        }
-    };
-
-    event_bus.on("collaboration-ready", restore_last_session);
     function switchtab() {
         var e = (arguments[0] === undefined || ( 0 === arguments.length-1 && arguments[arguments.length-1] !== null && typeof arguments[arguments.length-1] === "object" && arguments[arguments.length-1] [ρσ_kwargs_symbol] === true)) ? switchtab.__defaults__.e : arguments[0];
         var filename = (arguments[1] === undefined || ( 1 === arguments.length-1 && arguments[arguments.length-1] !== null && typeof arguments[arguments.length-1] === "object" && arguments[arguments.length-1] [ρσ_kwargs_symbol] === true)) ? switchtab.__defaults__.filename : arguments[1];
@@ -1928,6 +1829,22 @@ function init() {
     };
 
     event_bus.on("traybutton-open", traybutton_open);
+    function publish_script(source) {
+        var path, filepath;
+        path = location.hash.slice(1);
+        filepath = "/" + path + "/" + ".index.html";
+        function file_written(ev) {
+        };
+        if (!file_written.__argnames__) Object.defineProperties(file_written, {
+            __argnames__ : {value: ["ev"]}
+        });
+
+        fs.file(filepath).write(source, "text/plain; charset=UTF-8", file_written);
+    };
+    if (!publish_script.__argnames__) Object.defineProperties(publish_script, {
+        __argnames__ : {value: ["source"]}
+    });
+
     function run() {
         var js_output, script;
         window.state = "run";
@@ -1938,7 +1855,12 @@ function init() {
         script = iframe.contentDocument.createElement("script");
         script.innerHTML = js_output;
         function write_script() {
+            var source;
             iframe.contentDocument.body.appendChild(script);
+            if (window.fs !== undefined) {
+                source = iframe.contentDocument.documentElement.outerHTML;
+                publish_script(source);
+            }
             iframe.contentDocument.close();
         };
 
@@ -1952,21 +1874,21 @@ function init() {
         var iwindow, highestTimeoutId, i, highestIntervalId, inputs;
         iwindow = iframe.contentWindow;
         highestTimeoutId = iwindow.setTimeout(";");
-        for (var ρσ_Index3 = 0; ρσ_Index3 < highestTimeoutId; ρσ_Index3++) {
-            i = ρσ_Index3;
+        for (var ρσ_Index1 = 0; ρσ_Index1 < highestTimeoutId; ρσ_Index1++) {
+            i = ρσ_Index1;
             iwindow.clearTimeout(i);
         }
         highestIntervalId = iwindow.setInterval(";");
-        for (var ρσ_Index4 = 0; ρσ_Index4 < highestIntervalId; ρσ_Index4++) {
-            i = ρσ_Index4;
+        for (var ρσ_Index2 = 0; ρσ_Index2 < highestIntervalId; ρσ_Index2++) {
+            i = ρσ_Index2;
             iwindow.clearInterval(i);
         }
         iwindow.stop();
         iwindow.document.body.style.opacity = "0.5";
         inputs = iwindow.document.getElementsByTagName("input");
-        var ρσ_Iter5 = ρσ_Iterable(inputs);
-        for (var ρσ_Index5 = 0; ρσ_Index5 < ρσ_Iter5.length; ρσ_Index5++) {
-            i = ρσ_Iter5[ρσ_Index5];
+        var ρσ_Iter3 = ρσ_Iterable(inputs);
+        for (var ρσ_Index3 = 0; ρσ_Index3 < ρσ_Iter3.length; ρσ_Index3++) {
+            i = ρσ_Iter3[ρσ_Index3];
             i.disabled = true;
         }
         iwindow.addEventListener("click", (function() {
@@ -1989,9 +1911,9 @@ function init() {
     function serialize() {
         var result, file;
         result = {};
-        var ρσ_Iter6 = ρσ_Iterable(window.files);
-        for (var ρσ_Index6 = 0; ρσ_Index6 < ρσ_Iter6.length; ρσ_Index6++) {
-            file = ρσ_Iter6[ρσ_Index6];
+        var ρσ_Iter4 = ρσ_Iterable(window.files);
+        for (var ρσ_Index4 = 0; ρσ_Index4 < ρσ_Iter4.length; ρσ_Index4++) {
+            file = ρσ_Iter4[ρσ_Index4];
             result[(typeof file === "number" && file < 0) ? result.length + file : file] = (ρσ_expr_temp = window.files)[(typeof file === "number" && file < 0) ? ρσ_expr_temp.length + file : file].getValue();
         }
         return JSON.stringify(result);
@@ -2013,9 +1935,9 @@ function init() {
             });
 
             path = location.hash.slice(1);
-            var ρσ_Iter7 = ρσ_Iterable(window.files);
-            for (var ρσ_Index7 = 0; ρσ_Index7 < ρσ_Iter7.length; ρσ_Index7++) {
-                item = ρσ_Iter7[ρσ_Index7];
+            var ρσ_Iter5 = ρσ_Iterable(window.files);
+            for (var ρσ_Index5 = 0; ρσ_Index5 < ρσ_Iter5.length; ρσ_Index5++) {
+                item = ρσ_Iter5[ρσ_Index5];
                 data = (ρσ_expr_temp = window.files)[(typeof item === "number" && item < 0) ? ρσ_expr_temp.length + item : item].getValue();
                 if (data) {
                     filepath = "/" + path + "/" + item;
@@ -2356,18 +2278,18 @@ function init() {
                 closing_tag = data.indexOf("</body>");
                 html = data.slice(0, closing_tag) + enc_js + data.slice(closing_tag);
                 external_files = ρσ_list_decorate([]);
-                var ρσ_Iter8 = ρσ_Iterable(re.findall("script.*src=\"(.*)\"", data));
-                for (var ρσ_Index8 = 0; ρσ_Index8 < ρσ_Iter8.length; ρσ_Index8++) {
-                    match = ρσ_Iter8[ρσ_Index8];
+                var ρσ_Iter6 = ρσ_Iterable(re.findall("script.*src=\"(.*)\"", data));
+                for (var ρσ_Index6 = 0; ρσ_Index6 < ρσ_Iter6.length; ρσ_Index6++) {
+                    match = ρσ_Iter6[ρσ_Index6];
                     ref = "text!" + match.slice(match.indexOf("=") + 2, -1);
                     ref = ref.replace("lib/", "");
                     external_files.append(ref);
                 }
                 zip = new JSZip;
                 zip.file("index.html", html);
-                var ρσ_Iter9 = ρσ_Iterable(window.files);
-                for (var ρσ_Index9 = 0; ρσ_Index9 < ρσ_Iter9.length; ρσ_Index9++) {
-                    name = ρσ_Iter9[ρσ_Index9];
+                var ρσ_Iter7 = ρσ_Iterable(window.files);
+                for (var ρσ_Index7 = 0; ρσ_Index7 < ρσ_Iter7.length; ρσ_Index7++) {
+                    name = ρσ_Iter7[ρσ_Index7];
                     zip.file("src/" + name, (ρσ_expr_temp = window.files)[(typeof name === "number" && name < 0) ? ρσ_expr_temp.length + name : name].getValue());
                 }
                 require(external_files, function () {
@@ -2375,9 +2297,9 @@ function init() {
                     if (arguments[arguments.length-1] !== null && typeof arguments[arguments.length-1] === "object" && arguments[arguments.length-1] [ρσ_kwargs_symbol] === true) data.pop();
                     var index, file;
                     index = 0;
-                    var ρσ_Iter10 = ρσ_Iterable(external_files);
-                    for (var ρσ_Index10 = 0; ρσ_Index10 < ρσ_Iter10.length; ρσ_Index10++) {
-                        file = ρσ_Iter10[ρσ_Index10];
+                    var ρσ_Iter8 = ρσ_Iterable(external_files);
+                    for (var ρσ_Index8 = 0; ρσ_Index8 < ρσ_Iter8.length; ρσ_Index8++) {
+                        file = ρσ_Iter8[ρσ_Index8];
                         file = file.slice(5);
                         if (!(ρσ_in("/", file))) {
                             file = "lib/" + file;
@@ -2415,50 +2337,12 @@ function init() {
             delete window.y;
         }
         init_collab();
-        event_bus.trigger("update-workspace-menu");
     };
     if (!reset_collab.__argnames__) Object.defineProperties(reset_collab, {
         __argnames__ : {value: ["ev"]}
     });
 
     window.onhashchange = reset_collab;
-    function filter_latest(files) {
-        files.sort((function() {
-            var ρσ_anonfunc = function (a, b) {
-                if (a.mtime > b.mtime) {
-                    return -1;
-                } else {
-                    return 1;
-                }
-            };
-            if (!ρσ_anonfunc.__argnames__) Object.defineProperties(ρσ_anonfunc, {
-                __argnames__ : {value: ["a", "b"]}
-            });
-            return ρσ_anonfunc;
-        })());
-        return files.reduce((function() {
-            var ρσ_anonfunc = function (result, item) {
-                var prev;
-                prev = result[0];
-                if (prev === undefined) {
-                    return result.concat(item);
-                } else if (item.mtime.getTime() === prev.mtime.getTime()) {
-                    return result.concat(item);
-                } else {
-                    " We filter out those that don't have the same mtime\n                    as the first entry.";
-                    return result;
-                }
-            };
-            if (!ρσ_anonfunc.__argnames__) Object.defineProperties(ρσ_anonfunc, {
-                __argnames__ : {value: ["result", "item"]}
-            });
-            return ρσ_anonfunc;
-        })(), ρσ_list_decorate([]));
-    };
-    if (!filter_latest.__argnames__) Object.defineProperties(filter_latest, {
-        __argnames__ : {value: ["files"]}
-    });
-
     function init_collab() {
         var address, path;
         if (!location.hash) {
@@ -2470,6 +2354,7 @@ function init() {
             address = location.host;
         }
         path = location.hash.slice(1);
+        event_bus.trigger("update-workspace-menu");
         Y((function(){
             var ρσ_d = {};
             ρσ_d["db"] = (function(){
@@ -2494,9 +2379,9 @@ function init() {
             var ρσ_anonfunc = function (y) {
                 var filename, text, new_session;
                 this.y = y;
-                var ρσ_Iter11 = ρσ_Iterable(window.files);
-                for (var ρσ_Index11 = 0; ρσ_Index11 < ρσ_Iter11.length; ρσ_Index11++) {
-                    filename = ρσ_Iter11[ρσ_Index11];
+                var ρσ_Iter9 = ρσ_Iterable(window.files);
+                for (var ρσ_Index9 = 0; ρσ_Index9 < ρσ_Iter9.length; ρσ_Index9++) {
+                    filename = ρσ_Iter9[ρσ_Index9];
                     if (ρσ_equals(filename.slice(0, 8), "untitled") && ρσ_equals(len((ρσ_expr_temp = window.files)[(typeof filename === "number" && filename < 0) ? ρσ_expr_temp.length + filename : filename].getValue()), 0)) {
                         ρσ_delitem(window.files, filename);
                         if (ρσ_in("__stdlib__/" + filename, RapydScript.file_data)) {
@@ -2509,9 +2394,9 @@ function init() {
                         y.share.files.get(filename).insert(0, (ρσ_expr_temp = window.files)[(typeof filename === "number" && filename < 0) ? ρσ_expr_temp.length + filename : filename].getValue());
                     }
                 }
-                var ρσ_Iter12 = ρσ_Iterable(y.share.files.keys());
-                for (var ρσ_Index12 = 0; ρσ_Index12 < ρσ_Iter12.length; ρσ_Index12++) {
-                    filename = ρσ_Iter12[ρσ_Index12];
+                var ρσ_Iter10 = ρσ_Iterable(y.share.files.keys());
+                for (var ρσ_Index10 = 0; ρσ_Index10 < ρσ_Iter10.length; ρσ_Index10++) {
+                    filename = ρσ_Iter10[ρσ_Index10];
                     if (!(ρσ_in(filename, window.files))) {
                         text = y.share.files.get(filename).toString();
                         new_session = CodeMirror.Doc(text);
@@ -2575,5 +2460,73 @@ function init() {
     editor.focus();
 };
 
+require(ρσ_list_decorate([ "rapydscript" ]), function () {
+    var compiler;
+    print("RapydScript-ng " + RapydScript.rs_version);
+    compiler = RapydScript.create_embedded_compiler();
+    function compile() {
+        var inputcode = (arguments[0] === undefined || ( 0 === arguments.length-1 && arguments[arguments.length-1] !== null && typeof arguments[arguments.length-1] === "object" && arguments[arguments.length-1] [ρσ_kwargs_symbol] === true)) ? compile.__defaults__.inputcode : arguments[0];
+        var ρσ_kwargs_obj = arguments[arguments.length-1];
+        if (ρσ_kwargs_obj === null || typeof ρσ_kwargs_obj !== "object" || ρσ_kwargs_obj [ρσ_kwargs_symbol] !== true) ρσ_kwargs_obj = {};
+        if (Object.prototype.hasOwnProperty.call(ρσ_kwargs_obj, "inputcode")){
+            inputcode = ρσ_kwargs_obj.inputcode;
+        }
+        var editor, options, file, session, result, code;
+        editor = window.editor;
+        options = (function(){
+            var ρσ_d = {};
+            ρσ_d["basedir"] = "__stdlib__";
+            ρσ_d["bare"] = true;
+            ρσ_d["js_version"] = 5;
+            ρσ_d["omit_baselib"] = true;
+            return ρσ_d;
+        }).call(this);
+        var ρσ_Iter11 = ρσ_Iterable(window.files);
+        for (var ρσ_Index11 = 0; ρσ_Index11 < ρσ_Iter11.length; ρσ_Index11++) {
+            file = ρσ_Iter11[ρσ_Index11];
+            if (file !== tag.title) {
+                (ρσ_expr_temp = RapydScript.file_data)[ρσ_bound_index("__stdlib__/" + file, ρσ_expr_temp)] = (ρσ_expr_temp = window.files)[(typeof file === "number" && file < 0) ? ρσ_expr_temp.length + file : file].getValue();
+            }
+        }
+        session = editor.getDoc();
+        if (tag.marker && !inputcode) {
+            tag.marker.clear();
+        }
+        try {
+            result = RapydScript.compile(inputcode || editor.getValue(), tag.title, options);
+            if (ρσ_in("print;", result)) {
+                throw new SyntaxError("Missing parentheses in call to \"print\"");
+            }
+        } catch (ρσ_Exception) {
+            ρσ_last_exception = ρσ_Exception;
+            if (ρσ_Exception instanceof Error) {
+                var e = ρσ_Exception;
+                console.log(e);
+                code = "print ('''" + e.name + ": " + e.message + "''')";
+                if (e.line && e.col && !inputcode) {
+                    tag.marker = editor.markText(CodeMirror.Pos(e.line - 1, e.col), CodeMirror.Pos(e.line - 1, e.col + 1), (function(){
+                        var ρσ_d = {};
+                        ρσ_d["className"] = "error-marker";
+                        return ρσ_d;
+                    }).call(this));
+                    editor.scrollIntoView(e.line - 1, e.col + 1);
+                }
+                result = compiler.compile(code);
+            } else {
+                throw ρσ_Exception;
+            }
+        }
+        return result;
+    };
+    if (!compile.__defaults__) Object.defineProperties(compile, {
+        __defaults__ : {value: {inputcode:null}},
+        __handles_kwarg_interpolation__ : {value: true},
+        __argnames__ : {value: ["inputcode"]}
+    });
+
+    window.compile = compile;
+    window.RapydScript = RapydScript;
+    event_bus.trigger("compiler-ready");
+});
 this.on("mount", init);
 });

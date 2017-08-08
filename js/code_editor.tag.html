@@ -111,44 +111,10 @@ iframe {
 
 <script type="text/Rapyd">
 
-print('RapydScript-ng ' + RapydScript.rs_version)
 import re
-
 tag = this
 this.marker = None
 window.files = {}
-
-def compile(inputcode=None):
-    editor = window.editor
-    options = {'basedir':'__stdlib__',
-               'bare': True,
-               'js_version': 5,
-               'omit_baselib':True}
-
-    for file in window.files:
-        if file is not tag.title:
-            RapydScript.file_data['__stdlib__/' + file] = window.files[file].getValue()
-
-    session = editor.getDoc()
-    if tag.marker and not inputcode:
-        tag.marker.clear()
-
-    try:
-        result = RapydScript.compile(inputcode or editor.getValue(), tag.title, options)
-        if "print;" in result:
-            raise SyntaxError('Missing parentheses in call to "print"')
-
-    except Exception as e:
-        console.log(e)
-        code = "print ('''" + e.name + ": " + e.message + "''')"
-        if e.line and e.col and not inputcode:
-            tag.marker = editor.markText( CodeMirror.Pos(e.line-1, e.col),
-                             CodeMirror.Pos(e.line-1, e.col+1),
-                             {'className': 'error-marker'} )
-            editor.scrollIntoView(e.line-1, e.col+1)
-        result = compiler.compile(code)
-    return result
-window.compile = compile
 
 def init():
     editor = CodeMirror.fromTextArea(this.refs.code,
@@ -226,25 +192,6 @@ def init():
     this.on('update', update_tabs)
     window.addEventListener("resize", update_tabs)
     window.addEventListener("orientationchange", update_tabs)
-
-    def restore_last_session():
-        if location.hash:
-            url_base = location.protocol
-            address = url_base + '//' + location.host + '/dav'
-            if window.fs is undefined:
-                window.fs = new WebDAV.Fs(address)
-
-            path = location.hash.slice(1)
-            def got_files(files):
-                recent_files = filter_latest(files)
-                for item in recent_files:
-                    window.fs.file('/' + path + '/' + item.name).read(def(data):
-                            event_bus.trigger('new-from-data', data, item.name, True)
-                    )
-            fs.dir('/' + path).children(got_files)
-        else:
-            tag.update()
-    event_bus.on("collaboration-ready", restore_last_session)
 
     def switchtab(e=None, filename=None):
         if filename is None:
@@ -408,6 +355,14 @@ def init():
         editor.scrollIntoView()
     event_bus.on("traybutton-open", traybutton_open)
 
+    def publish_script(source):
+        path = location.hash.slice(1)
+        filepath = '/' + path + '/' + '.index.html'
+        def file_written(ev):
+            pass # TODO: Notify user.
+        fs.file(filepath).write(source, "text/plain; charset=UTF-8",
+                                                    file_written)
+
     def run():
         window.state = 'run'
         event_bus.trigger("traybutton-open")
@@ -418,6 +373,9 @@ def init():
         script.innerHTML = js_output
         def write_script():
             iframe.contentDocument.body.appendChild(script)
+            if window.fs is not undefined:
+                source = iframe.contentDocument.documentElement.outerHTML
+                publish_script(source)
             iframe.contentDocument.close()
         iframe.onload = write_script
         iframe.contentWindow.location = 'template.html'
@@ -701,32 +659,7 @@ def init():
             y.destroy()
             del window.y
         init_collab()
-        event_bus.trigger('update-workspace-menu')
     window.onhashchange = reset_collab
-
-    def filter_latest(files):
-        ''' This will check files and try to determine by modification time
-        that they were saved together. It's a "clever" and likely broken way
-        to avoid otherwise coding metadata to record session of open files, 
-        etc.
-        '''
-        files.sort(def(a,b): # Latest first
-                       if a.mtime > b.mtime:
-                           return -1
-                       else:
-                           return 1
-                      )
-        return files.reduce(def(result, item):
-                prev = result[0]
-                if prev is undefined:
-                    return result.concat(item)
-                elif item.mtime.getTime() is prev.mtime.getTime():
-                    return result.concat(item)
-                else:
-                    ''' We filter out those that don't have the same mtime
-                    as the first entry.'''
-                    return result
-            , [])
 
     def init_collab():
         if not location.hash:
@@ -736,6 +669,7 @@ def init():
         if address is undefined:
                 address = location.host
         path = location.hash.slice(1)
+        event_bus.trigger('update-workspace-menu')
 
         Y({'db'       : { 'name': 'memory'},
            'connector': { 'name': 'websockets-client',
@@ -792,6 +726,45 @@ def init():
     window.init_collab = init_collab
     editor.focus()
 
+require(['rapydscript'], def():
+        print('RapydScript-ng ' + RapydScript.rs_version)
+
+        compiler = RapydScript.create_embedded_compiler()
+        
+        def compile(inputcode=None):
+            editor = window.editor
+            options = {'basedir':'__stdlib__',
+                       'bare': True,
+                       'js_version': 5,
+                       'omit_baselib':True}
+
+            for file in window.files:
+                if file is not tag.title:
+                    RapydScript.file_data['__stdlib__/' + file] = window.files[file].getValue()
+
+            session = editor.getDoc()
+            if tag.marker and not inputcode:
+                tag.marker.clear()
+
+            try:
+                result = RapydScript.compile(inputcode or editor.getValue(), tag.title, options)
+                if "print;" in result:
+                    raise SyntaxError('Missing parentheses in call to "print"')
+
+            except Exception as e:
+                console.log(e)
+                code = "print ('''" + e.name + ": " + e.message + "''')"
+                if e.line and e.col and not inputcode:
+                    tag.marker = editor.markText( CodeMirror.Pos(e.line-1, e.col),
+                                     CodeMirror.Pos(e.line-1, e.col+1),
+                                     {'className': 'error-marker'} )
+                    editor.scrollIntoView(e.line-1, e.col+1)
+                result = compiler.compile(code)
+            return result
+        window.compile = compile
+        window.RapydScript = RapydScript
+        event_bus.trigger('compiler-ready')
+    )
 this.on('mount', init)
 
 </script>

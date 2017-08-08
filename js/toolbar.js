@@ -1,4 +1,4 @@
-riot.tag2('tool-bar', '<div id="main-toolbar" class="toolbar"> <button class="toolbutton" id="activity-button" title="Jappy Activity"></button> <hr> <button class="toolbutton" id="example-button" title="Load an example" ref="examplebutton"></button> <button show="{location.hash}" class="toolbutton" id="workspace-button" title="Workspace" ref="workspacebutton"></button> <hr> <button class="toolbutton {colored: window.state!=\'run\'}" id="run-button" title="Execute" ref="runbutton"></button> <button class="toolbutton {colored: window.state==\'run\'}" id="break-button" title="Break execution" ref="breakbutton"></button> <button class="toolbutton {colored: window.state!=\'clean\'}" id="erase-button" title="Clear the canvas" ref="erasebutton"></button> <button class="toolbutton {hidden: window.state==\'run\'}" id="start-button" title="Start fullscreen" ref="startbutton"></button> <button class="toolbutton {hidden: window.state==\'stopped\'} {hidden: window.state==\'clean\'}" id="full-button" title="View fullscreen" ref="fullbutton"></button> <button class="toolbutton" id="export-button" title="Export or publish" ref="exportbutton"></button> <button class="toolbutton pull-right" id="stop-button" title="Stop" ref="stopbutton"></button> </div>', 'tool-bar #main-toolbar #run-button,[data-is="tool-bar"] #main-toolbar #run-button{ background-image: url(icons/run_bw.svg); } tool-bar #main-toolbar #run-button.colored,[data-is="tool-bar"] #main-toolbar #run-button.colored{ background-image: url(icons/run_color.svg); } tool-bar #main-toolbar #break-button,[data-is="tool-bar"] #main-toolbar #break-button{ background-image: url(icons/stopit_bw.svg); } tool-bar #main-toolbar #break-button.colored,[data-is="tool-bar"] #main-toolbar #break-button.colored{ background-image: url(icons/stopit_color.svg); } tool-bar #main-toolbar #erase-button,[data-is="tool-bar"] #main-toolbar #erase-button{ background-image: url(icons/eraser_bw.svg); } tool-bar #main-toolbar #erase-button.colored,[data-is="tool-bar"] #main-toolbar #erase-button.colored{ background-image: url(icons/eraser_color.svg); } tool-bar #main-toolbar #example-button,[data-is="tool-bar"] #main-toolbar #example-button{ background-image: url(icons/load-example.svg); } tool-bar #main-toolbar #workspace-button,[data-is="tool-bar"] #main-toolbar #workspace-button{ background-image: url(icons/user-documents.svg); } tool-bar #main-toolbar #start-button,[data-is="tool-bar"] #main-toolbar #start-button{ background-image: url(icons/activity-start.svg); } tool-bar #main-toolbar #full-button,[data-is="tool-bar"] #main-toolbar #full-button{ background-image: url(icons/view-fullscreen.svg); } tool-bar #main-toolbar #export-button,[data-is="tool-bar"] #main-toolbar #export-button{ background-image: url(icons/export-or-publish.svg); } tool-bar .hidden,[data-is="tool-bar"] .hidden{ display: none !important; }', '', function(opts) {
+riot.tag2('tool-bar', '<div id="main-toolbar" class="toolbar"> <button class="toolbutton" id="activity-button" title="Jappy Activity"></button> <hr> <button class="toolbutton" id="example-button" title="Load an example" ref="examplebutton"></button> <button show="{location.hash}" class="toolbutton" id="workspace-button" title="Workspace" ref="workspacebutton"></button> <hr> <button class="toolbutton {colored: window.state!=\'run\'}" id="run-button" title="Execute" ref="runbutton" disabled></button> <button class="toolbutton {colored: window.state==\'run\'}" id="break-button" title="Break execution" ref="breakbutton"></button> <button class="toolbutton {colored: window.state!=\'clean\'}" id="erase-button" title="Clear the canvas" ref="erasebutton"></button> <button class="toolbutton {hidden: window.state==\'run\'}" id="start-button" title="Start fullscreen" ref="startbutton" disabled></button> <button class="toolbutton {hidden: window.state==\'stopped\'} {hidden: window.state==\'clean\'}" id="full-button" title="View fullscreen" ref="fullbutton"></button> <button class="toolbutton" id="export-button" title="Export or publish" ref="exportbutton"></button> <button class="toolbutton pull-right" id="stop-button" title="Stop" ref="stopbutton"></button> </div>', 'tool-bar #main-toolbar #run-button,[data-is="tool-bar"] #main-toolbar #run-button{ background-image: url(icons/run_bw.svg); } tool-bar #main-toolbar #run-button.colored,[data-is="tool-bar"] #main-toolbar #run-button.colored{ background-image: url(icons/run_color.svg); } tool-bar #main-toolbar #break-button,[data-is="tool-bar"] #main-toolbar #break-button{ background-image: url(icons/stopit_bw.svg); } tool-bar #main-toolbar #break-button.colored,[data-is="tool-bar"] #main-toolbar #break-button.colored{ background-image: url(icons/stopit_color.svg); } tool-bar #main-toolbar #erase-button,[data-is="tool-bar"] #main-toolbar #erase-button{ background-image: url(icons/eraser_bw.svg); } tool-bar #main-toolbar #erase-button.colored,[data-is="tool-bar"] #main-toolbar #erase-button.colored{ background-image: url(icons/eraser_color.svg); } tool-bar #main-toolbar #example-button,[data-is="tool-bar"] #main-toolbar #example-button{ background-image: url(icons/load-example.svg); } tool-bar #main-toolbar #workspace-button,[data-is="tool-bar"] #main-toolbar #workspace-button{ background-image: url(icons/user-documents.svg); } tool-bar #main-toolbar #start-button,[data-is="tool-bar"] #main-toolbar #start-button{ background-image: url(icons/activity-start.svg); } tool-bar #main-toolbar #full-button,[data-is="tool-bar"] #main-toolbar #full-button{ background-image: url(icons/view-fullscreen.svg); } tool-bar #main-toolbar #export-button,[data-is="tool-bar"] #main-toolbar #export-button{ background-image: url(icons/export-or-publish.svg); } tool-bar .hidden,[data-is="tool-bar"] .hidden{ display: none !important; } tool-bar .toolbutton:disabled,[data-is="tool-bar"] .toolbutton:disabled{ opacity: 0.5; }', '', function(opts) {
 var ρσ_modules = {};
 ρσ_modules.elementmaker = {};
 
@@ -310,6 +310,91 @@ if (location.hash) {
 }
 examples = ρσ_list_decorate([ "welcome.pyj", "memorize.pyj", "mandala.pyj", "input.pyj", "repl.pyj", "unicode.pyj" ]);
 window.state = "clean";
+function enable_run() {
+    tag.refs.runbutton.disabled = false;
+    tag.refs.startbutton.disabled = false;
+};
+
+event_bus.on("compiler-ready", enable_run);
+function filter_latest(files) {
+    files.sort((function() {
+        var ρσ_anonfunc = function (a, b) {
+            if (a.mtime > b.mtime) {
+                return -1;
+            } else {
+                return 1;
+            }
+        };
+        if (!ρσ_anonfunc.__argnames__) Object.defineProperties(ρσ_anonfunc, {
+            __argnames__ : {value: ["a", "b"]}
+        });
+        return ρσ_anonfunc;
+    })());
+    return files.reduce((function() {
+        var ρσ_anonfunc = function (result, item) {
+            var prev;
+            prev = result[0];
+            if ((item.name[0] === "." || typeof item.name[0] === "object" && ρσ_equals(item.name[0], "."))) {
+                return result;
+            } else if (prev === undefined) {
+                return result.concat(item);
+            } else if (item.mtime.getTime() === prev.mtime.getTime()) {
+                return result.concat(item);
+            } else {
+                " We filter out those that don't have the same mtime\n                as the first entry.";
+                return result;
+            }
+        };
+        if (!ρσ_anonfunc.__argnames__) Object.defineProperties(ρσ_anonfunc, {
+            __argnames__ : {value: ["result", "item"]}
+        });
+        return ρσ_anonfunc;
+    })(), ρσ_list_decorate([]));
+};
+if (!filter_latest.__argnames__) Object.defineProperties(filter_latest, {
+    __argnames__ : {value: ["files"]}
+});
+
+function restore_last_session() {
+    var url_base, address, path;
+    if (location.hash) {
+        url_base = location.protocol;
+        address = url_base + "//" + location.host + "/dav";
+        if (window.fs === undefined) {
+            window.fs = new WebDAV.Fs(address);
+        }
+        path = location.hash.slice(1);
+        function got_files(files) {
+            var recent_files, item;
+            window.server_files = files;
+            recent_files = filter_latest(files);
+            var ρσ_Iter2 = ρσ_Iterable(recent_files);
+            for (var ρσ_Index2 = 0; ρσ_Index2 < ρσ_Iter2.length; ρσ_Index2++) {
+                item = ρσ_Iter2[ρσ_Index2];
+                window.fs.file("/" + path + "/" + item.name).read((function() {
+                    var ρσ_anonfunc = function (data) {
+                        event_bus.trigger("new-from-data", data, item.name, true);
+                    };
+                    if (!ρσ_anonfunc.__argnames__) Object.defineProperties(ρσ_anonfunc, {
+                        __argnames__ : {value: ["data"]}
+                    });
+                    return ρσ_anonfunc;
+                })());
+            }
+        };
+        if (!got_files.__argnames__) Object.defineProperties(got_files, {
+            __argnames__ : {value: ["files"]}
+        });
+
+        if (window.server_files !== undefined) {
+            got_files(window.server_files);
+        } else {
+            fs.dir("/" + path).children(got_files);
+        }
+    }
+};
+
+event_bus.on("collaboration-ready", restore_last_session);
 function load_file(ev) {
     var target_file, path;
     tag.workspace_palette.popDown();
@@ -337,6 +422,7 @@ function update_workspace_menu() {
     path = location.hash.slice(1);
     function list_files(found_files) {
         var items, palette, container, row, item, span, text, file, browse_button, lastrow;
+        window.server_files = found_files;
         found_files.sort((function() {
             var ρσ_anonfunc = function (a, b) {
                 if (a.mtime > b.mtime) {
@@ -354,9 +440,9 @@ function update_workspace_menu() {
         palette = tag.workspace_palette.getPalette();
         container = palette.getElementsByClassName("container")[0];
         container.innerHTML = "";
-        var ρσ_Iter2 = ρσ_Iterable(found_files);
-        for (var ρσ_Index2 = 0; ρσ_Index2 < ρσ_Iter2.length; ρσ_Index2++) {
-            file = ρσ_Iter2[ρσ_Index2];
+        var ρσ_Iter3 = ρσ_Iterable(found_files);
+        for (var ρσ_Index3 = 0; ρσ_Index3 < ρσ_Iter3.length; ρσ_Index3++) {
+            file = ρσ_Iter3[ρσ_Index3];
             if ((file.name[0] === "." || typeof file.name[0] === "object" && ρσ_equals(file.name[0], "."))) {
                 continue;
             }
@@ -453,9 +539,9 @@ function init() {
             var items, row, item, span, text, i;
             tag.example_palette = new palette.Palette(tag.refs.examplebutton, "Load an example");
             items = ρσ_list_decorate([]);
-            var ρσ_Iter3 = ρσ_Iterable(examples);
-            for (var ρσ_Index3 = 0; ρσ_Index3 < ρσ_Iter3.length; ρσ_Index3++) {
-                i = ρσ_Iter3[ρσ_Index3];
+            var ρσ_Iter4 = ρσ_Iterable(examples);
+            for (var ρσ_Index4 = 0; ρσ_Index4 < ρσ_Iter4.length; ρσ_Index4++) {
+                i = ρσ_Iter4[ρσ_Index4];
                 row = document.createElement("div");
                 row.classList.add("menu");
                 item = document.createElement("button");
@@ -518,9 +604,9 @@ function init() {
             import_file.prototype.trigger = "import-file";
 
             items = ρσ_list_decorate([]);
-            var ρσ_Iter4 = ρσ_Iterable(ρσ_list_decorate([ new as_zip, new import_file ]));
-            for (var ρσ_Index4 = 0; ρσ_Index4 < ρσ_Iter4.length; ρσ_Index4++) {
-                i = ρσ_Iter4[ρσ_Index4];
+            var ρσ_Iter5 = ρσ_Iterable(ρσ_list_decorate([ new as_zip, new import_file ]));
+            for (var ρσ_Index5 = 0; ρσ_Index5 < ρσ_Iter5.length; ρσ_Index5++) {
+                i = ρσ_Iter5[ρσ_Index5];
                 row = document.createElement("div");
                 row.classList.add("menu");
                 item = document.createElement("button");
