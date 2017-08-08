@@ -2460,73 +2460,79 @@ function init() {
     editor.focus();
 };
 
-require(ρσ_list_decorate([ "rapydscript" ]), function () {
-    var compiler;
-    print("RapydScript-ng " + RapydScript.rs_version);
-    compiler = RapydScript.create_embedded_compiler();
-    function compile() {
-        var inputcode = (arguments[0] === undefined || ( 0 === arguments.length-1 && arguments[arguments.length-1] !== null && typeof arguments[arguments.length-1] === "object" && arguments[arguments.length-1] [ρσ_kwargs_symbol] === true)) ? compile.__defaults__.inputcode : arguments[0];
-        var ρσ_kwargs_obj = arguments[arguments.length-1];
-        if (ρσ_kwargs_obj === null || typeof ρσ_kwargs_obj !== "object" || ρσ_kwargs_obj [ρσ_kwargs_symbol] !== true) ρσ_kwargs_obj = {};
-        if (Object.prototype.hasOwnProperty.call(ρσ_kwargs_obj, "inputcode")){
-            inputcode = ρσ_kwargs_obj.inputcode;
-        }
-        var editor, options, file, session, result, code;
-        editor = window.editor;
-        options = (function(){
-            var ρσ_d = {};
-            ρσ_d["basedir"] = "__stdlib__";
-            ρσ_d["bare"] = true;
-            ρσ_d["js_version"] = 5;
-            ρσ_d["omit_baselib"] = true;
-            return ρσ_d;
-        }).call(this);
-        var ρσ_Iter11 = ρσ_Iterable(window.files);
-        for (var ρσ_Index11 = 0; ρσ_Index11 < ρσ_Iter11.length; ρσ_Index11++) {
-            file = ρσ_Iter11[ρσ_Index11];
-            if (file !== tag.title) {
-                (ρσ_expr_temp = RapydScript.file_data)[ρσ_bound_index("__stdlib__/" + file, ρσ_expr_temp)] = (ρσ_expr_temp = window.files)[(typeof file === "number" && file < 0) ? ρσ_expr_temp.length + file : file].getValue();
+require(ρσ_list_decorate([ "rapydscript" ]), (function() {
+    var ρσ_anonfunc = function (RapydScript) {
+        var compiler;
+        print("RapydScript-ng " + RapydScript.rs_version);
+        compiler = RapydScript.create_embedded_compiler();
+        function compile() {
+            var inputcode = (arguments[0] === undefined || ( 0 === arguments.length-1 && arguments[arguments.length-1] !== null && typeof arguments[arguments.length-1] === "object" && arguments[arguments.length-1] [ρσ_kwargs_symbol] === true)) ? compile.__defaults__.inputcode : arguments[0];
+            var ρσ_kwargs_obj = arguments[arguments.length-1];
+            if (ρσ_kwargs_obj === null || typeof ρσ_kwargs_obj !== "object" || ρσ_kwargs_obj [ρσ_kwargs_symbol] !== true) ρσ_kwargs_obj = {};
+            if (Object.prototype.hasOwnProperty.call(ρσ_kwargs_obj, "inputcode")){
+                inputcode = ρσ_kwargs_obj.inputcode;
             }
-        }
-        session = editor.getDoc();
-        if (tag.marker && !inputcode) {
-            tag.marker.clear();
-        }
-        try {
-            result = RapydScript.compile(inputcode || editor.getValue(), tag.title, options);
-            if (ρσ_in("print;", result)) {
-                throw new SyntaxError("Missing parentheses in call to \"print\"");
-            }
-        } catch (ρσ_Exception) {
-            ρσ_last_exception = ρσ_Exception;
-            if (ρσ_Exception instanceof Error) {
-                var e = ρσ_Exception;
-                console.log(e);
-                code = "print ('''" + e.name + ": " + e.message + "''')";
-                if (e.line && e.col && !inputcode) {
-                    tag.marker = editor.markText(CodeMirror.Pos(e.line - 1, e.col), CodeMirror.Pos(e.line - 1, e.col + 1), (function(){
-                        var ρσ_d = {};
-                        ρσ_d["className"] = "error-marker";
-                        return ρσ_d;
-                    }).call(this));
-                    editor.scrollIntoView(e.line - 1, e.col + 1);
+            var editor, options, file, session, result, code;
+            editor = window.editor;
+            options = (function(){
+                var ρσ_d = {};
+                ρσ_d["basedir"] = "__stdlib__";
+                ρσ_d["bare"] = true;
+                ρσ_d["js_version"] = 5;
+                ρσ_d["omit_baselib"] = true;
+                return ρσ_d;
+            }).call(this);
+            var ρσ_Iter11 = ρσ_Iterable(window.files);
+            for (var ρσ_Index11 = 0; ρσ_Index11 < ρσ_Iter11.length; ρσ_Index11++) {
+                file = ρσ_Iter11[ρσ_Index11];
+                if (file !== tag.title) {
+                    (ρσ_expr_temp = RapydScript.file_data)[ρσ_bound_index("__stdlib__/" + file, ρσ_expr_temp)] = (ρσ_expr_temp = window.files)[(typeof file === "number" && file < 0) ? ρσ_expr_temp.length + file : file].getValue();
                 }
-                result = compiler.compile(code);
-            } else {
-                throw ρσ_Exception;
             }
-        }
-        return result;
-    };
-    if (!compile.__defaults__) Object.defineProperties(compile, {
-        __defaults__ : {value: {inputcode:null}},
-        __handles_kwarg_interpolation__ : {value: true},
-        __argnames__ : {value: ["inputcode"]}
-    });
+            session = editor.getDoc();
+            if (tag.marker && !inputcode) {
+                tag.marker.clear();
+            }
+            try {
+                result = RapydScript.compile(inputcode || editor.getValue(), tag.title, options);
+                if (ρσ_in("print;", result)) {
+                    throw new SyntaxError("Missing parentheses in call to \"print\"");
+                }
+            } catch (ρσ_Exception) {
+                ρσ_last_exception = ρσ_Exception;
+                if (ρσ_Exception instanceof Error) {
+                    var e = ρσ_Exception;
+                    console.log(e);
+                    code = "print ('''" + e.name + ": " + e.message + "''')";
+                    if (e.line && e.col && !inputcode) {
+                        tag.marker = editor.markText(CodeMirror.Pos(e.line - 1, e.col), CodeMirror.Pos(e.line - 1, e.col + 1), (function(){
+                            var ρσ_d = {};
+                            ρσ_d["className"] = "error-marker";
+                            return ρσ_d;
+                        }).call(this));
+                        editor.scrollIntoView(e.line - 1, e.col + 1);
+                    }
+                    result = compiler.compile(code);
+                } else {
+                    throw ρσ_Exception;
+                }
+            }
+            return result;
+        };
+        if (!compile.__defaults__) Object.defineProperties(compile, {
+            __defaults__ : {value: {inputcode:null}},
+            __handles_kwarg_interpolation__ : {value: true},
+            __argnames__ : {value: ["inputcode"]}
+        });
 
-    window.compile = compile;
-    window.RapydScript = RapydScript;
-    event_bus.trigger("compiler-ready");
-});
+        window.compile = compile;
+        window.RapydScript = RapydScript;
+        event_bus.trigger("compiler-ready");
+    };
+    if (!ρσ_anonfunc.__argnames__) Object.defineProperties(ρσ_anonfunc, {
+        __argnames__ : {value: ["RapydScript"]}
+    });
+    return ρσ_anonfunc;
+})());
 this.on("mount", init);
 });

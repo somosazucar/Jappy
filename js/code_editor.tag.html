@@ -726,7 +726,7 @@ def init():
     window.init_collab = init_collab
     editor.focus()
 
-require(['rapydscript'], def():
+require(['rapydscript'], def(RapydScript):
         print('RapydScript-ng ' + RapydScript.rs_version)
 
         compiler = RapydScript.create_embedded_compiler()
