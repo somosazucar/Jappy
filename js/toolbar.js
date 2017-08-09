@@ -365,21 +365,30 @@ function restore_last_session() {
         }
         path = location.hash.slice(1);
         function got_files(files) {
-            var recent_files, item;
+            var recent_files, filename, item;
             window.server_files = files;
             recent_files = filter_latest(files);
+            event_bus.trigger("fetching-session", recent_files);
             var ρσ_Iter2 = ρσ_Iterable(recent_files);
             for (var ρσ_Index2 = 0; ρσ_Index2 < ρσ_Iter2.length; ρσ_Index2++) {
                 item = ρσ_Iter2[ρσ_Index2];
-                window.fs.file("/" + path + "/" + item.name).read((function() {
-                    var ρσ_anonfunc = function (data) {
-                        event_bus.trigger("new-from-data", data, item.name, true);
-                    };
-                    if (!ρσ_anonfunc.__argnames__) Object.defineProperties(ρσ_anonfunc, {
-                        __argnames__ : {value: ["data"]}
-                    });
-                    return ρσ_anonfunc;
-                })());
+                filename = item.name;
+                function new_tab_maker(name) {
+                    return (function() {
+                        var ρσ_anonfunc = function (data) {
+                            event_bus.trigger("new-from-data", data, name, true);
+                        };
+                        if (!ρσ_anonfunc.__argnames__) Object.defineProperties(ρσ_anonfunc, {
+                            __argnames__ : {value: ["data"]}
+                        });
+                        return ρσ_anonfunc;
+                    })();
+                };
+                if (!new_tab_maker.__argnames__) Object.defineProperties(new_tab_maker, {
+                    __argnames__ : {value: ["name"]}
+                });
+
+                window.fs.file("/" + path + "/" + filename).read(new_tab_maker(filename));
             }
         };
         if (!got_files.__argnames__) Object.defineProperties(got_files, {

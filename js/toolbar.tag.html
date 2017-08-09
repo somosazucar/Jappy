@@ -119,10 +119,16 @@ def restore_last_session():
         def got_files(files):
             window.server_files = files
             recent_files = filter_latest(files)
+            event_bus.trigger('fetching-session', recent_files)
+
             for item in recent_files:
-                window.fs.file('/' + path + '/' + item.name).read(def(data):
-                        event_bus.trigger('new-from-data', data, item.name, True)
-                )
+                filename = item.name
+
+                def new_tab_maker(name):
+                    return def(data):
+                        event_bus.trigger('new-from-data', data, name, True)
+
+                window.fs.file('/' + path + '/' + filename).read(new_tab_maker(filename))
         if window.server_files is not undefined:
             got_files(window.server_files)
         else:
