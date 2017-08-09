@@ -68,9 +68,21 @@ class DAVFilterMiddleWare(object):
         self.app = app
 
     def __call__(self, environ, start_response):
+        def custom_start_response(status, headers, exc_info=None):
+            headers.append(('Cache-Control', 'no-cache, no-store, must-revalidate'))
+            return start_response(status, headers, exc_info)
+        path = environ.get('PATH_INFO')[1:environ.get('PATH_INFO')[1:].index('/')+1]
         if environ.get('PATH_INFO') in ['', '/'] and \
                 environ.get('REQUEST_METHOD')=='PROPFIND':
+            # Let's not allow listing of projects
             return Unauthorized()(environ, start_response)
+        elif environ.get('PATH_INFO')[len(path)+1:].startswith(('/lib', '/css', '/fonts')) and \
+                environ.get('REQUEST_METHOD')=='GET':
+            # Let's redirect to static route
+            filename = environ.get('PATH_INFO')[len(path)+1:]
+            if not os.path.exists(filename):
+                response = redirect('../../..' + filename)
+                return response(environ, start_response)
         elif environ.get('PATH_INFO').count('/') < 2 and \
                 environ.get('REQUEST_METHOD')=='DELETE':
             # Let's disallow removing project directories
@@ -81,7 +93,7 @@ class DAVFilterMiddleWare(object):
             if os.path.exists(dirname):
                 response = Response('Already exists.')
                 return response(environ, start_response)
-        return self.app(environ, start_response)
+        return self.app(environ, custom_start_response)
 
 def start_server():
     launch_file_monitor()
