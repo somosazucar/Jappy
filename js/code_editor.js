@@ -2437,8 +2437,6 @@ function init() {
                 y.connector.whenSynced(function () {
                     console.log("Synchronized.");
                     event_bus.trigger("collaboration-ready");
-                    tag.update();
-                    y.share.files.get(tag.title).bindCodeMirror(editor);
                 });
                 y.connector.socket.on("jappyEvent", (function() {
                     var ρσ_anonfunc = function (msg) {
