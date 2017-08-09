@@ -660,6 +660,7 @@ def init():
     event_bus.on("save-as-zip", save_zip)
 
     def reset_collab(ev):
+        clear_output()
         close_all()
         if window.y is not undefined: # collaboration
             y.destroy()
@@ -711,7 +712,7 @@ def init():
                                         text = event.object.toString()
                                         new_session = CodeMirror.Doc(text)
                                         window.files[event.name] = new_session
-                                tag.update()
+                                        tag.update()
                         )
                     y.connector.whenSynced( def():
                                             console.log('Synchronized.')

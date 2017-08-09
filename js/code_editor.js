@@ -2338,6 +2338,7 @@ function init() {
 
     event_bus.on("save-as-zip", save_zip);
     function reset_collab(ev) {
+        clear_output();
         close_all();
         if (window.y !== undefined) {
             y.destroy();
@@ -2425,9 +2426,9 @@ function init() {
                                 text = event.object.toString();
                                 new_session = CodeMirror.Doc(text);
                                 (ρσ_expr_temp = window.files)[ρσ_bound_index(event.name, ρσ_expr_temp)] = new_session;
+                                tag.update();
                             }
                         }
-                        tag.update();
                     };
                     if (!ρσ_anonfunc.__argnames__) Object.defineProperties(ρσ_anonfunc, {
                         __argnames__ : {value: ["event"]}
