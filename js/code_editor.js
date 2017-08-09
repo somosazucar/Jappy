@@ -1847,6 +1847,9 @@ function init() {
 
     function run() {
         var js_output, script;
+        if (window.RapydScript === undefined) {
+            event_bus.one("compiler-ready", run);
+        }
         window.state = "run";
         event_bus.trigger("traybutton-open");
         riot.update();
@@ -2410,8 +2413,6 @@ function init() {
                 if (!(ρσ_in(tag.title, y.share.files.keys()))) {
                     tag.title = list(y.share.files.keys())[0];
                 }
-                tag.update();
-                y.share.files.get(tag.title).bindCodeMirror(editor);
                 y.share.files.observe((function() {
                     var ρσ_anonfunc = function (event) {
                         var text, new_session;
@@ -2436,6 +2437,8 @@ function init() {
                 y.connector.whenSynced(function () {
                     console.log("Synchronized.");
                     event_bus.trigger("collaboration-ready");
+                    tag.update();
+                    y.share.files.get(tag.title).bindCodeMirror(editor);
                 });
                 y.connector.socket.on("jappyEvent", (function() {
                     var ρσ_anonfunc = function (msg) {

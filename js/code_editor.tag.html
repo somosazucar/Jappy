@@ -364,6 +364,8 @@ def init():
                                                     file_written)
 
     def run():
+        if window.RapydScript is undefined:
+            event_bus.one('compiler-ready', run)
         window.state = 'run'
         event_bus.trigger("traybutton-open")
         riot.update()
@@ -700,8 +702,6 @@ def init():
                             window.files[filename] = new_session
                     if tag.title not in y.share.files.keys():
                         tag.title = list(y.share.files.keys())[0]
-                    tag.update()
-                    y.share.files.get(tag.title).bindCodeMirror(editor)
                     y.share.files.observe(  def(event): 
                                 if event.type == 'delete':
                                     if event.name in window.files:
@@ -716,6 +716,8 @@ def init():
                     y.connector.whenSynced( def():
                                             console.log('Synchronized.')
                                             event_bus.trigger("collaboration-ready")
+                                            tag.update()
+                                            y.share.files.get(tag.title).bindCodeMirror(editor)
                                 )
                     y.connector.socket.on('jappyEvent', def(msg):
                             event = msg.event
