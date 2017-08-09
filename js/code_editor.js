@@ -2438,6 +2438,7 @@ function init() {
                 y.connector.whenSynced(function () {
                     console.log("Synchronized.");
                     event_bus.trigger("collaboration-ready");
+                    tag.update();
                 });
                 y.connector.socket.on("jappyEvent", (function() {
                     var ρσ_anonfunc = function (msg) {

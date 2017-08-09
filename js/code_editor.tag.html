@@ -717,6 +717,7 @@ def init():
                     y.connector.whenSynced( def():
                                             console.log('Synchronized.')
                                             event_bus.trigger("collaboration-ready")
+                                            tag.update()
                                 )
                     y.connector.socket.on('jappyEvent', def(msg):
                             event = msg.event
