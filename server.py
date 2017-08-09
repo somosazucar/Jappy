@@ -71,13 +71,19 @@ class DAVFilterMiddleWare(object):
         def custom_start_response(status, headers, exc_info=None):
             headers.append(('Cache-Control', 'no-cache, no-store, must-revalidate'))
             return start_response(status, headers, exc_info)
-        path = environ.get('PATH_INFO')[1:environ.get('PATH_INFO')[1:].index('/')+1]
+        if environ.get('PATH_INFO').count('/')>1:
+            path = environ.get('PATH_INFO')[1:environ.get('PATH_INFO')[1:].index('/')+1]
+        elif environ.get('PATH_INFO').count('/')>1:
+            path = environ.get('PATH_INFO')[1:]
+        else:
+            path = ''
         if environ.get('PATH_INFO') in ['', '/'] and \
                 environ.get('REQUEST_METHOD')=='PROPFIND':
             # Let's not allow listing of projects
             return Unauthorized()(environ, start_response)
-        elif environ.get('PATH_INFO')[len(path)+1:].startswith(('/lib', '/css', '/fonts')) and \
-                environ.get('REQUEST_METHOD')=='GET':
+        elif environ.get('REQUEST_METHOD')=='GET' and \
+                environ.get('PATH_INFO')[len(path)+1:] \
+                    .startswith(('/lib', '/css', '/fonts')) :
             # Let's redirect to static route
             filename = environ.get('PATH_INFO')[len(path)+1:]
             if not os.path.exists(filename):
