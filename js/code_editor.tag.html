@@ -364,6 +364,16 @@ def init():
                                                     file_written)
 
     def run():
+        if tag.title.toLowerCase().endswith('.html'):
+            iframe.contentDocument.open()
+            iframe.contentDocument.write(editor.getValue())
+            iframe.contentDocument.close()
+        else:
+            # This is what we're about after all
+            run_rapydscript()
+    event_bus.on("run-code", run)
+
+    def run_rapydscript():
         if window.RapydScript is undefined:
             event_bus.one('compiler-ready', run)
         window.state = 'run'
@@ -389,8 +399,6 @@ def init():
             iframe.contentWindow.location = 'dav/' + path + '/template.html'
         else:
             iframe.contentWindow.location = 'template.html'
-        return iframe
-    event_bus.on("run-code", run)
 
     def break_code():
         iwindow = iframe.contentWindow
@@ -726,6 +734,7 @@ def init():
                                             console.log('Synchronized.')
                                             event_bus.trigger("collaboration-ready")
                                             tag.update()
+                                            y.share.files.get(tag.title).bindCodeMirror(editor)
                                 )
                     y.connector.socket.on('jappyEvent', def(msg):
                             event = msg.event

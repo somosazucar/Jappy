@@ -1846,6 +1846,17 @@ function init() {
     });
 
     function run() {
+        if (tag.title.toLowerCase().endswith(".html")) {
+            iframe.contentDocument.open();
+            iframe.contentDocument.write(editor.getValue());
+            iframe.contentDocument.close();
+        } else {
+            run_rapydscript();
+        }
+    };
+
+    event_bus.on("run-code", run);
+    function run_rapydscript() {
         var js_output, script, path;
         if (window.RapydScript === undefined) {
             event_bus.one("compiler-ready", run);
@@ -1878,10 +1889,8 @@ function init() {
         } else {
             iframe.contentWindow.location = "template.html";
         }
-        return iframe;
     };
 
-    event_bus.on("run-code", run);
     function break_code() {
         var iwindow, highestTimeoutId, i, highestIntervalId, inputs;
         iwindow = iframe.contentWindow;
@@ -2448,6 +2457,7 @@ function init() {
                     console.log("Synchronized.");
                     event_bus.trigger("collaboration-ready");
                     tag.update();
+                    y.share.files.get(tag.title).bindCodeMirror(editor);
                 });
                 y.connector.socket.on("jappyEvent", (function() {
                     var ρσ_anonfunc = function (msg) {
