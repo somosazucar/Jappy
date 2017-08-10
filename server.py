@@ -1,6 +1,5 @@
 #!/usr/bin/env python3
 from flask import Flask
-from flask import redirect
 from flask_socketio import SocketIO, emit, join_room, leave_room
 from flask import request, abort
 from wsgidav.wsgidav_app import DEFAULT_CONFIG, WsgiDAVApp
@@ -8,6 +7,7 @@ from wsgidav.fs_dav_provider import FilesystemProvider
 from werkzeug.wsgi import DispatcherMiddleware
 from werkzeug.exceptions import Unauthorized
 from werkzeug.wrappers import Response
+from werkzeug.utils import redirect
 from wsgicors import CORS
 import os
 import sys
@@ -87,7 +87,7 @@ class DAVFilterMiddleWare(object):
             # Let's redirect to static route
             filename = environ.get('PATH_INFO')[len(path)+1:]
             if not os.path.exists(filename):
-                response = redirect('../../..' + filename)
+                response = redirect(filename)
                 return response(environ, start_response)
         elif environ.get('PATH_INFO').count('/') < 2 and \
                 environ.get('REQUEST_METHOD')=='DELETE':
