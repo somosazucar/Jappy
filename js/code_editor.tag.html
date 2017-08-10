@@ -384,7 +384,11 @@ def init():
             iframe.contentDocument.body.appendChild(script)
             iframe.contentDocument.close()
         iframe.onload = write_script
-        iframe.contentWindow.location = 'template.html'
+        if window.fs is not undefined:
+            path = location.hash.slice(1)
+            iframe.contentWindow.location = 'dav/' + path + '/template.html'
+        else:
+            iframe.contentWindow.location = 'template.html'
         return iframe
     event_bus.on("run-code", run)
 

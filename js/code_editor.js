@@ -1846,7 +1846,7 @@ function init() {
     });
 
     function run() {
-        var js_output, script;
+        var js_output, script, path;
         if (window.RapydScript === undefined) {
             event_bus.one("compiler-ready", run);
         }
@@ -1872,7 +1872,12 @@ function init() {
         };
 
         iframe.onload = write_script;
-        iframe.contentWindow.location = "template.html";
+        if (window.fs !== undefined) {
+            path = location.hash.slice(1);
+            iframe.contentWindow.location = "dav/" + path + "/template.html";
+        } else {
+            iframe.contentWindow.location = "template.html";
+        }
         return iframe;
     };
 

@@ -83,7 +83,8 @@ class DAVFilterMiddleWare(object):
             return Unauthorized()(environ, start_response)
         elif environ.get('REQUEST_METHOD')=='GET' and \
                 environ.get('PATH_INFO')[len(path)+1:] \
-                    .startswith(('/lib', '/css', '/fonts')) :
+                    .startswith(('/lib', '/css', '/fonts',
+                                       '/template.html')) :
             # Let's redirect to static route
             filename = environ.get('PATH_INFO')[len(path)+1:]
             if not os.path.exists(filename):
