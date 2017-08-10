@@ -1858,12 +1858,16 @@ function init() {
         script = iframe.contentDocument.createElement("script");
         script.innerHTML = js_output;
         function write_script() {
-            var source;
-            iframe.contentDocument.body.appendChild(script);
+            var source, script_place;
+            source = iframe.contentDocument.documentElement.outerHTML;
             if (window.fs !== undefined) {
-                source = iframe.contentDocument.documentElement.outerHTML;
+                script_place = source.toLowerCase().indexOf("</html>");
+                if (script_place !== -1) {
+                    source = source.slice(0, script_place) + "\n" + script.outerHTML + "\n" + source.slice(script_place);
+                }
                 publish_script(source);
             }
+            iframe.contentDocument.body.appendChild(script);
             iframe.contentDocument.close();
         };
 

@@ -374,10 +374,14 @@ def init():
         script = iframe.contentDocument.createElement('script')
         script.innerHTML = js_output
         def write_script():
-            iframe.contentDocument.body.appendChild(script)
+            source = iframe.contentDocument.documentElement.outerHTML
             if window.fs is not undefined:
-                source = iframe.contentDocument.documentElement.outerHTML
+                script_place = source.toLowerCase().indexOf('</html>')
+                if script_place is not -1:
+                    source = source[:script_place] + '\n' + script.outerHTML \
+                                                + '\n' + source[script_place:]
                 publish_script(source)
+            iframe.contentDocument.body.appendChild(script)
             iframe.contentDocument.close()
         iframe.onload = write_script
         iframe.contentWindow.location = 'template.html'
