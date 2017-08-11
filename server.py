@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 from flask import Flask
 from flask_socketio import SocketIO, emit, join_room, leave_room
-from flask import request, abort
+from flask import request, abort, send_from_directory
 from wsgidav.wsgidav_app import DEFAULT_CONFIG, WsgiDAVApp
 from wsgidav.fs_dav_provider import FilesystemProvider
 from werkzeug.wsgi import DispatcherMiddleware
@@ -26,7 +26,14 @@ socketio = SocketIO(app)
 
 @app.route("/")
 def hello():
-    return redirect(app_dir + "/index.html")
+    print (app.root_path + '/index.html')
+    return send_from_directory(app.root_path, 'index.html', 
+                                                    mimetype='text/html')
+
+@app.route('/favicon.ico')
+def favicon():
+    return send_from_directory(app.root_path, 'favicon.ico',
+                                        mimetype='vnd.microsoft.icon')
 
 @app.route("/shutdown")
 def bye(*args):
@@ -36,7 +43,6 @@ def bye(*args):
     except RuntimeError:
         pass
     sys.exit()
-    return 'Bye!'
 
 @socketio.on('connect')
 def test_connect():
@@ -48,11 +54,11 @@ def joinRoom(room):
 
 @socketio.on('yjsEvent')
 def yjsEvent(message):
-    emit('yjsEvent', message, broadcast=True)
+    emit('yjsEvent', message, broadcast=True, skip_sid=request.sid)
 
-@socketio.on('jappyEvent')
-def jappyEvent(message=None):
-    print ('Got jappyEvent')
+@socketio.on('jappyTrigger')
+def jappyEvent(message):
+    emit('jappyEvent', message, broadcast=True, skip_sid=request.sid)
 
 @socketio.on('leaveRoom')
 def leaveRoom(room):
@@ -81,14 +87,15 @@ class DAVFilterMiddleWare(object):
                 environ.get('REQUEST_METHOD')=='PROPFIND':
             # Let's not allow listing of projects
             return Unauthorized()(environ, start_response)
-        elif environ.get('REQUEST_METHOD')=='GET' and \
-                environ.get('PATH_INFO')[len(path)+1:] \
-                    .startswith(('/lib', '/css', '/fonts',
-                                       '/template.html')) :
+        elif environ.get('REQUEST_METHOD')=='GET':
             # Let's redirect to static route
-            filename = environ.get('PATH_INFO')[len(path)+1:]
-            if not os.path.exists(filename):
-                response = redirect(filename)
+            filename = environ.get('PATH_INFO') \
+                    [environ.get('PATH_INFO').find('/')+1:]
+            if path and os.path.exists('workspace/' + \
+                                        filename):
+                pass
+            elif path:
+                response = redirect('/' + filename[len(path)+1:])
                 return response(environ, start_response)
         elif environ.get('PATH_INFO').count('/') < 2 and \
                 environ.get('REQUEST_METHOD')=='DELETE':
@@ -129,8 +136,15 @@ class EventHandler(pyinotify.ProcessEvent):
                                             'filename':event.name }
                                          },
                                       room=room, broadcast=True)
-
     def process_IN_DELETE(self, event):
+        room = event.path[10:]
+        socketio.emit('jappyEvent', { 'event': 'file-event',
+                                         'data': {
+                                            'maskname':event.maskname,
+                                            'filename':event.name }
+                                         },
+                                      room=room, broadcast=True)
+    def process_IN_CLOSE_WRITE(self, event):
         room = event.path[10:]
         socketio.emit('jappyEvent', { 'event': 'file-event',
                                          'data': {
@@ -141,7 +155,8 @@ class EventHandler(pyinotify.ProcessEvent):
 
 def launch_file_monitor():
     print ('Starting file monitor...')
-    mask = pyinotify.IN_DELETE | pyinotify.IN_CREATE  # watched events
+    mask = pyinotify.IN_DELETE | pyinotify.IN_CREATE | \
+            pyinotify.IN_CLOSE_WRITE # watched events
     wm = pyinotify.WatchManager()
     notifier = pyinotify.ThreadedNotifier(wm, EventHandler())
     wm.add_watch('workspace', mask, rec=True, auto_add=True)

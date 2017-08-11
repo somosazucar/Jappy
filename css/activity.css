@@ -12,7 +12,13 @@ button.icon span.pyj {
     background-image: url(../activity/activity-icon.svg);
 }
 button.icon span.folder {
-    background-image: url(../icons/user-documents.svg);
+    background-image: url(../icons/folder.svg);
+}
+button.icon span.document {
+    background-image: url(../icons/document-generic.svg);
+}
+button.icon span.image {
+    background-image: url(../icons/image-x-generic.svg);
 }
 button.icon span.zip {
     background-image: url(../icons/zip-archive.svg);

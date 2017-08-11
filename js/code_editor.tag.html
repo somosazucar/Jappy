@@ -106,7 +106,7 @@ iframe {
         </div>
         <textarea id="code-container" ref="code"></textarea>
     </div>
-    <iframe allowTransparency="false" ref="vmframe"></iframe>
+    <iframe allowTransparency="false" ref="vmframe" name="_vmframe"></iframe>
 </div>
 
 <script type="text/Rapyd">
@@ -122,7 +122,7 @@ def init():
                       'matchBrackets': True,
                       'indentUnit': 4,
                       'fixedGutter': True,
-                      'mode': 'python',
+                      'mode': None,
                       'showCursorWhenSelecting': True,
                       'scrollbarStyle': 'overlay',
                       'styleActiveLine': True,
@@ -155,7 +155,6 @@ def init():
                 tag.title = list(parsed_data)[0]
                 if window.files[tag.title]!=undefined:
                     editor.swapDoc(window.files[tag.title])
-                    editor.setOption('mode', 'python')
             tag.update()
         if datastore.objectId is not undefined:
             datastore.loadAsText(check_load)
@@ -189,9 +188,20 @@ def init():
             if window.y is not undefined: # collaboration
                     y.share.files.set(tag.title, Y.Text)
         window.document.title = tag.title
+        guess_mode()
     this.on('update', update_tabs)
     window.addEventListener("resize", update_tabs)
     window.addEventListener("orientationchange", update_tabs)
+
+    def guess_mode():
+        if tag.title.toLowerCase().endswith(['.pyj', '.py']):
+            editor.setOption('mode', 'python')
+        elif tag.title.toLowerCase().endswith(['.html', '.htm', '.svg', '.xml']):
+            editor.setOption('mode', 'htmlmixed')
+        elif tag.title.toLowerCase().endswith('.js'):
+            editor.setOption('mode', 'javascript')
+        elif tag.title.toLowerCase().endswith('.css'):
+            editor.setOption('mode', 'css')
 
     def switchtab(e=None, filename=None):
         if filename is None:
@@ -206,7 +216,6 @@ def init():
                     y.share.files.get(tag.title).bindCodeMirror(editor)
             else:
                 editor.swapDoc(window.files[tag.title])
-            editor.setOption('mode', 'python')
             editor.focus()
         else:
             if e is not None:
@@ -251,7 +260,6 @@ def init():
                 y.share.files.get(tag.title).unbindCodeMirror(editor)
         new_session = CodeMirror.Doc('')
         editor.swapDoc(new_session)
-        editor.setOption('mode', 'python')
 
     def closetab(e=None, filename=None):
         if len(window.files) > 1:
@@ -284,7 +292,6 @@ def init():
                 del RapydScript.file_data['__stdlib__/' + filename]
             if tag.title is not active_title:
                 editor.swapDoc(window.files[tag.title])
-                editor.setOption('mode', 'python')
             if window.y is not undefined: # collaboration
                 if filename == active_title:
                     if tag.title in y.share.files.keys():
@@ -307,7 +314,6 @@ def init():
         new_session = CodeMirror.Doc('')
         window.files[file] = new_session
         editor.swapDoc(new_session)
-        editor.setOption('mode', 'python')
         editor.focus()
         if window.y is not undefined: # collaboration
             if tag.title in y.share.files.keys():
@@ -355,31 +361,58 @@ def init():
         editor.scrollIntoView()
     event_bus.on("traybutton-open", traybutton_open)
 
-    def publish_script(source):
+    def publish_script(source, callback=None):
         path = location.hash.slice(1)
         filepath = '/' + path + '/' + '.index.html'
         def file_written(ev):
             pass # TODO: Notify user.
+            if callback:
+                callback()
         fs.file(filepath).write(source, "text/plain; charset=UTF-8",
                                                     file_written)
 
     def run():
-        if tag.title.toLowerCase().endswith('.html'):
-            iframe.contentDocument.open()
-            iframe.contentDocument.write(editor.getValue())
-            iframe.contentDocument.close()
+        window.state = 'run'
+        event_bus.trigger("traybutton-open")
+        riot.update()
+        if window.y is not undefined: # collaboration
+            path = location.hash.slice(1)
+            y.connector.socket.emit( 'jappyTrigger', 
+                                    {'event':'run-code-slave',
+                                     'data': {'origin':y.connector.socket.sid} },
+                                    room=path)
+        event_bus.trigger("activity-save")
+        if tag.title.toLowerCase().endswith(['.html', '.htm']):
+            if location.hash:
+                if 'index.html' in window.files:
+                    src = window.files['index.html'].getValue()
+                else:
+                    src = editor.getValue()
+                publish_script(src, def():
+                        path = location.hash.slice(1)
+                        iframe.contentWindow.location = 'dav/' + path + \
+                                                                '/.index.html'
+                        if 'index.html' in window.files:
+                            switchtab(filename='index.html')
+                    )
+            else:
+                iframe.contentDocument.open()
+                iframe.contentDocument.write(editor.getValue())
+                iframe.contentDocument.close()
         else:
             # This is what we're about after all
             run_rapydscript()
     event_bus.on("run-code", run)
 
+    def url_open(url):
+        event_bus.trigger("traybutton-open")
+        riot.update()
+        window.open(url, '_vmframe')
+    event_bus.on('url-open', url_open)
+
     def run_rapydscript():
         if window.RapydScript is undefined:
             event_bus.one('compiler-ready', run)
-        window.state = 'run'
-        event_bus.trigger("traybutton-open")
-        riot.update()
-        event_bus.trigger("activity-save")
         js_output = compile()
         script = iframe.contentDocument.createElement('script')
         script.innerHTML = js_output
@@ -393,7 +426,8 @@ def init():
                 publish_script(source)
             iframe.contentDocument.body.appendChild(script)
             iframe.contentDocument.close()
-        iframe.onload = write_script
+            iframe.removeEventListener('load', write_script)
+        iframe.addEventListener('load', write_script)
         if window.fs is not undefined:
             path = location.hash.slice(1)
             iframe.contentWindow.location = 'dav/' + path + '/template.html'
@@ -467,7 +501,6 @@ def init():
         if file in window.files:
             tag.title = file
             editor.swapDoc(window.files[file])
-            editor.setOption('mode', 'python')
             tag.update()
             editor.focus()
             if execute:
@@ -482,7 +515,6 @@ def init():
             new_session = CodeMirror.Doc(data)
             files[file] = new_session
             editor.swapDoc(new_session)
-            editor.setOption('mode', 'python')
             if window.y is not undefined: # collaboration
                 y.share.files.get(tag.title).unbindCodeMirror(editor)
                 y.share.files.set(file, Y.Text)
@@ -506,7 +538,6 @@ def init():
         if filename in window.files:
             tag.title = filename
             editor.swapDoc(window.files[filename])
-            editor.setOption('mode', 'python')
             tag.update()
             if window.y is not undefined: # collaboration
                 if filename not in y.share.files.keys():
@@ -523,7 +554,6 @@ def init():
         files[filename] = new_session
         if overwrite:
             editor.swapDoc(new_session)
-            editor.setOption('mode', 'python')
             if window.y is not undefined: # collaboration
                 if filename not in y.share.files.keys():
                     y.share.files.set(filename, Y.Text)
@@ -732,14 +762,16 @@ def init():
                         )
                     y.connector.whenSynced( def():
                                             console.log('Synchronized.')
-                                            event_bus.trigger("collaboration-ready")
+                                            if len(y.share.files.keys())==0:
+                                                event_bus.trigger("collaboration-ready")
                                             tag.update()
                                             y.share.files.get(tag.title).bindCodeMirror(editor)
                                 )
                     y.connector.socket.on('jappyEvent', def(msg):
-                            event = msg.event
-                            data = msg.data
-                            event_bus.trigger(event, data)
+                            if msg:
+                                event = msg.event
+                                data = msg.data
+                                event_bus.trigger(event, data)
                         )
         )
     event_bus.on("activity-not-ready", init_collab)

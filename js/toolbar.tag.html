@@ -98,6 +98,8 @@ def filter_latest(files):
             prev = result[0]
             if item.name[0]=='.':
                 return result
+            elif item.type is not 'file':
+                return result
             elif prev is undefined:
                 return result.concat(item)
             elif item.mtime.getTime() is prev.mtime.getTime():
@@ -167,19 +169,41 @@ def update_workspace_menu():
             item = document.createElement('button')
             item.classList.add('icon')
             span = document.createElement('span')
-            span.classList.add('pyj')
+            editor_load = True
+            if file.type=='dir':
+                span.classList.add('folder')
+                editor_load = False
+                item.onclick = def(ev):
+                    target_file = ev.target.getAttribute('data-uri')
+                    event_bus.trigger('url-open', 'dav://' + location.host \
+                                      + '/dav/' + path + '/' + target_file)
+            elif file.name.endswith('.pyj'):
+                span.classList.add('pyj')
+            elif file.name.endswith('.html'):
+                span.classList.add('html')
+            elif file.name.endswith(['.png', '.jpg', '.gif']):
+                span.classList.add('image')
+                editor_load = False
+                item.onclick = def(ev):
+                    target_file = ev.target.getAttribute('data-uri')
+                    url = location.protocol + '//' + location.host + '/' \
+                                + 'workspace/' + path + '/' + target_file
+                    event_bus.trigger('url-open', url)
+            else:
+                span.classList.add('document')
+            item.setAttribute('data-uri', file.name)
             text = document.createTextNode(str(file.name))
             item.appendChild(span)
             item.appendChild(text)
-            item.setAttribute('data-uri', file.name)
-            item.addEventListener('click', load_file)
+            if editor_load:
+                item.addEventListener('click', load_file)
             row.appendChild(item)
             items.append(row)
         items.append(E.hr(class_='header-separator'))
         browse_button = E.button(class_='icon', E.span(class_='folder'), 'Browse...')
         browse_button.onclick = def():
             tag.workspace_palette.popDown()
-            window.open('dav://' + location.host + '/dav/' + path)
+            event_bus.trigger('url-open', 'dav://' + location.host + '/dav/' + path)
         lastrow = E.div(class_='menu', browse_button)
         items.append(lastrow)
         tag.workspace_palette.setContent(items)

@@ -1,4 +1,4 @@
-riot.tag2('code-editor', '<div id="vsplit" ref="vsplit"> <div id="split" ref="split"> <input ref="file_input" id="file-input" type="file" style="display: none;"> <div id="tabs"> <button onclick="{this.newtab}" id="newtab">&nbsp;</button><span class="{selected: name==parent.title}" each="{name in list(files)}"><button class="{selected: name==parent.title}" onclick="{parent.switchtab}">{str(name)}</button><button if="{name==parent.title && len(files)>1}" id="closetab" onclick="{parent.closetab}">&nbsp;</button></span><button class="pull-right" id="tray-button" ref="traybutton">&nbsp;</button> </div> <textarea id="code-container" ref="code"></textarea> </div> <iframe allowtransparency="false" ref="vmframe"></iframe> </div>', 'code-editor { display: flex; flex: 1 1; height: 100%; } code-editor .CodeMirror,[data-is="code-editor"] .CodeMirror{ height: 100%; width: 100%; font-size: 15pt; font-family: "Noto Mono", "DejaVu Sans Mono", monospace, "Noto Emoji"; } code-editor .CodeMirror-scroll,[data-is="code-editor"] .CodeMirror-scroll{ margin-right: 0px; overflow: hidden !important; } code-editor .CodeMirror-linenumber,[data-is="code-editor"] .CodeMirror-linenumber{ font-size: 14pt; } code-editor .cm-s-solarized .CodeMirror-cursor,[data-is="code-editor"] .cm-s-solarized .CodeMirror-cursor{ width: 4px; border: 0; background: transparent; background: rgba(0, 200, 0, .4); } code-editor .CodeMirror-overlayscroll-vertical div,[data-is="code-editor"] .CodeMirror-overlayscroll-vertical div,code-editor .CodeMirror-overlayscroll-horizontal div,[data-is="code-editor"] .CodeMirror-overlayscroll-horizontal div{ background: #808080; } code-editor .error-marker,[data-is="code-editor"] .error-marker{ border: 1px solid red; background-color: rgba(255, 0, 0,0.2); border-radius: 3px; } code-editor iframe,[data-is="code-editor"] iframe{ border: 0px; display: none; flex: 1 1; } code-editor #split,[data-is="code-editor"] #split{ display: flex; width: 100%; flex-direction: column; flex: 1 1; height: 100%; float: left; } code-editor #vsplit,[data-is="code-editor"] #vsplit{ display: flex; flex-direction: row; flex: 1 1; height: 100%; } code-editor #tabs button,[data-is="code-editor"] #tabs button{ font-size: 13pt; border-radius: 0; padding: 10px 10px; border: 0px; margin: 0px; } code-editor #tabs button.selected,[data-is="code-editor"] #tabs button.selected{ background-color: #282828; } code-editor #tabs span.selected,[data-is="code-editor"] #tabs span.selected{ white-space: nowrap; } code-editor #closetab,[data-is="code-editor"] #closetab{ background-image: url(lib/sugar-web/graphics/icons/actions/entry-cancel-active.svg); background-repeat: no-repeat; background-color: #282828; width: 28px; background-position: center; background-size: 16px 16px; } code-editor #closetab:active,[data-is="code-editor"] #closetab:active{ background-image: url(lib/sugar-web/graphics/icons/actions/entry-cancel.svg); } code-editor #newtab,[data-is="code-editor"] #newtab{ background-image: url(icons/tab-add.svg); background-repeat: no-repeat; width: 28px; background-position: center; background-size: 20px 20px; } code-editor #tray-button,[data-is="code-editor"] #tray-button{ background-image: url(icons/tray-show.svg); background-repeat: no-repeat; width: 28px; background-position: center; background-size: 20px 20px; }', '', function(opts) {
+riot.tag2('code-editor', '<div id="vsplit" ref="vsplit"> <div id="split" ref="split"> <input ref="file_input" id="file-input" type="file" style="display: none;"> <div id="tabs"> <button onclick="{this.newtab}" id="newtab">&nbsp;</button><span class="{selected: name==parent.title}" each="{name in list(files)}"><button class="{selected: name==parent.title}" onclick="{parent.switchtab}">{str(name)}</button><button if="{name==parent.title && len(files)>1}" id="closetab" onclick="{parent.closetab}">&nbsp;</button></span><button class="pull-right" id="tray-button" ref="traybutton">&nbsp;</button> </div> <textarea id="code-container" ref="code"></textarea> </div> <iframe allowtransparency="false" ref="vmframe" name="_vmframe"></iframe> </div>', 'code-editor { display: flex; flex: 1 1; height: 100%; } code-editor .CodeMirror,[data-is="code-editor"] .CodeMirror{ height: 100%; width: 100%; font-size: 15pt; font-family: "Noto Mono", "DejaVu Sans Mono", monospace, "Noto Emoji"; } code-editor .CodeMirror-scroll,[data-is="code-editor"] .CodeMirror-scroll{ margin-right: 0px; overflow: hidden !important; } code-editor .CodeMirror-linenumber,[data-is="code-editor"] .CodeMirror-linenumber{ font-size: 14pt; } code-editor .cm-s-solarized .CodeMirror-cursor,[data-is="code-editor"] .cm-s-solarized .CodeMirror-cursor{ width: 4px; border: 0; background: transparent; background: rgba(0, 200, 0, .4); } code-editor .CodeMirror-overlayscroll-vertical div,[data-is="code-editor"] .CodeMirror-overlayscroll-vertical div,code-editor .CodeMirror-overlayscroll-horizontal div,[data-is="code-editor"] .CodeMirror-overlayscroll-horizontal div{ background: #808080; } code-editor .error-marker,[data-is="code-editor"] .error-marker{ border: 1px solid red; background-color: rgba(255, 0, 0,0.2); border-radius: 3px; } code-editor iframe,[data-is="code-editor"] iframe{ border: 0px; display: none; flex: 1 1; } code-editor #split,[data-is="code-editor"] #split{ display: flex; width: 100%; flex-direction: column; flex: 1 1; height: 100%; float: left; } code-editor #vsplit,[data-is="code-editor"] #vsplit{ display: flex; flex-direction: row; flex: 1 1; height: 100%; } code-editor #tabs button,[data-is="code-editor"] #tabs button{ font-size: 13pt; border-radius: 0; padding: 10px 10px; border: 0px; margin: 0px; } code-editor #tabs button.selected,[data-is="code-editor"] #tabs button.selected{ background-color: #282828; } code-editor #tabs span.selected,[data-is="code-editor"] #tabs span.selected{ white-space: nowrap; } code-editor #closetab,[data-is="code-editor"] #closetab{ background-image: url(lib/sugar-web/graphics/icons/actions/entry-cancel-active.svg); background-repeat: no-repeat; background-color: #282828; width: 28px; background-position: center; background-size: 16px 16px; } code-editor #closetab:active,[data-is="code-editor"] #closetab:active{ background-image: url(lib/sugar-web/graphics/icons/actions/entry-cancel.svg); } code-editor #newtab,[data-is="code-editor"] #newtab{ background-image: url(icons/tab-add.svg); background-repeat: no-repeat; width: 28px; background-position: center; background-size: 20px 20px; } code-editor #tray-button,[data-is="code-editor"] #tray-button{ background-image: url(icons/tray-show.svg); background-repeat: no-repeat; width: 28px; background-position: center; background-size: 20px 20px; }', '', function(opts) {
 var ρσ_modules = {};
 ρσ_modules.re = {};
 
@@ -1460,7 +1460,7 @@ function init() {
         ρσ_d["matchBrackets"] = true;
         ρσ_d["indentUnit"] = 4;
         ρσ_d["fixedGutter"] = true;
-        ρσ_d["mode"] = "python";
+        ρσ_d["mode"] = null;
         ρσ_d["showCursorWhenSelecting"] = true;
         ρσ_d["scrollbarStyle"] = "overlay";
         ρσ_d["styleActiveLine"] = true;
@@ -1503,7 +1503,6 @@ function init() {
                 tag.title = list(parsed_data)[0];
                 if (((ρσ_expr_temp = window.files)[ρσ_bound_index(tag.title, ρσ_expr_temp)] !== undefined && (typeof (ρσ_expr_temp = window.files)[ρσ_bound_index(tag.title, ρσ_expr_temp)] !== "object" || ρσ_not_equals((ρσ_expr_temp = window.files)[ρσ_bound_index(tag.title, ρσ_expr_temp)], undefined)))) {
                     editor.swapDoc((ρσ_expr_temp = window.files)[ρσ_bound_index(tag.title, ρσ_expr_temp)]);
-                    editor.setOption("mode", "python");
                 }
             }
             tag.update();
@@ -1558,11 +1557,24 @@ function init() {
             }
         }
         window.document.title = tag.title;
+        guess_mode();
     };
 
     this.on("update", update_tabs);
     window.addEventListener("resize", update_tabs);
     window.addEventListener("orientationchange", update_tabs);
+    function guess_mode() {
+        if (tag.title.toLowerCase().endswith(ρσ_list_decorate([ ".pyj", ".py" ]))) {
+            editor.setOption("mode", "python");
+        } else if (tag.title.toLowerCase().endswith(ρσ_list_decorate([ ".html", ".htm", ".svg", ".xml" ]))) {
+            editor.setOption("mode", "htmlmixed");
+        } else if (tag.title.toLowerCase().endswith(".js")) {
+            editor.setOption("mode", "javascript");
+        } else if (tag.title.toLowerCase().endswith(".css")) {
+            editor.setOption("mode", "css");
+        }
+    };
+
     function switchtab() {
         var e = (arguments[0] === undefined || ( 0 === arguments.length-1 && arguments[arguments.length-1] !== null && typeof arguments[arguments.length-1] === "object" && arguments[arguments.length-1] [ρσ_kwargs_symbol] === true)) ? switchtab.__defaults__.e : arguments[0];
         var filename = (arguments[1] === undefined || ( 1 === arguments.length-1 && arguments[arguments.length-1] !== null && typeof arguments[arguments.length-1] === "object" && arguments[arguments.length-1] [ρσ_kwargs_symbol] === true)) ? switchtab.__defaults__.filename : arguments[1];
@@ -1592,7 +1604,6 @@ function init() {
             } else {
                 editor.swapDoc((ρσ_expr_temp = window.files)[ρσ_bound_index(tag.title, ρσ_expr_temp)]);
             }
-            editor.setOption("mode", "python");
             editor.focus();
         } else {
             if (e !== null) {
@@ -1662,7 +1673,6 @@ function init() {
         }
         new_session = CodeMirror.Doc("");
         editor.swapDoc(new_session);
-        editor.setOption("mode", "python");
     };
 
     function closetab() {
@@ -1720,7 +1730,6 @@ function init() {
             }
             if (tag.title !== active_title) {
                 editor.swapDoc((ρσ_expr_temp = window.files)[ρσ_bound_index(tag.title, ρσ_expr_temp)]);
-                editor.setOption("mode", "python");
             }
             if (window.y !== undefined) {
                 if ((filename === active_title || typeof filename === "object" && ρσ_equals(filename, active_title))) {
@@ -1769,7 +1778,6 @@ function init() {
         new_session = CodeMirror.Doc("");
         (ρσ_expr_temp = window.files)[(typeof file === "number" && file < 0) ? ρσ_expr_temp.length + file : file] = new_session;
         editor.swapDoc(new_session);
-        editor.setOption("mode", "python");
         editor.focus();
         if (window.y !== undefined) {
             if (ρσ_in(tag.title, y.share.files.keys())) {
@@ -1829,11 +1837,21 @@ function init() {
     };
 
     event_bus.on("traybutton-open", traybutton_open);
-    function publish_script(source) {
+    function publish_script() {
+        var source = ( 0 === arguments.length-1 && arguments[arguments.length-1] !== null && typeof arguments[arguments.length-1] === "object" && arguments[arguments.length-1] [ρσ_kwargs_symbol] === true) ? undefined : arguments[0];
+        var callback = (arguments[1] === undefined || ( 1 === arguments.length-1 && arguments[arguments.length-1] !== null && typeof arguments[arguments.length-1] === "object" && arguments[arguments.length-1] [ρσ_kwargs_symbol] === true)) ? publish_script.__defaults__.callback : arguments[1];
+        var ρσ_kwargs_obj = arguments[arguments.length-1];
+        if (ρσ_kwargs_obj === null || typeof ρσ_kwargs_obj !== "object" || ρσ_kwargs_obj [ρσ_kwargs_symbol] !== true) ρσ_kwargs_obj = {};
+        if (Object.prototype.hasOwnProperty.call(ρσ_kwargs_obj, "callback")){
+            callback = ρσ_kwargs_obj.callback;
+        }
         var path, filepath;
         path = location.hash.slice(1);
         filepath = "/" + path + "/" + ".index.html";
         function file_written(ev) {
+            if (callback) {
+                callback();
+            }
         };
         if (!file_written.__argnames__) Object.defineProperties(file_written, {
             __argnames__ : {value: ["ev"]}
@@ -1841,30 +1859,72 @@ function init() {
 
         fs.file(filepath).write(source, "text/plain; charset=UTF-8", file_written);
     };
-    if (!publish_script.__argnames__) Object.defineProperties(publish_script, {
-        __argnames__ : {value: ["source"]}
+    if (!publish_script.__defaults__) Object.defineProperties(publish_script, {
+        __defaults__ : {value: {callback:null}},
+        __handles_kwarg_interpolation__ : {value: true},
+        __argnames__ : {value: ["source", "callback"]}
     });
 
     function run() {
-        if (tag.title.toLowerCase().endswith(".html")) {
-            iframe.contentDocument.open();
-            iframe.contentDocument.write(editor.getValue());
-            iframe.contentDocument.close();
+        var path, src;
+        window.state = "run";
+        event_bus.trigger("traybutton-open");
+        riot.update();
+        if (window.y !== undefined) {
+            path = location.hash.slice(1);
+            ρσ_interpolate_kwargs.call(y.connector.socket, y.connector.socket.emit, ["jappyTrigger", (function(){
+                var ρσ_d = {};
+                ρσ_d["event"] = "run-code-slave";
+                ρσ_d["data"] = (function(){
+                    var ρσ_d = {};
+                    ρσ_d["origin"] = y.connector.socket.sid;
+                    return ρσ_d;
+                }).call(this);
+                return ρσ_d;
+            }).call(this)].concat([ρσ_desugar_kwargs({room: path})]));
+        }
+        event_bus.trigger("activity-save");
+        if (tag.title.toLowerCase().endswith(ρσ_list_decorate([ ".html", ".htm" ]))) {
+            if (location.hash) {
+                if (ρσ_in("index.html", window.files)) {
+                    src = window.files["index.html"].getValue();
+                } else {
+                    src = editor.getValue();
+                }
+                publish_script(src, function () {
+                    var path;
+                    path = location.hash.slice(1);
+                    iframe.contentWindow.location = "dav/" + path + "/.index.html";
+                    if (ρσ_in("index.html", window.files)) {
+                        ρσ_interpolate_kwargs.call(this, switchtab, [ρσ_desugar_kwargs({filename: "index.html"})]);
+                    }
+                });
+            } else {
+                iframe.contentDocument.open();
+                iframe.contentDocument.write(editor.getValue());
+                iframe.contentDocument.close();
+            }
         } else {
             run_rapydscript();
         }
     };
 
     event_bus.on("run-code", run);
+    function url_open(url) {
+        event_bus.trigger("traybutton-open");
+        riot.update();
+        window.open(url, "_vmframe");
+    };
+    if (!url_open.__argnames__) Object.defineProperties(url_open, {
+        __argnames__ : {value: ["url"]}
+    });
+
+    event_bus.on("url-open", url_open);
     function run_rapydscript() {
         var js_output, script, path;
         if (window.RapydScript === undefined) {
             event_bus.one("compiler-ready", run);
         }
-        window.state = "run";
-        event_bus.trigger("traybutton-open");
-        riot.update();
-        event_bus.trigger("activity-save");
         js_output = compile();
         script = iframe.contentDocument.createElement("script");
         script.innerHTML = js_output;
@@ -1880,9 +1940,10 @@ function init() {
             }
             iframe.contentDocument.body.appendChild(script);
             iframe.contentDocument.close();
+            iframe.removeEventListener("load", write_script);
         };
 
-        iframe.onload = write_script;
+        iframe.addEventListener("load", write_script);
         if (window.fs !== undefined) {
             path = location.hash.slice(1);
             iframe.contentWindow.location = "dav/" + path + "/template.html";
@@ -2016,7 +2077,6 @@ function init() {
         if (ρσ_in(file, window.files)) {
             tag.title = file;
             editor.swapDoc((ρσ_expr_temp = window.files)[(typeof file === "number" && file < 0) ? ρσ_expr_temp.length + file : file]);
-            editor.setOption("mode", "python");
             tag.update();
             editor.focus();
             if (execute) {
@@ -2035,7 +2095,6 @@ function init() {
                 new_session = CodeMirror.Doc(data);
                 files[(typeof file === "number" && file < 0) ? files.length + file : file] = new_session;
                 editor.swapDoc(new_session);
-                editor.setOption("mode", "python");
                 if (window.y !== undefined) {
                     y.share.files.get(tag.title).unbindCodeMirror(editor);
                     y.share.files.set(file, Y.Text);
@@ -2087,7 +2146,6 @@ function init() {
         if (ρσ_in(filename, window.files)) {
             tag.title = filename;
             editor.swapDoc((ρσ_expr_temp = window.files)[(typeof filename === "number" && filename < 0) ? ρσ_expr_temp.length + filename : filename]);
-            editor.setOption("mode", "python");
             tag.update();
             if (window.y !== undefined) {
                 if (!(ρσ_in(filename, y.share.files.keys()))) {
@@ -2110,7 +2168,6 @@ function init() {
         files[(typeof filename === "number" && filename < 0) ? files.length + filename : filename] = new_session;
         if (overwrite) {
             editor.swapDoc(new_session);
-            editor.setOption("mode", "python");
             if (window.y !== undefined) {
                 if (!(ρσ_in(filename, y.share.files.keys()))) {
                     y.share.files.set(filename, Y.Text);
@@ -2455,16 +2512,20 @@ function init() {
                 })());
                 y.connector.whenSynced(function () {
                     console.log("Synchronized.");
-                    event_bus.trigger("collaboration-ready");
+                    if (ρσ_equals(len(y.share.files.keys()), 0)) {
+                        event_bus.trigger("collaboration-ready");
+                    }
                     tag.update();
                     y.share.files.get(tag.title).bindCodeMirror(editor);
                 });
                 y.connector.socket.on("jappyEvent", (function() {
                     var ρσ_anonfunc = function (msg) {
                         var event, data;
-                        event = msg.event;
-                        data = msg.data;
-                        event_bus.trigger(event, data);
+                        if (msg) {
+                            event = msg.event;
+                            data = msg.data;
+                            event_bus.trigger(event, data);
+                        }
                     };
                     if (!ρσ_anonfunc.__argnames__) Object.defineProperties(ρσ_anonfunc, {
                         __argnames__ : {value: ["msg"]}

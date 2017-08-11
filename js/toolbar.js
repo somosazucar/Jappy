@@ -336,6 +336,8 @@ function filter_latest(files) {
             prev = result[0];
             if ((item.name[0] === "." || typeof item.name[0] === "object" && ρσ_equals(item.name[0], "."))) {
                 return result;
+            } else if (item.type !== "file") {
+                return result;
             } else if (prev === undefined) {
                 return result.concat(item);
             } else if (item.mtime.getTime() === prev.mtime.getTime()) {
@@ -430,7 +432,7 @@ function update_workspace_menu() {
     }
     path = location.hash.slice(1);
     function list_files(found_files) {
-        var items, palette, container, row, item, span, text, file, browse_button, lastrow;
+        var items, palette, container, row, item, span, editor_load, text, file, browse_button, lastrow;
         window.server_files = found_files;
         found_files.sort((function() {
             var ρσ_anonfunc = function (a, b) {
@@ -460,12 +462,50 @@ function update_workspace_menu() {
             item = document.createElement("button");
             item.classList.add("icon");
             span = document.createElement("span");
-            span.classList.add("pyj");
+            editor_load = true;
+            if ((file.type === "dir" || typeof file.type === "object" && ρσ_equals(file.type, "dir"))) {
+                span.classList.add("folder");
+                editor_load = false;
+                item.onclick = (function() {
+                    var ρσ_anonfunc = function (ev) {
+                        var target_file;
+                        target_file = ev.target.getAttribute("data-uri");
+                        event_bus.trigger("url-open", "dav://" + location.host + "/dav/" + path + "/" + target_file);
+                    };
+                    if (!ρσ_anonfunc.__argnames__) Object.defineProperties(ρσ_anonfunc, {
+                        __argnames__ : {value: ["ev"]}
+                    });
+                    return ρσ_anonfunc;
+                })();
+            } else if (file.name.endswith(".pyj")) {
+                span.classList.add("pyj");
+            } else if (file.name.endswith(".html")) {
+                span.classList.add("html");
+            } else if (file.name.endswith(ρσ_list_decorate([ ".png", ".jpg", ".gif" ]))) {
+                span.classList.add("image");
+                editor_load = false;
+                item.onclick = (function() {
+                    var ρσ_anonfunc = function (ev) {
+                        var target_file, url;
+                        target_file = ev.target.getAttribute("data-uri");
+                        url = location.protocol + "//" + location.host + "/" + "workspace/" + path + "/" + target_file;
+                        event_bus.trigger("url-open", url);
+                    };
+                    if (!ρσ_anonfunc.__argnames__) Object.defineProperties(ρσ_anonfunc, {
+                        __argnames__ : {value: ["ev"]}
+                    });
+                    return ρσ_anonfunc;
+                })();
+            } else {
+                span.classList.add("document");
+            }
+            item.setAttribute("data-uri", file.name);
             text = document.createTextNode(str(file.name));
             item.appendChild(span);
             item.appendChild(text);
-            item.setAttribute("data-uri", file.name);
-            item.addEventListener("click", load_file);
+            if (editor_load) {
+                item.addEventListener("click", load_file);
+            }
             row.appendChild(item);
             items.append(row);
         }
@@ -473,7 +513,7 @@ function update_workspace_menu() {
         browse_button = ρσ_interpolate_kwargs.call(E, E.button, [ρσ_interpolate_kwargs.call(E, E.span, [ρσ_desugar_kwargs({class_: "folder"})]), "Browse..."].concat([ρσ_desugar_kwargs({class_: "icon"})]));
         browse_button.onclick = function () {
             tag.workspace_palette.popDown();
-            window.open("dav://" + location.host + "/dav/" + path);
+            event_bus.trigger("url-open", "dav://" + location.host + "/dav/" + path);
         };
         lastrow = ρσ_interpolate_kwargs.call(E, E.div, [browse_button].concat([ρσ_desugar_kwargs({class_: "menu"})]));
         items.append(lastrow);
