@@ -340,7 +340,7 @@ function filter_latest(files) {
                 return result;
             } else if (prev === undefined) {
                 return result.concat(item);
-            } else if (item.mtime.getTime() === prev.mtime.getTime()) {
+            } else if (Math.abs(item.mtime.getTime() - prev.mtime.getTime()) < 5e3) {
                 return result.concat(item);
             } else {
                 " We filter out those that don't have the same mtime\n                as the first entry.";

@@ -102,7 +102,7 @@ def filter_latest(files):
                 return result
             elif prev is undefined:
                 return result.concat(item)
-            elif item.mtime.getTime() is prev.mtime.getTime():
+            elif Math.abs(item.mtime.getTime() - prev.mtime.getTime()) < 5000:
                 return result.concat(item)
             else:
                 ''' We filter out those that don't have the same mtime

@@ -2002,7 +2002,7 @@ function init() {
     };
 
     function save_without_datastore() {
-        var url_base, address, path, data, filepath, item;
+        var url_base, address, path, target, data, filepath, item;
         localStorage.jappySession = serialize();
         if (location.hash) {
             url_base = location.protocol;
@@ -2017,15 +2017,33 @@ function init() {
             });
 
             path = location.hash.slice(1);
+            if (ρσ_in("index.html", window.files)) {
+                target = "index.html";
+            } else {
+                target = tag.title;
+            }
             var ρσ_Iter5 = ρσ_Iterable(window.files);
             for (var ρσ_Index5 = 0; ρσ_Index5 < ρσ_Iter5.length; ρσ_Index5++) {
                 item = ρσ_Iter5[ρσ_Index5];
+                if (item === target) {
+                    continue;
+                }
                 data = (ρσ_expr_temp = window.files)[(typeof item === "number" && item < 0) ? ρσ_expr_temp.length + item : item].getValue();
                 if (data) {
                     filepath = "/" + path + "/" + item;
                     fs.file(filepath).write(data, "text/plain; charset=UTF-8", file_written);
                 }
             }
+            function update_target_last() {
+                var data, filepath;
+                data = (ρσ_expr_temp = window.files)[(typeof target === "number" && target < 0) ? ρσ_expr_temp.length + target : target].getValue();
+                if (data) {
+                    filepath = "/" + path + "/" + target;
+                    fs.file(filepath).write(data, "text/plain; charset=UTF-8", file_written);
+                }
+            };
+
+            setTimeout(update_target_last, 500);
         }
     };
 

@@ -475,12 +475,26 @@ def init():
             def file_written(ev):
                 pass # TODO: Notify user.
             path = location.hash.slice(1)
+            if 'index.html' in window.files:
+                target = 'index.html'
+            else:
+                target = tag.title
             for item in window.files:
+                if item is target:
+                    continue
                 data = window.files[item].getValue() 
                 if data:
                     filepath = '/' + path + '/' + item
                     fs.file(filepath).write(data, "text/plain; charset=UTF-8",
                                                                 file_written)
+            def update_target_last():
+                # Target is treated special to be the last to save (Hack!)
+                data = window.files[target].getValue() 
+                if data:
+                    filepath = '/' + path + '/' + target
+                    fs.file(filepath).write(data, "text/plain; charset=UTF-8",
+                                                                file_written)
+            setTimeout(update_target_last, 500)
 
     def save(activity=window.activity):
         if activity is not undefined:
