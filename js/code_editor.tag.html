@@ -204,6 +204,8 @@ def init():
             editor.setOption('mode', 'css')
 
     def switchtab(e=None, filename=None):
+        if filename is tag.title:
+            pass # nothing to do
         if filename is None:
             filename = e.target.innerHTML
         if filename is not tag.title:
@@ -232,6 +234,12 @@ def init():
                             y.share.files.get(editbox.value).insert(0, editor.getValue())
                             y.share.files.get(editbox.value).bindCodeMirror(editor)
                             y.share.files.delete(tag.title)
+                        if window.fs not undefined:
+                            path = location.hash.slice(1)
+                            def file_moved(ev):
+                                pass # TODO: Notify user.
+                            window.fs.file('/' + path + '/' + tag.title)\
+                                       .mv('/' + path + '/' + editbox.value, file_moved)
                         tag.title = editbox.value
                     e.target.style.display = 'inline-block'
                     e.target.parentNode.removeChild(editbox)
@@ -266,13 +274,14 @@ def init():
             active_title = tag.title
             if filename is None:
                 filename = tag.title
-            if len(window.files[tag.title].getValue())==0:
-                # Special case: remove file in server too! :-)
-                if window.fs not undefined:
-                    path = location.hash.slice(1)
-                    def file_removed(ev):
-                        pass # TODO: Notify user.
-                    window.fs.file('/' + path + '/' + filename).rm(file_removed)
+            if e is not None: # called from a ui event
+                if len(window.files[tag.title].getValue())==0:
+                    # Special case: remove file in server too! :-)
+                    if window.fs not undefined:
+                        path = location.hash.slice(1)
+                        def file_removed(ev):
+                            pass # TODO: Notify user.
+                        window.fs.file('/' + path + '/' + filename).rm(file_removed)
                 
             index = list(window.files).index(filename)
             del window.files[filename]
@@ -377,10 +386,14 @@ def init():
         riot.update()
         if window.y is not undefined: # collaboration
             path = location.hash.slice(1)
+            if 'index.html' in window.files:
+                target = 'index.html'
+            else:
+                target = tag.title
             y.connector.socket.emit( 'jappyTrigger', 
                                     {'event':'run-code-slave',
-                                     'data': {'origin':y.connector.socket.sid} },
-                                    room=path)
+                                     'data': { 'filename': target }},
+                                    path)
         event_bus.trigger("activity-save")
         if tag.title.toLowerCase().endswith(['.html', '.htm']):
             if location.hash:
@@ -409,6 +422,33 @@ def init():
         riot.update()
         window.open(url, '_vmframe')
     event_bus.on('url-open', url_open)
+
+    def trigger_on_next_run(callback):
+        def check_for_index(event):
+            if event.filename=='.index.html':
+                event_bus.off("file-create", check_for_index)
+                event_bus.off("file-update", check_for_index)
+                callback(event)
+        event_bus.on("file-create", check_for_index)
+        event_bus.on("file-update", check_for_index)
+
+    def run_remotely(event):
+        if window.fs is not undefined:
+            path = location.hash.slice(1)
+            rel_url = 'dav/' + path + '/.index.html'
+            iframe.contentWindow.location = rel_url
+            if 'index.html' in window.files:
+                switchtab(filename='index.html')
+            else:
+                if event.filename in window.files:
+                    switchtab(filename=event.filename)
+            event_bus.trigger("traybutton-open")
+            riot.update()
+    event_bus.on('run-code-slave', def(ev):
+                 trigger_on_next_run( def():
+                                     run_remotely(ev)
+                    )
+                )
 
     def run_rapydscript():
         if window.RapydScript is undefined:
@@ -564,14 +604,14 @@ def init():
             return
         if filename is None:
             filename = get_new_untitled()
-        new_session = CodeMirror.Doc(data)
+        new_session = CodeMirror.Doc(data or '')
         files[filename] = new_session
         if overwrite:
             editor.swapDoc(new_session)
             if window.y is not undefined: # collaboration
                 if filename not in y.share.files.keys():
                     y.share.files.set(filename, Y.Text)
-                    y.share.files.get(filename).insert(0, data)
+                    y.share.files.get(filename).insert(0, data or '')
                 y.share.files.get(filename).bindCodeMirror(editor)
             if tag.title is not undefined:
                 if tag.title[:8]==('untitled') \

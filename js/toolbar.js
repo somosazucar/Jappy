@@ -310,6 +310,7 @@ if (location.hash) {
 }
 examples = ρσ_list_decorate([ "welcome.pyj", "memorize.pyj", "mandala.pyj", "input.pyj", "repl.pyj", "unicode.pyj" ]);
 window.state = "clean";
+prefetch_files();
 function enable_run() {
     tag.refs.runbutton.disabled = false;
     tag.refs.startbutton.disabled = false;
@@ -357,7 +358,7 @@ if (!filter_latest.__argnames__) Object.defineProperties(filter_latest, {
     __argnames__ : {value: ["files"]}
 });
 
-function restore_last_session() {
+function prefetch_files() {
     var url_base, address, path;
     if (location.hash) {
         url_base = location.protocol;
@@ -367,41 +368,46 @@ function restore_last_session() {
         }
         path = location.hash.slice(1);
         function got_files(files) {
-            var recent_files, filename, item;
             window.server_files = files;
-            recent_files = filter_latest(files);
-            event_bus.trigger("fetching-session", recent_files);
-            var ρσ_Iter2 = ρσ_Iterable(recent_files);
-            for (var ρσ_Index2 = 0; ρσ_Index2 < ρσ_Iter2.length; ρσ_Index2++) {
-                item = ρσ_Iter2[ρσ_Index2];
-                filename = item.name;
-                function new_tab_maker(name) {
-                    return (function() {
-                        var ρσ_anonfunc = function (data) {
-                            event_bus.trigger("new-from-data", data, name, true);
-                        };
-                        if (!ρσ_anonfunc.__argnames__) Object.defineProperties(ρσ_anonfunc, {
-                            __argnames__ : {value: ["data"]}
-                        });
-                        return ρσ_anonfunc;
-                    })();
-                };
-                if (!new_tab_maker.__argnames__) Object.defineProperties(new_tab_maker, {
-                    __argnames__ : {value: ["name"]}
-                });
-
-                window.fs.file("/" + path + "/" + filename).read(new_tab_maker(filename));
-            }
+            event_bus.trigger("file-list-update");
         };
         if (!got_files.__argnames__) Object.defineProperties(got_files, {
             __argnames__ : {value: ["files"]}
         });
 
-        if (window.server_files !== undefined) {
-            got_files(window.server_files);
-        } else {
-            fs.dir("/" + path).children(got_files);
+        fs.dir("/" + path).children(got_files);
+    }
+};
+
+function restore_last_session() {
+    var recent_files, path, filename, item;
+    if (window.server_files !== undefined) {
+        recent_files = filter_latest(window.server_files);
+        path = location.hash.slice(1);
+        var ρσ_Iter2 = ρσ_Iterable(recent_files);
+        for (var ρσ_Index2 = 0; ρσ_Index2 < ρσ_Iter2.length; ρσ_Index2++) {
+            item = ρσ_Iter2[ρσ_Index2];
+            filename = item.name;
+            function new_tab_maker(name) {
+                return (function() {
+                    var ρσ_anonfunc = function (data) {
+                        event_bus.trigger("new-from-data", data, name, true);
+                    };
+                    if (!ρσ_anonfunc.__argnames__) Object.defineProperties(ρσ_anonfunc, {
+                        __argnames__ : {value: ["data"]}
+                    });
+                    return ρσ_anonfunc;
+                })();
+            };
+            if (!new_tab_maker.__argnames__) Object.defineProperties(new_tab_maker, {
+                __argnames__ : {value: ["name"]}
+            });
+
+            window.fs.file("/" + path + "/" + filename).read(new_tab_maker(filename));
         }
+    } else {
+        event_bus.one("file-list-update", restore_last_session);
+        prefetch_files();
     }
 };
 
@@ -428,6 +434,10 @@ if (!load_file.__argnames__) Object.defineProperties(load_file, {
 function update_workspace_menu() {
     var path;
     if (window.fs === undefined) {
+        return;
+    }
+    if (window.server_files === undefined) {
+        prefetch_files();
         return;
     }
     path = location.hash.slice(1);
@@ -534,8 +544,11 @@ function update_workspace_menu() {
 };
 
 tag.update_workspace_menu = update_workspace_menu;
+event_bus.on("file-list-update", update_workspace_menu);
 event_bus.on("update-workspace-menu", update_workspace_menu);
-event_bus.on("file-event", update_workspace_menu);
+event_bus.on("file-create", update_workspace_menu);
+event_bus.on("file-delete", update_workspace_menu);
+event_bus.on("file-rename", update_workspace_menu);
 function init() {
     this.refs.runbutton.onclick = function () {
         window.state = "run";

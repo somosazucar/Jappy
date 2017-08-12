@@ -14,6 +14,7 @@ import sys
 import mimetypes
 import pyinotify
 import signal
+import json
 signal.signal(signal.SIGINT, signal.SIG_DFL)
 mimetypes.add_type('image/svg+xml', '.svg')
 mimetypes.add_type('application/x-font-woff', '.woff')
@@ -26,7 +27,6 @@ socketio = SocketIO(app)
 
 @app.route("/")
 def hello():
-    print (app.root_path + '/index.html')
     return send_from_directory(app.root_path, 'index.html', 
                                                     mimetype='text/html')
 
@@ -57,8 +57,9 @@ def yjsEvent(message):
     emit('yjsEvent', message, broadcast=True, skip_sid=request.sid)
 
 @socketio.on('jappyTrigger')
-def jappyEvent(message):
-    emit('jappyEvent', message, broadcast=True, skip_sid=request.sid)
+def jappyEvent(message, room):
+    socketio.emit('jappyEvent', message, skip_sid=request.sid,
+                                  room=room, broadcast=True)
 
 @socketio.on('leaveRoom')
 def leaveRoom(room):
@@ -128,35 +129,40 @@ def start_server():
     socketio.run(app, host='0.0.0.0', port=54991)
 
 class EventHandler(pyinotify.ProcessEvent):
-    def process_IN_CREATE(self, event):
+    def process_IN_CREATE(self, event): # simplify with a default handler, DRY
         room = event.path[10:]
-        socketio.emit('jappyEvent', { 'event': 'file-event',
+        socketio.emit('jappyEvent', { 'event': 'file-create',
                                          'data': {
-                                            'maskname':event.maskname,
                                             'filename':event.name }
                                          },
                                       room=room, broadcast=True)
     def process_IN_DELETE(self, event):
         room = event.path[10:]
-        socketio.emit('jappyEvent', { 'event': 'file-event',
+        socketio.emit('jappyEvent', { 'event': 'file-delete',
                                          'data': {
-                                            'maskname':event.maskname,
                                             'filename':event.name }
                                          },
                                       room=room, broadcast=True)
     def process_IN_CLOSE_WRITE(self, event):
         room = event.path[10:]
-        socketio.emit('jappyEvent', { 'event': 'file-event',
+        socketio.emit('jappyEvent', { 'event': 'file-update',
                                          'data': {
-                                            'maskname':event.maskname,
                                             'filename':event.name }
+                                         },
+                                      room=room, broadcast=True)
+    def process_IN_MOVED_TO(self, event):
+        room = event.path[10:]
+        socketio.emit('jappyEvent', { 'event': 'file-rename',
+                                         'data': {
+                                            'filename':event.name,
+                                            'src_file':event.src_pathname }
                                          },
                                       room=room, broadcast=True)
 
 def launch_file_monitor():
     print ('Starting file monitor...')
-    mask = pyinotify.IN_DELETE | pyinotify.IN_CREATE | \
-            pyinotify.IN_CLOSE_WRITE # watched events
+    mask = pyinotify.IN_DELETE | pyinotify.IN_CREATE |\
+           pyinotify.IN_CLOSE_WRITE | pyinotify.IN_MOVED_TO
     wm = pyinotify.WatchManager()
     notifier = pyinotify.ThreadedNotifier(wm, EventHandler())
     wm.add_watch('workspace', mask, rec=True, auto_add=True)

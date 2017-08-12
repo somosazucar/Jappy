@@ -76,6 +76,8 @@ if location.hash:
 
 examples = ['welcome.pyj', 'memorize.pyj', 'mandala.pyj', 'input.pyj', 'repl.pyj', 'unicode.pyj']
 window.state = 'clean'
+prefetch_files()
+
 
 def enable_run():
     tag.refs.runbutton.disabled = False
@@ -103,6 +105,7 @@ def filter_latest(files):
             elif prev is undefined:
                 return result.concat(item)
             elif Math.abs(item.mtime.getTime() - prev.mtime.getTime()) < 5000:
+                # Files written within 5 seconds of last are considered to be "one session"
                 return result.concat(item)
             else:
                 ''' We filter out those that don't have the same mtime
@@ -110,7 +113,7 @@ def filter_latest(files):
                 return result
         , [])
 
-def restore_last_session():
+def prefetch_files():
     if location.hash:
         url_base = location.protocol
         address = url_base + '//' + location.host + '/dav'
@@ -120,21 +123,23 @@ def restore_last_session():
         path = location.hash.slice(1)
         def got_files(files):
             window.server_files = files
-            recent_files = filter_latest(files)
-            event_bus.trigger('fetching-session', recent_files)
+            event_bus.trigger('file-list-update')
 
-            for item in recent_files:
-                filename = item.name
+        fs.dir('/' + path).children(got_files)
 
-                def new_tab_maker(name):
-                    return def(data):
-                        event_bus.trigger('new-from-data', data, name, True)
-
-                window.fs.file('/' + path + '/' + filename).read(new_tab_maker(filename))
-        if window.server_files is not undefined:
-            got_files(window.server_files)
-        else:
-            fs.dir('/' + path).children(got_files)
+def restore_last_session():
+    if window.server_files is not undefined:
+        recent_files = filter_latest(window.server_files)
+        path = location.hash.slice(1)
+        for item in recent_files:
+            filename = item.name
+            def new_tab_maker(name):
+                return def(data):
+                    event_bus.trigger('new-from-data', data, name, True)
+            window.fs.file('/' + path + '/' + filename).read(new_tab_maker(filename))
+    else:
+        event_bus.one('file-list-update', restore_last_session)
+        prefetch_files()
 event_bus.on("collaboration-ready", restore_last_session)
 
 def load_file(ev):
@@ -147,6 +152,9 @@ def load_file(ev):
 
 def update_workspace_menu():
     if window.fs is undefined:
+        return
+    if window.server_files is undefined:
+        prefetch_files()
         return
     path = location.hash.slice(1)
     def list_files(found_files):
@@ -211,11 +219,13 @@ def update_workspace_menu():
         fs.dir('/' + path).children(list_files)
     fs.dir('/' + path).mkdir(try_make_dir)
 tag.update_workspace_menu = update_workspace_menu
+event_bus.on("file-list-update", update_workspace_menu)
 event_bus.on("update-workspace-menu", update_workspace_menu)
-event_bus.on("file-event", update_workspace_menu)
+event_bus.on("file-create", update_workspace_menu) # TODO: Optimize these later
+event_bus.on("file-delete", update_workspace_menu)
+event_bus.on("file-rename", update_workspace_menu)
 
 def init():
-
     this.refs.runbutton.onclick = def():
         window.state = 'run'
         tag.update()

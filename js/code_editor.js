@@ -1587,6 +1587,8 @@ function init() {
             filename = ρσ_kwargs_obj.filename;
         }
         var editbox;
+        if (filename === tag.title) {
+        }
         if (filename === null) {
             filename = e.target.innerHTML;
         }
@@ -1611,6 +1613,7 @@ function init() {
                 editbox = document.createElement("input");
                 editbox.value = tag.title;
                 function rename_tab() {
+                    var path;
                     if (!(ρσ_in(editbox.value, window.files))) {
                         (ρσ_expr_temp = window.files)[ρσ_bound_index(editbox.value, ρσ_expr_temp)] = editor.getDoc();
                         ρσ_delitem(window.files, tag.title);
@@ -1620,6 +1623,17 @@ function init() {
                             y.share.files.get(editbox.value).insert(0, editor.getValue());
                             y.share.files.get(editbox.value).bindCodeMirror(editor);
                             y.share.files.delete(tag.title);
+                        }
+                        if (window.fs) !undefined;
+                        {
+                            path = location.hash.slice(1);
+                            function file_moved(ev) {
+                            };
+                            if (!file_moved.__argnames__) Object.defineProperties(file_moved, {
+                                __argnames__ : {value: ["ev"]}
+                            });
+
+                            window.fs.file("/" + path + "/" + tag.title).mv("/" + path + "/" + editbox.value, file_moved);
                         }
                         tag.title = editbox.value;
                     }
@@ -1692,17 +1706,19 @@ function init() {
             if (filename === null) {
                 filename = tag.title;
             }
-            if (ρσ_equals(len((ρσ_expr_temp = window.files)[ρσ_bound_index(tag.title, ρσ_expr_temp)].getValue()), 0)) {
-                if (window.fs) !undefined;
-                {
-                    path = location.hash.slice(1);
-                    function file_removed(ev) {
-                    };
-                    if (!file_removed.__argnames__) Object.defineProperties(file_removed, {
-                        __argnames__ : {value: ["ev"]}
-                    });
+            if (e !== null) {
+                if (ρσ_equals(len((ρσ_expr_temp = window.files)[ρσ_bound_index(tag.title, ρσ_expr_temp)].getValue()), 0)) {
+                    if (window.fs) !undefined;
+                    {
+                        path = location.hash.slice(1);
+                        function file_removed(ev) {
+                        };
+                        if (!file_removed.__argnames__) Object.defineProperties(file_removed, {
+                            __argnames__ : {value: ["ev"]}
+                        });
 
-                    window.fs.file("/" + path + "/" + filename).rm(file_removed);
+                        window.fs.file("/" + path + "/" + filename).rm(file_removed);
+                    }
                 }
             }
             index = list(window.files).index(filename);
@@ -1866,22 +1882,27 @@ function init() {
     });
 
     function run() {
-        var path, src;
+        var path, target, src;
         window.state = "run";
         event_bus.trigger("traybutton-open");
         riot.update();
         if (window.y !== undefined) {
             path = location.hash.slice(1);
-            ρσ_interpolate_kwargs.call(y.connector.socket, y.connector.socket.emit, ["jappyTrigger", (function(){
+            if (ρσ_in("index.html", window.files)) {
+                target = "index.html";
+            } else {
+                target = tag.title;
+            }
+            y.connector.socket.emit("jappyTrigger", (function(){
                 var ρσ_d = {};
                 ρσ_d["event"] = "run-code-slave";
                 ρσ_d["data"] = (function(){
                     var ρσ_d = {};
-                    ρσ_d["origin"] = y.connector.socket.sid;
+                    ρσ_d["filename"] = target;
                     return ρσ_d;
                 }).call(this);
                 return ρσ_d;
-            }).call(this)].concat([ρσ_desugar_kwargs({room: path})]));
+            }).call(this), path);
         }
         event_bus.trigger("activity-save");
         if (tag.title.toLowerCase().endswith(ρσ_list_decorate([ ".html", ".htm" ]))) {
@@ -1920,6 +1941,57 @@ function init() {
     });
 
     event_bus.on("url-open", url_open);
+    function trigger_on_next_run(callback) {
+        function check_for_index(event) {
+            if ((event.filename === ".index.html" || typeof event.filename === "object" && ρσ_equals(event.filename, ".index.html"))) {
+                event_bus.off("file-create", check_for_index);
+                event_bus.off("file-update", check_for_index);
+                callback(event);
+            }
+        };
+        if (!check_for_index.__argnames__) Object.defineProperties(check_for_index, {
+            __argnames__ : {value: ["event"]}
+        });
+
+        event_bus.on("file-create", check_for_index);
+        event_bus.on("file-update", check_for_index);
+    };
+    if (!trigger_on_next_run.__argnames__) Object.defineProperties(trigger_on_next_run, {
+        __argnames__ : {value: ["callback"]}
+    });
+
+    function run_remotely(event) {
+        var path, rel_url;
+        if (window.fs !== undefined) {
+            path = location.hash.slice(1);
+            rel_url = "dav/" + path + "/.index.html";
+            iframe.contentWindow.location = rel_url;
+            if (ρσ_in("index.html", window.files)) {
+                ρσ_interpolate_kwargs.call(this, switchtab, [ρσ_desugar_kwargs({filename: "index.html"})]);
+            } else {
+                if (ρσ_in(event.filename, window.files)) {
+                    ρσ_interpolate_kwargs.call(this, switchtab, [ρσ_desugar_kwargs({filename: event.filename})]);
+                }
+            }
+            event_bus.trigger("traybutton-open");
+            riot.update();
+        }
+    };
+    if (!run_remotely.__argnames__) Object.defineProperties(run_remotely, {
+        __argnames__ : {value: ["event"]}
+    });
+
+    event_bus.on("run-code-slave", (function() {
+        var ρσ_anonfunc = function (ev) {
+            trigger_on_next_run(function () {
+                run_remotely(ev);
+            });
+        };
+        if (!ρσ_anonfunc.__argnames__) Object.defineProperties(ρσ_anonfunc, {
+            __argnames__ : {value: ["ev"]}
+        });
+        return ρσ_anonfunc;
+    })());
     function run_rapydscript() {
         var js_output, script, path;
         if (window.RapydScript === undefined) {
@@ -2182,14 +2254,14 @@ function init() {
         if (filename === null) {
             filename = get_new_untitled();
         }
-        new_session = CodeMirror.Doc(data);
+        new_session = CodeMirror.Doc(data || "");
         files[(typeof filename === "number" && filename < 0) ? files.length + filename : filename] = new_session;
         if (overwrite) {
             editor.swapDoc(new_session);
             if (window.y !== undefined) {
                 if (!(ρσ_in(filename, y.share.files.keys()))) {
                     y.share.files.set(filename, Y.Text);
-                    y.share.files.get(filename).insert(0, data);
+                    y.share.files.get(filename).insert(0, data || "");
                 }
                 y.share.files.get(filename).bindCodeMirror(editor);
             }
