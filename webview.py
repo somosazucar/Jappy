@@ -60,6 +60,7 @@ def start_webview():
 
     web_view.load_uri(base_uri)
     window.set_title("Jappy")
+    window.set_title("Jappy")
     window.set_icon_from_file("activity/app-icon.png")
     window.show_all()
 
