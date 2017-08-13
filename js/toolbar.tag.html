@@ -74,16 +74,16 @@ address = url_base + '//' + location.host + '/dav'
 if location.hash:
     window.fs = new WebDAV.Fs(address)
 
-loadCSSAsync("lib/sugar-web/graphics/css/sugar-96dpi.css",
-			 "not screen and (device-width: 1200px) and (device-height: 900px)")
+#loadCSSAsync("lib/sugar-web/graphics/css/sugar-96dpi.css",
+#			 "not screen and (device-width: 1200px) and (device-height: 900px)")
 #loadCSSAsync("lib/sugar-web/graphics/css/sugar-200dpi.css",
 #			 "screen and (device-width: 1200px) and (device-height: 900px)")
-loadCSSAsync( "lib/sugar-web/graphics/css/sugar-72dpi.css",
-			  "screen and (max-width: 800px)" )
-loadCSSAsync( "css/small-screens.css",
-			  "screen and (max-width: 800px)" )
-loadCSSAsync( "css/tiny-screens.css",
-			  "screen and (max-width: 420px)" )
+#loadCSSAsync( "lib/sugar-web/graphics/css/sugar-72dpi.css",
+#			  "screen and (max-width: 800px)" )
+#loadCSSAsync( "css/small-screens.css",
+#			  "screen and (max-width: 800px)" )
+#loadCSSAsync( "css/tiny-screens.css",
+#			  "screen and (max-width: 420px)" )
 
 
 examples = ['welcome.pyj', 'memorize.pyj', 'mandala.pyj', 'input.pyj', 'repl.pyj', 'unicode.pyj']
@@ -158,7 +158,7 @@ def restore_last_session():
     else:
         event_bus.one('file-list-update', restore_last_session)
         prefetch_files()
-event_bus.on("collaboration-ready", restore_last_session)
+event_bus.on("restore-last-session", restore_last_session)
 
 def load_file_ev(ev):
     tag.workspace_palette.popDown()

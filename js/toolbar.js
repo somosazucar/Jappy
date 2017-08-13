@@ -308,10 +308,6 @@ address = url_base + "//" + location.host + "/dav";
 if (location.hash) {
     window.fs = new WebDAV.Fs(address);
 }
-loadCSSAsync("lib/sugar-web/graphics/css/sugar-96dpi.css", "not screen and (device-width: 1200px) and (device-height: 900px)");
-loadCSSAsync("lib/sugar-web/graphics/css/sugar-72dpi.css", "screen and (max-width: 800px)");
-loadCSSAsync("css/small-screens.css", "screen and (max-width: 800px)");
-loadCSSAsync("css/tiny-screens.css", "screen and (max-width: 420px)");
 examples = ρσ_list_decorate([ "welcome.pyj", "memorize.pyj", "mandala.pyj", "input.pyj", "repl.pyj", "unicode.pyj" ]);
 special = ρσ_list_decorate([ "template.html" ]);
 window.state = "clean";
@@ -422,7 +418,7 @@ function restore_last_session() {
     }
 };
 
-event_bus.on("collaboration-ready", restore_last_session);
+event_bus.on("restore-last-session", restore_last_session);
 function load_file_ev(ev) {
     var target_file, path;
     tag.workspace_palette.popDown();

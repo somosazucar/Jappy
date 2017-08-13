@@ -115,8 +115,8 @@ import re
 tag = this
 this.marker = None
 window.files = {}
-loadCSS(['lib/cm/theme/solarized.css',
-         'lib/cm/addon/scroll/simplescrollbars.css', 'css/activity.css'])
+#loadCSS(['lib/cm/theme/solarized.css',
+#         'lib/cm/addon/scroll/simplescrollbars.css', 'css/activity.css'])
 
 def init():
     editor = CodeMirror.fromTextArea(this.refs.code,
@@ -819,8 +819,9 @@ def init():
                         )
                     y.connector.whenSynced( def():
                                             console.log('Synchronized.')
+                                            event_bus.trigger("collaboration-ready")
                                             if len(y.share.files.keys())==0:
-                                                event_bus.trigger("collaboration-ready")
+                                                event_bus.trigger("restore-last-session")
                                             else:
                                                 tag.update()
                                                 y.share.files.get(tag.title).bindCodeMirror(editor)

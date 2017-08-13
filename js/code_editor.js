@@ -1452,7 +1452,6 @@ var re = ρσ_modules.re;
 tag = this;
 this.marker = null;
 window.files = {};
-loadCSS(ρσ_list_decorate([ "lib/cm/theme/solarized.css", "lib/cm/addon/scroll/simplescrollbars.css", "css/activity.css" ]));
 function init() {
     var editor, iframe;
     editor = CodeMirror.fromTextArea(this.refs.code, (function(){
@@ -2599,8 +2598,9 @@ function init() {
                 })());
                 y.connector.whenSynced(function () {
                     console.log("Synchronized.");
+                    event_bus.trigger("collaboration-ready");
                     if (ρσ_equals(len(y.share.files.keys()), 0)) {
-                        event_bus.trigger("collaboration-ready");
+                        event_bus.trigger("restore-last-session");
                     } else {
                         tag.update();
                         y.share.files.get(tag.title).bindCodeMirror(editor);
