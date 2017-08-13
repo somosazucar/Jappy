@@ -308,9 +308,14 @@ address = url_base + "//" + location.host + "/dav";
 if (location.hash) {
     window.fs = new WebDAV.Fs(address);
 }
+loadCSSAsync("lib/sugar-web/graphics/css/sugar-96dpi.css", "not screen and (device-width: 1200px) and (device-height: 900px)");
+loadCSSAsync("lib/sugar-web/graphics/css/sugar-72dpi.css", "screen and (max-width: 800px)");
+loadCSSAsync("css/small-screens.css", "screen and (max-width: 800px)");
+loadCSSAsync("css/tiny-screens.css", "screen and (max-width: 420px)");
 examples = ρσ_list_decorate([ "welcome.pyj", "memorize.pyj", "mandala.pyj", "input.pyj", "repl.pyj", "unicode.pyj" ]);
 special = ρσ_list_decorate([ "template.html" ]);
 window.state = "clean";
+tag.fetching_files = false;
 prefetch_files();
 function enable_run() {
     tag.refs.runbutton.disabled = false;
@@ -361,6 +366,10 @@ if (!filter_latest.__argnames__) Object.defineProperties(filter_latest, {
 
 function prefetch_files() {
     var url_base, address, path;
+    if (tag.fetching_files) {
+        return;
+    }
+    tag.fetching_files = true;
     if (location.hash) {
         url_base = location.protocol;
         address = url_base + "//" + location.host + "/dav";
@@ -369,6 +378,7 @@ function prefetch_files() {
         }
         path = location.hash.slice(1);
         function got_files(files) {
+            tag.fetching_files = false;
             window.server_files = files;
             event_bus.trigger("file-list-update");
         };

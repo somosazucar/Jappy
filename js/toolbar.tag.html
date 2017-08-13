@@ -74,9 +74,22 @@ address = url_base + '//' + location.host + '/dav'
 if location.hash:
     window.fs = new WebDAV.Fs(address)
 
+loadCSSAsync("lib/sugar-web/graphics/css/sugar-96dpi.css",
+			 "not screen and (device-width: 1200px) and (device-height: 900px)")
+#loadCSSAsync("lib/sugar-web/graphics/css/sugar-200dpi.css",
+#			 "screen and (device-width: 1200px) and (device-height: 900px)")
+loadCSSAsync( "lib/sugar-web/graphics/css/sugar-72dpi.css",
+			  "screen and (max-width: 800px)" )
+loadCSSAsync( "css/small-screens.css",
+			  "screen and (max-width: 800px)" )
+loadCSSAsync( "css/tiny-screens.css",
+			  "screen and (max-width: 420px)" )
+
+
 examples = ['welcome.pyj', 'memorize.pyj', 'mandala.pyj', 'input.pyj', 'repl.pyj', 'unicode.pyj']
 special = ['template.html']
 window.state = 'clean'
+tag.fetching_files = False
 prefetch_files()
 
 
@@ -115,6 +128,9 @@ def filter_latest(files):
         , [])
 
 def prefetch_files():
+    if tag.fetching_files:
+        return
+    tag.fetching_files = True
     if location.hash:
         url_base = location.protocol
         address = url_base + '//' + location.host + '/dav'
@@ -123,6 +139,7 @@ def prefetch_files():
 
         path = location.hash.slice(1)
         def got_files(files):
+            tag.fetching_files = False
             window.server_files = files
             event_bus.trigger('file-list-update')
 
