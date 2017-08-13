@@ -115,6 +115,8 @@ import re
 tag = this
 this.marker = None
 window.files = {}
+loadCSS(['lib/cm/codemirror.css', 'lib/cm/theme/solarized.css',
+         'lib/cm/addon/scroll/simplescrollbars.css', 'css/activity.css'])
 
 def init():
     editor = CodeMirror.fromTextArea(this.refs.code,

@@ -1452,6 +1452,7 @@ var re = ρσ_modules.re;
 tag = this;
 this.marker = null;
 window.files = {};
+loadCSS(ρσ_list_decorate([ "lib/cm/codemirror.css", "lib/cm/theme/solarized.css", "lib/cm/addon/scroll/simplescrollbars.css", "css/activity.css" ]));
 function init() {
     var editor, iframe;
     editor = CodeMirror.fromTextArea(this.refs.code, (function(){

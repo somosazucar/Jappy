@@ -53,3 +53,23 @@ def ρσ_print(*args, **kwargs):
 
 window.onerror = def(e):
     print(e)
+
+def loadCSS(url_list):
+    link_elements = []
+    for urlmedia in url_list:
+        loadCSSAsync(urlmedia)
+
+def makeCSSLink(url, media):
+    link = document.createElement('link')
+    link.rel = 'stylesheet'
+    link.href = url
+    if media:
+        link.media = media
+    return link
+
+def loadCSSAsync(url, media):
+    link = makeCSSLink(url, media)
+    head = document.getElementsByTagName('head')[0]
+    setTimeout(def():
+                    head.appendChild(link)
+                )
