@@ -8,6 +8,9 @@ body, html {
 .palette {
     z-index: 10;
 }
+.special_file {
+	font-style: italic;
+}
 button.icon span.pyj {
     background-image: url(../activity/activity-icon.svg);
 }

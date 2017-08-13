@@ -1,4 +1,4 @@
-riot.tag2('code-editor', '<div id="vsplit" ref="vsplit"> <div id="split" ref="split"> <input ref="file_input" id="file-input" type="file" style="display: none;"> <div id="tabs"> <button onclick="{this.newtab}" id="newtab">&nbsp;</button><span class="{selected: name==parent.title}" each="{name in list(files)}"><button class="{selected: name==parent.title}" onclick="{parent.switchtab}">{str(name)}</button><button if="{name==parent.title && len(files)>1}" id="closetab" onclick="{parent.closetab}">&nbsp;</button></span><button class="pull-right" id="tray-button" ref="traybutton">&nbsp;</button> </div> <textarea id="code-container" ref="code"></textarea> </div> <iframe allowtransparency="false" ref="vmframe" name="_vmframe"></iframe> </div>', 'code-editor { display: flex; flex: 1 1; height: 100%; } code-editor .CodeMirror,[data-is="code-editor"] .CodeMirror{ height: 100%; width: 100%; font-size: 15pt; font-family: "Noto Mono", "DejaVu Sans Mono", monospace, "Noto Emoji"; } code-editor .CodeMirror-scroll,[data-is="code-editor"] .CodeMirror-scroll{ margin-right: 0px; overflow: hidden !important; } code-editor .CodeMirror-linenumber,[data-is="code-editor"] .CodeMirror-linenumber{ font-size: 14pt; } code-editor .cm-s-solarized .CodeMirror-cursor,[data-is="code-editor"] .cm-s-solarized .CodeMirror-cursor{ width: 4px; border: 0; background: transparent; background: rgba(0, 200, 0, .4); } code-editor .CodeMirror-overlayscroll-vertical div,[data-is="code-editor"] .CodeMirror-overlayscroll-vertical div,code-editor .CodeMirror-overlayscroll-horizontal div,[data-is="code-editor"] .CodeMirror-overlayscroll-horizontal div{ background: #808080; } code-editor .error-marker,[data-is="code-editor"] .error-marker{ border: 1px solid red; background-color: rgba(255, 0, 0,0.2); border-radius: 3px; } code-editor iframe,[data-is="code-editor"] iframe{ border: 0px; display: none; flex: 1 1; } code-editor #split,[data-is="code-editor"] #split{ display: flex; width: 100%; flex-direction: column; flex: 1 1; height: 100%; float: left; } code-editor #vsplit,[data-is="code-editor"] #vsplit{ display: flex; flex-direction: row; flex: 1 1; height: 100%; } code-editor #tabs button,[data-is="code-editor"] #tabs button{ font-size: 13pt; border-radius: 0; padding: 10px 10px; border: 0px; margin: 0px; } code-editor #tabs button.selected,[data-is="code-editor"] #tabs button.selected{ background-color: #282828; } code-editor #tabs span.selected,[data-is="code-editor"] #tabs span.selected{ white-space: nowrap; } code-editor #closetab,[data-is="code-editor"] #closetab{ background-image: url(lib/sugar-web/graphics/icons/actions/entry-cancel-active.svg); background-repeat: no-repeat; background-color: #282828; width: 28px; background-position: center; background-size: 16px 16px; } code-editor #closetab:active,[data-is="code-editor"] #closetab:active{ background-image: url(lib/sugar-web/graphics/icons/actions/entry-cancel.svg); } code-editor #newtab,[data-is="code-editor"] #newtab{ background-image: url(icons/tab-add.svg); background-repeat: no-repeat; width: 28px; background-position: center; background-size: 20px 20px; } code-editor #tray-button,[data-is="code-editor"] #tray-button{ background-image: url(icons/tray-show.svg); background-repeat: no-repeat; width: 28px; background-position: center; background-size: 20px 20px; }', '', function(opts) {
+riot.tag2('code-editor', '<div id="vsplit" ref="vsplit"> <div id="split" ref="split"> <input ref="file_input" id="file-input" type="file" style="display: none;"> <div id="tabs"> <button onclick="{this.newtab}" id="newtab">&nbsp;</button><span class="{selected: name==parent.title}" each="{name in list(files)}"><button class="{selected: name==parent.title, special_file: name==⁗template.html⁗}" onclick="{parent.switchtab}">{str(name)}</button><button if="{name==parent.title && len(files)>1}" id="closetab" onclick="{parent.closetab}">&nbsp;</button></span><button class="pull-right" id="tray-button" ref="traybutton">&nbsp;</button> </div> <textarea id="code-container" ref="code"></textarea> </div> <iframe src="template.html" allowtransparency="false" ref="vmframe" name="_vmframe"></iframe> </div>', 'code-editor { display: flex; flex: 1 1; height: 100%; } code-editor .CodeMirror,[data-is="code-editor"] .CodeMirror{ height: 100%; width: 100%; font-size: 15pt; font-family: "Noto Mono", "DejaVu Sans Mono", monospace, "Noto Emoji"; } code-editor .CodeMirror-scroll,[data-is="code-editor"] .CodeMirror-scroll{ margin-right: 0px; overflow: hidden !important; } code-editor .CodeMirror-linenumber,[data-is="code-editor"] .CodeMirror-linenumber{ font-size: 14pt; } code-editor .cm-s-solarized .CodeMirror-cursor,[data-is="code-editor"] .cm-s-solarized .CodeMirror-cursor{ width: 4px; border: 0; background: transparent; background: rgba(0, 200, 0, .4); } code-editor .CodeMirror-overlayscroll-vertical div,[data-is="code-editor"] .CodeMirror-overlayscroll-vertical div,code-editor .CodeMirror-overlayscroll-horizontal div,[data-is="code-editor"] .CodeMirror-overlayscroll-horizontal div{ background: #808080; } code-editor .error-marker,[data-is="code-editor"] .error-marker{ border: 1px solid red; background-color: rgba(255, 0, 0,0.2); border-radius: 3px; } code-editor iframe,[data-is="code-editor"] iframe{ border: 0px; display: none; flex: 1 1; } code-editor #split,[data-is="code-editor"] #split{ display: flex; width: 100%; flex-direction: column; flex: 1 1; height: 100%; float: left; } code-editor #vsplit,[data-is="code-editor"] #vsplit{ display: flex; flex-direction: row; flex: 1 1; height: 100%; } code-editor #tabs button,[data-is="code-editor"] #tabs button{ font-size: 13pt; border-radius: 0; padding: 10px 10px; border: 0px; margin: 0px; } code-editor #tabs button.selected,[data-is="code-editor"] #tabs button.selected{ background-color: #282828; } code-editor #tabs span.selected,[data-is="code-editor"] #tabs span.selected{ white-space: nowrap; } code-editor #closetab,[data-is="code-editor"] #closetab{ background-image: url(lib/sugar-web/graphics/icons/actions/entry-cancel-active.svg); background-repeat: no-repeat; background-color: #282828; width: 28px; background-position: center; background-size: 16px 16px; } code-editor #closetab:active,[data-is="code-editor"] #closetab:active{ background-image: url(lib/sugar-web/graphics/icons/actions/entry-cancel.svg); } code-editor #newtab,[data-is="code-editor"] #newtab{ background-image: url(icons/tab-add.svg); background-repeat: no-repeat; width: 28px; background-position: center; background-size: 20px 20px; } code-editor #tray-button,[data-is="code-editor"] #tray-button{ background-image: url(icons/tray-show.svg); background-repeat: no-repeat; width: 28px; background-position: center; background-size: 20px 20px; }', '', function(opts) {
 var ρσ_modules = {};
 ρσ_modules.re = {};
 
@@ -2003,6 +2003,7 @@ function init() {
         script.innerHTML = js_output;
         function write_script() {
             var source, script_place;
+            iframe.removeEventListener("load", write_script);
             source = iframe.contentDocument.documentElement.outerHTML;
             if (window.fs !== undefined) {
                 script_place = source.toLowerCase().indexOf("</html>");
@@ -2013,11 +2014,10 @@ function init() {
             }
             iframe.contentDocument.body.appendChild(script);
             iframe.contentDocument.close();
-            iframe.removeEventListener("load", write_script);
         };
 
         iframe.addEventListener("load", write_script);
-        if (window.fs !== undefined) {
+        if (window.y !== undefined) {
             path = location.hash.slice(1);
             iframe.contentWindow.location = "dav/" + path + "/template.html";
         } else {
@@ -2059,7 +2059,13 @@ function init() {
 
     event_bus.on("break-code", break_code);
     function clear_output() {
-        iframe.contentWindow.location = "about:blank";
+        var path;
+        if (window.fs !== undefined) {
+            path = location.hash.slice(1);
+            iframe.contentWindow.location = "dav/" + path + "/template.html";
+        } else {
+            iframe.contentWindow.location = "template.html";
+        }
     };
 
     event_bus.on("clear-output", clear_output);
@@ -2083,11 +2089,8 @@ function init() {
             if (window.fs === undefined) {
                 window.fs = new WebDAV.Fs(address);
             }
-            function file_written(ev) {
+            function file_written() {
             };
-            if (!file_written.__argnames__) Object.defineProperties(file_written, {
-                __argnames__ : {value: ["ev"]}
-            });
 
             path = location.hash.slice(1);
             if (ρσ_in("index.html", window.files)) {
@@ -2099,7 +2102,7 @@ function init() {
             for (var ρσ_Index5 = 0; ρσ_Index5 < ρσ_Iter5.length; ρσ_Index5++) {
                 item = ρσ_Iter5[ρσ_Index5];
                 if (item === target) {
-                    continue;
+                    break;
                 }
                 data = (ρσ_expr_temp = window.files)[(typeof item === "number" && item < 0) ? ρσ_expr_temp.length + item : item].getValue();
                 if (data) {
@@ -2107,16 +2110,11 @@ function init() {
                     fs.file(filepath).write(data, "text/plain; charset=UTF-8", file_written);
                 }
             }
-            function update_target_last() {
-                var data, filepath;
-                data = (ρσ_expr_temp = window.files)[(typeof target === "number" && target < 0) ? ρσ_expr_temp.length + target : target].getValue();
-                if (data) {
-                    filepath = "/" + path + "/" + target;
-                    fs.file(filepath).write(data, "text/plain; charset=UTF-8", file_written);
-                }
-            };
-
-            setTimeout(update_target_last, 500);
+            data = (ρσ_expr_temp = window.files)[(typeof target === "number" && target < 0) ? ρσ_expr_temp.length + target : target].getValue();
+            if (data) {
+                filepath = "/" + path + "/" + target;
+                fs.file(filepath).write(data, "text/plain; charset=UTF-8", file_written);
+            }
         }
     };
 
@@ -2238,16 +2236,16 @@ function init() {
             tag.title = filename;
             editor.swapDoc((ρσ_expr_temp = window.files)[(typeof filename === "number" && filename < 0) ? ρσ_expr_temp.length + filename : filename]);
             tag.update();
+            if (overwrite) {
+                if (ρσ_in(filename, window.files)) {
+                    (ρσ_expr_temp = window.files)[(typeof filename === "number" && filename < 0) ? ρσ_expr_temp.length + filename : filename].setValue(data);
+                }
+            }
             if (window.y !== undefined) {
                 if (!(ρσ_in(filename, y.share.files.keys()))) {
                     y.share.files.set(filename, Y.Text);
                 }
                 y.share.files.get(filename).bindCodeMirror(editor);
-            }
-            if (overwrite) {
-                if (ρσ_in(filename, window.files)) {
-                    (ρσ_expr_temp = window.files)[(typeof filename === "number" && filename < 0) ? ρσ_expr_temp.length + filename : filename].setValue(data);
-                }
             }
             editor.focus();
             return;
@@ -2257,27 +2255,25 @@ function init() {
         }
         new_session = CodeMirror.Doc(data || "");
         files[(typeof filename === "number" && filename < 0) ? files.length + filename : filename] = new_session;
-        if (overwrite) {
-            editor.swapDoc(new_session);
-            if (window.y !== undefined) {
-                if (!(ρσ_in(filename, y.share.files.keys()))) {
-                    y.share.files.set(filename, Y.Text);
-                    y.share.files.get(filename).insert(0, data || "");
-                }
-                y.share.files.get(filename).bindCodeMirror(editor);
+        editor.swapDoc(new_session);
+        if (window.y !== undefined) {
+            if (!(ρσ_in(filename, y.share.files.keys()))) {
+                y.share.files.set(filename, Y.Text);
+                y.share.files.get(filename).insert(0, data || "");
             }
-            if (tag.title !== undefined) {
-                if (ρσ_equals(tag.title.slice(0, 8), "untitled") && ρσ_equals(len((ρσ_expr_temp = window.files)[ρσ_bound_index(tag.title, ρσ_expr_temp)].getValue()), 0)) {
-                    ρσ_delitem(window.files, tag.title);
-                    if (window.y !== undefined) {
-                        if (ρσ_in(tag.title, y.share.files.keys())) {
-                            y.share.files.delete(tag.title);
-                        }
+            y.share.files.get(filename).bindCodeMirror(editor);
+        }
+        if (tag.title !== undefined) {
+            if (ρσ_equals(tag.title.slice(0, 8), "untitled") && ρσ_equals(len((ρσ_expr_temp = window.files)[ρσ_bound_index(tag.title, ρσ_expr_temp)].getValue()), 0)) {
+                ρσ_delitem(window.files, tag.title);
+                if (window.y !== undefined) {
+                    if (ρσ_in(tag.title, y.share.files.keys())) {
+                        y.share.files.delete(tag.title);
                     }
                 }
             }
-            tag.title = filename;
         }
+        tag.title = filename;
         tag.update();
         editor.focus();
     };
@@ -2605,9 +2601,10 @@ function init() {
                     console.log("Synchronized.");
                     if (ρσ_equals(len(y.share.files.keys()), 0)) {
                         event_bus.trigger("collaboration-ready");
+                    } else {
+                        tag.update();
+                        y.share.files.get(tag.title).bindCodeMirror(editor);
                     }
-                    tag.update();
-                    y.share.files.get(tag.title).bindCodeMirror(editor);
                 });
                 y.connector.socket.on("jappyEvent", (function() {
                     var ρσ_anonfunc = function (msg) {

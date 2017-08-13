@@ -299,7 +299,7 @@ var ρσ_modules = {};
     ρσ_modules.elementmaker._makeelement = _makeelement;
     ρσ_modules.elementmaker.maker_for_document = maker_for_document;
 })();
-var tag, url_base, address, examples;
+var tag, url_base, address, examples, special;
 var E = ρσ_modules.elementmaker.E;
 
 tag = this;
@@ -309,6 +309,7 @@ if (location.hash) {
     window.fs = new WebDAV.Fs(address);
 }
 examples = ρσ_list_decorate([ "welcome.pyj", "memorize.pyj", "mandala.pyj", "input.pyj", "repl.pyj", "unicode.pyj" ]);
+special = ρσ_list_decorate([ "template.html" ]);
 window.state = "clean";
 prefetch_files();
 function enable_run() {
@@ -384,7 +385,7 @@ function restore_last_session() {
     if (window.server_files !== undefined) {
         recent_files = filter_latest(window.server_files);
         path = location.hash.slice(1);
-        var ρσ_Iter2 = ρσ_Iterable(recent_files);
+        var ρσ_Iter2 = ρσ_Iterable(reversed(recent_files));
         for (var ρσ_Index2 = 0; ρσ_Index2 < ρσ_Iter2.length; ρσ_Index2++) {
             item = ρσ_Iter2[ρσ_Index2];
             filename = item.name;
@@ -412,7 +413,7 @@ function restore_last_session() {
 };
 
 event_bus.on("collaboration-ready", restore_last_session);
-function load_file(ev) {
+function load_file_ev(ev) {
     var target_file, path;
     tag.workspace_palette.popDown();
     target_file = ev.target.getAttribute("data-uri");
@@ -427,8 +428,36 @@ function load_file(ev) {
         return ρσ_anonfunc;
     })());
 };
-if (!load_file.__argnames__) Object.defineProperties(load_file, {
+if (!load_file_ev.__argnames__) Object.defineProperties(load_file_ev, {
     __argnames__ : {value: ["ev"]}
+});
+
+function load_file() {
+    var url = ( 0 === arguments.length-1 && arguments[arguments.length-1] !== null && typeof arguments[arguments.length-1] === "object" && arguments[arguments.length-1] [ρσ_kwargs_symbol] === true) ? undefined : arguments[0];
+    var overwrite = (arguments[1] === undefined || ( 1 === arguments.length-1 && arguments[arguments.length-1] !== null && typeof arguments[arguments.length-1] === "object" && arguments[arguments.length-1] [ρσ_kwargs_symbol] === true)) ? load_file.__defaults__.overwrite : arguments[1];
+    var ρσ_kwargs_obj = arguments[arguments.length-1];
+    if (ρσ_kwargs_obj === null || typeof ρσ_kwargs_obj !== "object" || ρσ_kwargs_obj [ρσ_kwargs_symbol] !== true) ρσ_kwargs_obj = {};
+    if (Object.prototype.hasOwnProperty.call(ρσ_kwargs_obj, "overwrite")){
+        overwrite = ρσ_kwargs_obj.overwrite;
+    }
+    var path, target_file;
+    tag.workspace_palette.popDown();
+    path = location.hash.slice(1);
+    target_file = (ρσ_expr_temp = url.split("/"))[ρσ_expr_temp.length-1];
+    fs.file(url).read((function() {
+        var ρσ_anonfunc = function (data) {
+            event_bus.trigger("new-from-data", data, target_file, overwrite);
+        };
+        if (!ρσ_anonfunc.__argnames__) Object.defineProperties(ρσ_anonfunc, {
+            __argnames__ : {value: ["data"]}
+        });
+        return ρσ_anonfunc;
+    })());
+};
+if (!load_file.__defaults__) Object.defineProperties(load_file, {
+    __defaults__ : {value: {overwrite:false}},
+    __handles_kwarg_interpolation__ : {value: true},
+    __argnames__ : {value: ["url", "overwrite"]}
 });
 
 function update_workspace_menu() {
@@ -514,7 +543,7 @@ function update_workspace_menu() {
             item.appendChild(span);
             item.appendChild(text);
             if (editor_load) {
-                item.addEventListener("click", load_file);
+                item.addEventListener("click", load_file_ev);
             }
             row.appendChild(item);
             items.append(row);
@@ -630,6 +659,49 @@ function init() {
                 row.appendChild(item);
                 items.append(row);
             }
+            items.append(ρσ_interpolate_kwargs.call(E, E.hr, [ρσ_desugar_kwargs({class_: "header-separator"})]));
+            var ρσ_Iter5 = ρσ_Iterable(special);
+            for (var ρσ_Index5 = 0; ρσ_Index5 < ρσ_Iter5.length; ρσ_Index5++) {
+                i = ρσ_Iter5[ρσ_Index5];
+                row = document.createElement("div");
+                row.classList.add("menu");
+                item = document.createElement("button");
+                item.classList.add("icon");
+                item.classList.add("special_file");
+                span = document.createElement("span");
+                if (i.endswith(".pyj")) {
+                    span.classList.add("pyj");
+                } else if (i.endswith(".html")) {
+                    span.classList.add("html");
+                }
+                text = document.createTextNode(i);
+                item.appendChild(span);
+                item.appendChild(text);
+                item.setAttribute("data-uri", i);
+                function trigger_load(el) {
+                    return (function() {
+                        var ρσ_anonfunc = function (ev) {
+                            var target_file, path, url;
+                            target_file = ev.target.getAttribute("data-uri");
+                            path = location.hash.slice(1);
+                            url = location.protocol + "//" + location.host + "/" + "dav/" + path + "/" + target_file;
+                            tag.example_palette.popDown();
+                            load_file(url);
+                        };
+                        if (!ρσ_anonfunc.__argnames__) Object.defineProperties(ρσ_anonfunc, {
+                            __argnames__ : {value: ["ev"]}
+                        });
+                        return ρσ_anonfunc;
+                    })();
+                };
+                if (!trigger_load.__argnames__) Object.defineProperties(trigger_load, {
+                    __argnames__ : {value: ["el"]}
+                });
+
+                item.onclick = trigger_load(i);
+                row.appendChild(item);
+                items.append(row);
+            }
             tag.example_palette.setContent(items);
             tag.workspace_palette = new palette.Palette(tag.refs.workspacebutton, "Workspace");
             update_workspace_menu();
@@ -669,9 +741,9 @@ function init() {
             import_file.prototype.trigger = "import-file";
 
             items = ρσ_list_decorate([]);
-            var ρσ_Iter5 = ρσ_Iterable(ρσ_list_decorate([ new as_zip, new import_file ]));
-            for (var ρσ_Index5 = 0; ρσ_Index5 < ρσ_Iter5.length; ρσ_Index5++) {
-                i = ρσ_Iter5[ρσ_Index5];
+            var ρσ_Iter6 = ρσ_Iterable(ρσ_list_decorate([ new as_zip, new import_file ]));
+            for (var ρσ_Index6 = 0; ρσ_Index6 < ρσ_Iter6.length; ρσ_Index6++) {
+                i = ρσ_Iter6[ρσ_Index6];
                 row = document.createElement("div");
                 row.classList.add("menu");
                 item = document.createElement("button");

@@ -98,7 +98,7 @@ iframe {
         <div id='tabs'>
         <button onclick={ this.newtab } id='newtab'>&nbsp;</button><!--
         --><span class={selected: name==parent.title} each={name in list(files)}><!--
-        --><button class={selected: name==parent.title}
+        --><button class={ selected: name==parent.title, special_file: name=="template.html" }
                     onclick={ parent.switchtab }>{str(name)}</button><!--
         --><button if={ name==parent.title && len(files)>1 } id='closetab'
             onclick={ parent.closetab }>&nbsp;</button></span><!--
@@ -106,7 +106,7 @@ iframe {
         </div>
         <textarea id="code-container" ref="code"></textarea>
     </div>
-    <iframe allowTransparency="false" ref="vmframe" name="_vmframe"></iframe>
+    <iframe src="template.html" allowTransparency="false" ref="vmframe" name="_vmframe"></iframe>
 </div>
 
 <script type="text/Rapyd">
@@ -459,6 +459,7 @@ def init():
         script = iframe.contentDocument.createElement('script')
         script.innerHTML = js_output
         def write_script():
+            iframe.removeEventListener('load', write_script)
             source = iframe.contentDocument.documentElement.outerHTML
             if window.fs is not undefined:
                 script_place = source.toLowerCase().indexOf('</html>')
@@ -468,9 +469,8 @@ def init():
                 publish_script(source)
             iframe.contentDocument.body.appendChild(script)
             iframe.contentDocument.close()
-            iframe.removeEventListener('load', write_script)
         iframe.addEventListener('load', write_script)
-        if window.fs is not undefined:
+        if window.y is not undefined: # collaboration
             path = location.hash.slice(1)
             iframe.contentWindow.location = 'dav/' + path + '/template.html'
         else:
@@ -496,7 +496,11 @@ def init():
     event_bus.on("break-code", break_code)
 
     def clear_output():
-        iframe.contentWindow.location = 'about:blank'
+        if window.fs is not undefined:
+            path = location.hash.slice(1)
+            iframe.contentWindow.location = 'dav/' + path + '/template.html'
+        else:
+            iframe.contentWindow.location = 'template.html'
     event_bus.on("clear-output", clear_output)
 
     def serialize():
@@ -514,7 +518,7 @@ def init():
             if window.fs is undefined:
                 window.fs = new WebDAV.Fs(address)
 
-            def file_written(ev):
+            def file_written():
                 pass # TODO: Notify user.
             path = location.hash.slice(1)
             if 'index.html' in window.files:
@@ -522,21 +526,19 @@ def init():
             else:
                 target = tag.title
             for item in window.files:
-                if item is target:
-                    continue
+                if item is target: # Will be written last
+                    break
                 data = window.files[item].getValue() 
                 if data:
                     filepath = '/' + path + '/' + item
                     fs.file(filepath).write(data, "text/plain; charset=UTF-8",
                                                                 file_written)
-            def update_target_last():
-                # Target is treated special to be the last to save (Hack!)
-                data = window.files[target].getValue() 
-                if data:
-                    filepath = '/' + path + '/' + target
-                    fs.file(filepath).write(data, "text/plain; charset=UTF-8",
-                                                                file_written)
-            setTimeout(update_target_last, 500)
+            # Target is treated special to be the last to save (Hack!)
+            data = window.files[target].getValue() 
+            if data:
+                filepath = '/' + path + '/' + target
+                fs.file(filepath).write(data, "text/plain; charset=UTF-8",
+                                                            file_written)
 
     def save(activity=window.activity):
         if activity is not undefined:
@@ -595,34 +597,33 @@ def init():
             tag.title = filename
             editor.swapDoc(window.files[filename])
             tag.update()
+            if overwrite:
+                if filename in window.files:
+                    window.files[filename].setValue(data)
             if window.y is not undefined: # collaboration
                 if filename not in y.share.files.keys():
                     y.share.files.set(filename, Y.Text)
                 y.share.files.get(filename).bindCodeMirror(editor)
-            if overwrite:
-                if filename in window.files:
-                    window.files[filename].setValue(data)
             editor.focus()
             return
         if filename is None:
             filename = get_new_untitled()
         new_session = CodeMirror.Doc(data or '')
         files[filename] = new_session
-        if overwrite:
-            editor.swapDoc(new_session)
-            if window.y is not undefined: # collaboration
-                if filename not in y.share.files.keys():
-                    y.share.files.set(filename, Y.Text)
-                    y.share.files.get(filename).insert(0, data or '')
-                y.share.files.get(filename).bindCodeMirror(editor)
-            if tag.title is not undefined:
-                if tag.title[:8]==('untitled') \
-                            and len(window.files[tag.title].getValue())==0:
-                    del window.files[tag.title]
-                    if window.y is not undefined: # collaboration
-                        if tag.title in y.share.files.keys():
-                            y.share.files.delete(tag.title)
-            tag.title = filename
+        editor.swapDoc(new_session)
+        if window.y is not undefined: # collaboration
+            if filename not in y.share.files.keys():
+                y.share.files.set(filename, Y.Text)
+                y.share.files.get(filename).insert(0, data or '')
+            y.share.files.get(filename).bindCodeMirror(editor)
+        if tag.title is not undefined:
+            if tag.title[:8]==('untitled') \
+                        and len(window.files[tag.title].getValue())==0:
+                del window.files[tag.title]
+                if window.y is not undefined: # collaboration
+                    if tag.title in y.share.files.keys():
+                        y.share.files.delete(tag.title)
+        tag.title = filename
         tag.update()
         editor.focus()
     event_bus.on("new-from-data", new_from_data)
@@ -820,8 +821,9 @@ def init():
                                             console.log('Synchronized.')
                                             if len(y.share.files.keys())==0:
                                                 event_bus.trigger("collaboration-ready")
-                                            tag.update()
-                                            y.share.files.get(tag.title).bindCodeMirror(editor)
+                                            else:
+                                                tag.update()
+                                                y.share.files.get(tag.title).bindCodeMirror(editor)
                                 )
                     y.connector.socket.on('jappyEvent', def(msg):
                             if msg:
