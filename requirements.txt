@@ -1,6 +1,7 @@
 WsgiDAV
 Flask
 Flask-SocketIO
+wsgigzip
 wsgicors
 gevent-websocket
 pyinotify

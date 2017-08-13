@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 from flask import Flask
 from flask_socketio import SocketIO, emit, join_room, leave_room
-from flask import request, abort, send_from_directory
+from flask import request, send_from_directory
 from wsgidav.wsgidav_app import DEFAULT_CONFIG, WsgiDAVApp
 from wsgidav.fs_dav_provider import FilesystemProvider
 from werkzeug.wsgi import DispatcherMiddleware
@@ -9,15 +9,16 @@ from werkzeug.exceptions import Unauthorized
 from werkzeug.wrappers import Response
 from werkzeug.utils import redirect
 from wsgicors import CORS
+from wsgigzip import GzipMiddleware
 import os
 import sys
 import mimetypes
 import pyinotify
 import signal
-import json
 signal.signal(signal.SIGINT, signal.SIG_DFL)
 mimetypes.add_type('image/svg+xml', '.svg')
 mimetypes.add_type('application/x-font-woff', '.woff')
+mimetypes.add_type('application/x-rapyd', '.pyj')
 
 app_dir = "."
 app = Flask(__name__, 
@@ -126,6 +127,13 @@ def start_server():
     app.wsgi_app = DispatcherMiddleware(app.wsgi_app, {
         '/dav' : filtered_dav_app
     })
+    app.wsgi_app = GzipMiddleware(app.wsgi_app, 
+            mime_types = [ 'application/javascript', 'application/x-rapyd',
+                           'application/xml','image/svg+xml', 'text/*' ]
+                )
+    # GzipMiddleware doesn't like exc_info
+    app.wsgi_app.start_response = lambda status, headers, exc_info  : \
+         app.wsgidav_app.start_response( status, headers )
     socketio.run(app, host='0.0.0.0', port=54991)
 
 class EventHandler(pyinotify.ProcessEvent):
