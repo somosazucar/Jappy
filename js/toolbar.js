@@ -394,7 +394,7 @@ function restore_last_session() {
         var ρσ_Iter2 = ρσ_Iterable(reversed(recent_files));
         for (var ρσ_Index2 = 0; ρσ_Index2 < ρσ_Iter2.length; ρσ_Index2++) {
             item = ρσ_Iter2[ρσ_Index2];
-            load_file("/" + path + "/" + item.name, true);
+            load_file("/" + path + "/" + item.name, false);
         }
     } else {
         event_bus.one("file-list-update", restore_last_session);

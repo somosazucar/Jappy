@@ -1590,10 +1590,10 @@ function init() {
         if (filename === null) {
             filename = e.target.innerHTML;
         }
-        console.debug(filename);
         if (filename !== tag.title) {
             if (window.y !== undefined) {
                 if (ρσ_in(tag.title, y.share.files.keys())) {
+                    console.debug("unbinding: " + tag.title);
                     y.share.files.get(tag.title).unbindCodeMirror(editor);
                 }
             }
@@ -1601,6 +1601,7 @@ function init() {
             editor.swapDoc((ρσ_expr_temp = window.files)[ρσ_bound_index(tag.title, ρσ_expr_temp)]);
             if (window.y !== undefined) {
                 if (ρσ_in(tag.title, y.share.files.keys())) {
+                    console.debug("binding " + tag.title);
                     y.share.files.get(tag.title).bindCodeMirror(editor);
                 }
             }
@@ -1616,25 +1617,26 @@ function init() {
                         (ρσ_expr_temp = window.files)[ρσ_bound_index(editbox.value, ρσ_expr_temp)] = editor.getDoc();
                         ρσ_delitem(window.files, tag.title);
                         if (window.y !== undefined) {
+                            console.debug("unbinding: " + tag.title);
                             y.share.files.get(tag.title).unbindCodeMirrorAll();
                             y.share.files.set(editbox.value, Y.Text);
                             y.share.files.get(editbox.value).insert(0, editor.getValue());
+                            console.debug("binding " + editbox.value);
                             y.share.files.get(editbox.value).bindCodeMirror(editor);
                             y.share.files.delete(tag.title);
                         }
                         if (window.fs) !undefined;
                         {
                             if (window.server_files !== undefined) {
-                                if (ρσ_in(tag.title, server_files)) {
-                                    path = location.hash.slice(1);
-                                    function file_moved(ev) {
-                                    };
-                                    if (!file_moved.__argnames__) Object.defineProperties(file_moved, {
-                                        __argnames__ : {value: ["ev"]}
-                                    });
+                                path = location.hash.slice(1);
+                                function file_moved(ev) {
+                                };
+                                if (!file_moved.__argnames__) Object.defineProperties(file_moved, {
+                                    __argnames__ : {value: ["ev"]}
+                                });
 
-                                    window.fs.file("/" + path + "/" + tag.title).mv("/" + path + "/" + editbox.value, file_moved);
-                                }
+                                console.debug("moving " + tag.title + " to " + editbox.value);
+                                window.fs.file("/" + path + "/" + tag.title).mv("/" + path + "/" + editbox.value, file_moved);
                             }
                         }
                         tag.title = editbox.value;
@@ -1684,6 +1686,7 @@ function init() {
         window.files = ρσ_list_decorate([]);
         if (window.y !== undefined) {
             if (ρσ_in(tag.title, y.share.files.keys())) {
+                console.debug("unbinding: " + tag.title);
                 y.share.files.get(tag.title).unbindCodeMirror(editor);
             }
         }
@@ -1729,11 +1732,13 @@ function init() {
             if (window.y !== undefined) {
                 if (e !== null) {
                     if (ρσ_in(filename, y.share.files.keys())) {
+                        console.debug("unbinding: " + filename);
                         y.share.files.get(filename).unbindCodeMirrorAll();
                         y.share.files.delete(filename);
                     }
                 } else {
                     if (ρσ_in(filename, y.share.files.keys())) {
+                        console.debug("unbinding: " + filename);
                         y.share.files.get(filename).unbindCodeMirrorAll();
                     }
                 }
@@ -1753,7 +1758,10 @@ function init() {
             if (window.y !== undefined) {
                 if ((filename === active_title || typeof filename === "object" && ρσ_equals(filename, active_title))) {
                     if (ρσ_in(tag.title, y.share.files.keys())) {
-                        y.share.files.get(tag.title).bindCodeMirror(editor);
+                        setTimeout(function () {
+                            console.debug("binding " + tag.title);
+                            y.share.files.get(tag.title).bindCodeMirror(editor);
+                        });
                     }
                 }
             }
@@ -1800,10 +1808,12 @@ function init() {
         editor.focus();
         if (window.y !== undefined) {
             if (ρσ_in(tag.title, y.share.files.keys())) {
+                console.debug("unbinding: " + tag.title);
                 y.share.files.get(tag.title).unbindCodeMirror(editor);
             }
             y.share.files.set(file, Y.Text);
             y.share.files.get(file).insert(0, "");
+            console.debug("binding " + file);
             y.share.files.get(file).bindCodeMirror(editor);
         }
         tag.title = file;
@@ -2199,9 +2209,11 @@ function init() {
                 files[(typeof file === "number" && file < 0) ? files.length + file : file] = new_session;
                 editor.swapDoc(new_session);
                 if (window.y !== undefined) {
+                    console.debug("unbinding: " + tag.title);
                     y.share.files.get(tag.title).unbindCodeMirror(editor);
                     y.share.files.set(file, Y.Text);
                     y.share.files.get(file).insert(0, data);
+                    console.debug("binding " + file);
                     y.share.files.get(file).bindCodeMirror(editor);
                 }
                 tag.title = file;
@@ -2244,6 +2256,7 @@ function init() {
         console.debug("Read: " + filename);
         if (window.y !== undefined) {
             if (ρσ_in(tag.title, y.share.files.keys())) {
+                console.debug("unbinding: " + tag.title);
                 y.share.files.get(tag.title).unbindCodeMirror(editor);
             }
         }
@@ -2261,6 +2274,7 @@ function init() {
                     if (!(ρσ_in(filename, y.share.files.keys()))) {
                         y.share.files.set(filename, Y.Text);
                     }
+                    console.debug("binding " + filename);
                     y.share.files.get(filename).bindCodeMirror(editor);
                 }
             }
@@ -2278,17 +2292,8 @@ function init() {
                 y.share.files.set(filename, Y.Text);
                 y.share.files.get(filename).insert(0, data || "");
             }
+            console.debug("binding " + filename);
             y.share.files.get(filename).bindCodeMirror(editor);
-        }
-        if (tag.title !== undefined) {
-            if (ρσ_equals(tag.title.slice(0, 8), "untitled") && ρσ_equals(len((ρσ_expr_temp = window.files)[ρσ_bound_index(tag.title, ρσ_expr_temp)].getValue()), 0)) {
-                ρσ_delitem(window.files, tag.title);
-                if (window.y !== undefined) {
-                    if (ρσ_in(tag.title, y.share.files.keys())) {
-                        y.share.files.delete(tag.title);
-                    }
-                }
-            }
         }
         tag.title = filename;
         tag.update();
@@ -2420,8 +2425,12 @@ function init() {
         toolbar.style.display = "none";
         canvas = document.getElementById("canvas");
         canvas.style.top = "0";
+        iframe.style.width = "100%";
         if (execute) {
             run();
+        }
+        if (document.getElementById("restore-button")) {
+            return;
         }
         restore_button = document.createElement("button");
         restore_button.id = "restore-button";
@@ -2436,7 +2445,6 @@ function init() {
         restore_button.style["background-position"] = "center";
         restore_button.style.width = restore_button.style.height = "55px";
         document.body.appendChild(restore_button);
-        iframe.style.width = "100%";
     };
     if (!run_fullscreen.__defaults__) Object.defineProperties(run_fullscreen, {
         __defaults__ : {value: {execute:true}},
@@ -2619,8 +2627,10 @@ function init() {
                     event_bus.trigger("collaboration-ready");
                     if (ρσ_equals(len(y.share.files.keys()), 0)) {
                         event_bus.trigger("restore-last-session");
+                        tag.update();
                     } else {
                         tag.update();
+                        console.debug("binding " + tag.title);
                         y.share.files.get(tag.title).bindCodeMirror(editor);
                     }
                 });
