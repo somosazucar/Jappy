@@ -387,30 +387,14 @@ function prefetch_files() {
 };
 
 function restore_last_session() {
-    var recent_files, path, filename, item;
+    var recent_files, path, item;
     if (window.server_files !== undefined) {
         recent_files = filter_latest(window.server_files);
         path = location.hash.slice(1);
         var ρσ_Iter2 = ρσ_Iterable(reversed(recent_files));
         for (var ρσ_Index2 = 0; ρσ_Index2 < ρσ_Iter2.length; ρσ_Index2++) {
             item = ρσ_Iter2[ρσ_Index2];
-            filename = item.name;
-            function new_tab_maker(name) {
-                return (function() {
-                    var ρσ_anonfunc = function (data) {
-                        event_bus.trigger("new-from-data", data, name, true);
-                    };
-                    if (!ρσ_anonfunc.__argnames__) Object.defineProperties(ρσ_anonfunc, {
-                        __argnames__ : {value: ["data"]}
-                    });
-                    return ρσ_anonfunc;
-                })();
-            };
-            if (!new_tab_maker.__argnames__) Object.defineProperties(new_tab_maker, {
-                __argnames__ : {value: ["name"]}
-            });
-
-            window.fs.file("/" + path + "/" + filename).read(new_tab_maker(filename));
+            load_file("/" + path + "/" + item.name, true);
         }
     } else {
         event_bus.one("file-list-update", restore_last_session);
@@ -424,15 +408,7 @@ function load_file_ev(ev) {
     tag.workspace_palette.popDown();
     target_file = ev.target.getAttribute("data-uri");
     path = location.hash.slice(1);
-    fs.file("/" + path + "/" + target_file).read((function() {
-        var ρσ_anonfunc = function (data) {
-            event_bus.trigger("new-from-data", data, target_file, true);
-        };
-        if (!ρσ_anonfunc.__argnames__) Object.defineProperties(ρσ_anonfunc, {
-            __argnames__ : {value: ["data"]}
-        });
-        return ρσ_anonfunc;
-    })());
+    load_file("/" + path + "/" + target_file, true);
 };
 if (!load_file_ev.__argnames__) Object.defineProperties(load_file_ev, {
     __argnames__ : {value: ["ev"]}
@@ -451,11 +427,14 @@ function load_file() {
     path = location.hash.slice(1);
     target_file = (ρσ_expr_temp = url.split("/"))[ρσ_expr_temp.length-1];
     fs.file(url).read((function() {
-        var ρσ_anonfunc = function (data) {
-            event_bus.trigger("new-from-data", data, target_file, overwrite);
+        var ρσ_anonfunc = function (data, status) {
+            if (status === 200) {
+                event_bus.trigger("new-from-data", data, target_file, overwrite);
+            } else {
+            }
         };
         if (!ρσ_anonfunc.__argnames__) Object.defineProperties(ρσ_anonfunc, {
-            __argnames__ : {value: ["data"]}
+            __argnames__ : {value: ["data", "status"]}
         });
         return ρσ_anonfunc;
     })());
@@ -575,7 +554,11 @@ function update_workspace_menu() {
         __argnames__ : {value: ["body", "existed_previously"]}
     });
 
-    fs.dir("/" + path).mkdir(try_make_dir);
+    if (window.server_files === undefined) {
+        fs.dir("/" + path).mkdir(try_make_dir);
+    } else {
+        fs.dir("/" + path).children(list_files);
+    }
 };
 
 tag.update_workspace_menu = update_workspace_menu;
@@ -688,11 +671,11 @@ function init() {
                     return (function() {
                         var ρσ_anonfunc = function (ev) {
                             var target_file, path, url;
-                            target_file = ev.target.getAttribute("data-uri");
+                            target_file = el;
                             path = location.hash.slice(1);
-                            url = location.protocol + "//" + location.host + "/" + "dav/" + path + "/" + target_file;
+                            url = location.protocol + "//" + location.host + "/" + "/" + target_file;
                             tag.example_palette.popDown();
-                            load_file(url);
+                            load_file(url, true);
                         };
                         if (!ρσ_anonfunc.__argnames__) Object.defineProperties(ρσ_anonfunc, {
                             __argnames__ : {value: ["ev"]}

@@ -150,11 +150,7 @@ def restore_last_session():
         recent_files = filter_latest(window.server_files)
         path = location.hash.slice(1)
         for item in reversed(recent_files):
-            filename = item.name
-            def new_tab_maker(name):
-                return def(data):
-                    event_bus.trigger('new-from-data', data, name, True)
-            window.fs.file('/' + path + '/' + filename).read(new_tab_maker(filename))
+            load_file('/' + path + '/' + item.name, True)
     else:
         event_bus.one('file-list-update', restore_last_session)
         prefetch_files()
@@ -164,16 +160,18 @@ def load_file_ev(ev):
     tag.workspace_palette.popDown()
     target_file = ev.target.getAttribute('data-uri')
     path = location.hash.slice(1)
-    fs.file('/' + path + '/' + target_file).read(def(data):
-            event_bus.trigger('new-from-data', data, target_file, True)
-    )
+    load_file('/' + path + '/' + target_file, True)
 
 def load_file(url, overwrite=False):
     tag.workspace_palette.popDown()
     path = location.hash.slice(1)
     target_file = url.split('/')[-1]
-    fs.file(url).read(def(data):
+    fs.file(url).read(def(data, status):
+        if status is 200: # success
             event_bus.trigger('new-from-data', data, target_file, overwrite)
+        else:
+            pass
+            # TODO: Notify user
     )
 
 def update_workspace_menu():
@@ -243,7 +241,10 @@ def update_workspace_menu():
         tag.workspace_palette.setContent(items)
     def try_make_dir(body, existed_previously):
         fs.dir('/' + path).children(list_files)
-    fs.dir('/' + path).mkdir(try_make_dir)
+    if window.server_files is undefined:
+        fs.dir('/' + path).mkdir(try_make_dir)
+    else:
+        fs.dir('/' + path).children(list_files)
 tag.update_workspace_menu = update_workspace_menu
 event_bus.on("file-list-update", update_workspace_menu)
 event_bus.on("update-workspace-menu", update_workspace_menu)
@@ -330,12 +331,12 @@ def init():
                 item.setAttribute('data-uri', i)
                 def trigger_load(el):
                     return def(ev):
-                        target_file = ev.target.getAttribute('data-uri')
+                        target_file = el
                         path = location.hash.slice(1)
                         url = location.protocol + '//' + location.host + '/' \
-                                    + 'dav/' + path + '/' + target_file
+                                    + '/' + target_file
                         tag.example_palette.popDown()
-                        load_file(url)
+                        load_file(url, True)
                 item.onclick = trigger_load(i)
                 row.appendChild(item)
                 items.append(row)

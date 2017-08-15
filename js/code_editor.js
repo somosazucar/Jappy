@@ -1587,11 +1587,10 @@ function init() {
             filename = ρσ_kwargs_obj.filename;
         }
         var editbox;
-        if (filename === tag.title) {
-        }
         if (filename === null) {
             filename = e.target.innerHTML;
         }
+        console.debug(filename);
         if (filename !== tag.title) {
             if (window.y !== undefined) {
                 if (ρσ_in(tag.title, y.share.files.keys())) {
@@ -1599,12 +1598,11 @@ function init() {
                 }
             }
             tag.title = filename;
+            editor.swapDoc((ρσ_expr_temp = window.files)[ρσ_bound_index(tag.title, ρσ_expr_temp)]);
             if (window.y !== undefined) {
                 if (ρσ_in(tag.title, y.share.files.keys())) {
                     y.share.files.get(tag.title).bindCodeMirror(editor);
                 }
-            } else {
-                editor.swapDoc((ρσ_expr_temp = window.files)[ρσ_bound_index(tag.title, ρσ_expr_temp)]);
             }
             editor.focus();
         } else {
@@ -1626,14 +1624,18 @@ function init() {
                         }
                         if (window.fs) !undefined;
                         {
-                            path = location.hash.slice(1);
-                            function file_moved(ev) {
-                            };
-                            if (!file_moved.__argnames__) Object.defineProperties(file_moved, {
-                                __argnames__ : {value: ["ev"]}
-                            });
+                            if (window.server_files !== undefined) {
+                                if (ρσ_in(tag.title, server_files)) {
+                                    path = location.hash.slice(1);
+                                    function file_moved(ev) {
+                                    };
+                                    if (!file_moved.__argnames__) Object.defineProperties(file_moved, {
+                                        __argnames__ : {value: ["ev"]}
+                                    });
 
-                            window.fs.file("/" + path + "/" + tag.title).mv("/" + path + "/" + editbox.value, file_moved);
+                                    window.fs.file("/" + path + "/" + tag.title).mv("/" + path + "/" + editbox.value, file_moved);
+                                }
+                            }
                         }
                         tag.title = editbox.value;
                     }
@@ -1717,6 +1719,7 @@ function init() {
                             __argnames__ : {value: ["ev"]}
                         });
 
+                        console.debug("removing " + filename);
                         window.fs.file("/" + path + "/" + filename).rm(file_removed);
                     }
                 }
@@ -1800,6 +1803,7 @@ function init() {
                 y.share.files.get(tag.title).unbindCodeMirror(editor);
             }
             y.share.files.set(file, Y.Text);
+            y.share.files.get(file).insert(0, "");
             y.share.files.get(file).bindCodeMirror(editor);
         }
         tag.title = file;
@@ -1974,6 +1978,9 @@ function init() {
                 }
             }
             event_bus.trigger("traybutton-open");
+            if (window.innerWidth < 720) {
+                run_fullscreen(false);
+            }
             riot.update();
         }
     };
@@ -2018,7 +2025,13 @@ function init() {
         iframe.addEventListener("load", write_script);
         if (window.y !== undefined) {
             path = location.hash.slice(1);
-            iframe.contentWindow.location = "dav/" + path + "/template.html";
+            if (ρσ_in("template.html", window.files)) {
+                iframe.contentDocument.open();
+                iframe.contentDocument.write(files["template.html"].getValue());
+                iframe.contentDocument.close();
+            } else {
+                iframe.contentWindow.location = "dav/" + path + "/template.html";
+            }
         } else {
             iframe.contentWindow.location = "template.html";
         }
@@ -2100,19 +2113,21 @@ function init() {
             var ρσ_Iter5 = ρσ_Iterable(window.files);
             for (var ρσ_Index5 = 0; ρσ_Index5 < ρσ_Iter5.length; ρσ_Index5++) {
                 item = ρσ_Iter5[ρσ_Index5];
-                if (item === target) {
-                    break;
-                }
-                data = (ρσ_expr_temp = window.files)[(typeof item === "number" && item < 0) ? ρσ_expr_temp.length + item : item].getValue();
-                if (data) {
-                    filepath = "/" + path + "/" + item;
-                    fs.file(filepath).write(data, "text/plain; charset=UTF-8", file_written);
+                if (item !== target) {
+                    data = (ρσ_expr_temp = window.files)[(typeof item === "number" && item < 0) ? ρσ_expr_temp.length + item : item].getValue();
+                    if (data) {
+                        filepath = "/" + path + "/" + item;
+                        console.debug("Wrote: " + filepath);
+                        fs.file(filepath).write(data, "text/plain; charset=UTF-8", file_written);
+                    }
                 }
             }
             data = (ρσ_expr_temp = window.files)[(typeof target === "number" && target < 0) ? ρσ_expr_temp.length + target : target].getValue();
             if (data) {
                 filepath = "/" + path + "/" + target;
-                fs.file(filepath).write(data, "text/plain; charset=UTF-8", file_written);
+                setTimeout(function () {
+                    fs.file(filepath).write(data, "text/plain; charset=UTF-8", file_written);
+                }, 250);
             }
         }
     };
@@ -2226,6 +2241,7 @@ function init() {
             overwrite = ρσ_kwargs_obj.overwrite;
         }
         var new_session;
+        console.debug("Read: " + filename);
         if (window.y !== undefined) {
             if (ρσ_in(tag.title, y.share.files.keys())) {
                 y.share.files.get(tag.title).unbindCodeMirror(editor);
@@ -2237,14 +2253,16 @@ function init() {
             tag.update();
             if (overwrite) {
                 if (ρσ_in(filename, window.files)) {
-                    (ρσ_expr_temp = window.files)[(typeof filename === "number" && filename < 0) ? ρσ_expr_temp.length + filename : filename].setValue(data);
+                    setTimeout(function () {
+                        (ρσ_expr_temp = window.files)[(typeof filename === "number" && filename < 0) ? ρσ_expr_temp.length + filename : filename].setValue(data);
+                    });
                 }
-            }
-            if (window.y !== undefined) {
-                if (!(ρσ_in(filename, y.share.files.keys()))) {
-                    y.share.files.set(filename, Y.Text);
+                if (window.y !== undefined) {
+                    if (!(ρσ_in(filename, y.share.files.keys()))) {
+                        y.share.files.set(filename, Y.Text);
+                    }
+                    y.share.files.get(filename).bindCodeMirror(editor);
                 }
-                y.share.files.get(filename).bindCodeMirror(editor);
             }
             editor.focus();
             return;

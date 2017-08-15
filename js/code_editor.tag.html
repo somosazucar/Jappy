@@ -206,20 +206,18 @@ def init():
             editor.setOption('mode', 'css')
 
     def switchtab(e=None, filename=None):
-        if filename is tag.title:
-            pass # nothing to do
         if filename is None:
-            filename = e.target.innerHTML
+            filename = e.target.innerHTML # tab button
+        console.debug(filename)
         if filename is not tag.title:
             if window.y is not undefined: # collaboration
                 if tag.title in y.share.files.keys():
                     y.share.files.get(tag.title).unbindCodeMirror(editor)
             tag.title = filename
+            editor.swapDoc(window.files[tag.title])
             if window.y is not undefined: # collaboration
                 if tag.title in y.share.files.keys():
                     y.share.files.get(tag.title).bindCodeMirror(editor)
-            else:
-                editor.swapDoc(window.files[tag.title])
             editor.focus()
         else:
             if e is not None:
@@ -237,10 +235,12 @@ def init():
                             y.share.files.get(editbox.value).bindCodeMirror(editor)
                             y.share.files.delete(tag.title)
                         if window.fs not undefined:
-                            path = location.hash.slice(1)
-                            def file_moved(ev):
-                                pass # TODO: Notify user.
-                            window.fs.file('/' + path + '/' + tag.title)\
+                            if window.server_files is not undefined:
+                                if tag.title in server_files:
+                                    path = location.hash.slice(1)
+                                    def file_moved(ev):
+                                        pass # TODO: Notify user.
+                                    window.fs.file('/' + path + '/' + tag.title)\
                                        .mv('/' + path + '/' + editbox.value, file_moved)
                         tag.title = editbox.value
                     e.target.style.display = 'inline-block'
@@ -283,6 +283,7 @@ def init():
                         path = location.hash.slice(1)
                         def file_removed(ev):
                             pass # TODO: Notify user.
+                        console.debug('removing ' + filename)
                         window.fs.file('/' + path + '/' + filename).rm(file_removed)
                 
             index = list(window.files).index(filename)
@@ -330,6 +331,7 @@ def init():
             if tag.title in y.share.files.keys():
                 y.share.files.get(tag.title).unbindCodeMirror(editor)
             y.share.files.set(file, Y.Text)
+            y.share.files.get(file).insert(0, '')
             y.share.files.get(file).bindCodeMirror(editor)
         tag.title = file
         tag.update()
@@ -445,6 +447,8 @@ def init():
                 if event.filename in window.files:
                     switchtab(filename=event.filename)
             event_bus.trigger("traybutton-open")
+            if window.innerWidth < 720:
+                run_fullscreen(False)
             riot.update()
     event_bus.on('run-code-slave', def(ev):
                  trigger_on_next_run( def():
@@ -472,7 +476,12 @@ def init():
         iframe.addEventListener('load', write_script)
         if window.y is not undefined: # collaboration
             path = location.hash.slice(1)
-            iframe.contentWindow.location = 'dav/' + path + '/template.html'
+            if 'template.html' in window.files:
+                iframe.contentDocument.open()
+                iframe.contentDocument.write(files['template.html'].getValue())
+                iframe.contentDocument.close()
+            else:
+                iframe.contentWindow.location = 'dav/' + path + '/template.html'
         else:
             iframe.contentWindow.location = 'template.html'
 
@@ -520,25 +529,28 @@ def init():
 
             def file_written():
                 pass # TODO: Notify user.
+
             path = location.hash.slice(1)
             if 'index.html' in window.files:
                 target = 'index.html'
             else:
                 target = tag.title
             for item in window.files:
-                if item is target: # Will be written last
-                    break
-                data = window.files[item].getValue() 
-                if data:
-                    filepath = '/' + path + '/' + item
-                    fs.file(filepath).write(data, "text/plain; charset=UTF-8",
+                if item is not target: # Will be written last
+                    data = window.files[item].getValue() 
+                    if data:
+                        filepath = '/' + path + '/' + item
+                        console.debug('Wrote: ' + filepath)
+                        fs.file(filepath).write(data, "text/plain; charset=UTF-8",
                                                                 file_written)
             # Target is treated special to be the last to save (Hack!)
             data = window.files[target].getValue() 
             if data:
                 filepath = '/' + path + '/' + target
-                fs.file(filepath).write(data, "text/plain; charset=UTF-8",
-                                                            file_written)
+                setTimeout( def():
+                                fs.file(filepath).write( data, 
+                                        "text/plain; charset=UTF-8", file_written)
+                          , 250)
 
     def save(activity=window.activity):
         if activity is not undefined:
@@ -590,6 +602,7 @@ def init():
     event_bus.on("example-load", example_load)
 
     def new_from_data(data, filename=None, overwrite=False):
+        console.debug('Read: ' + filename)
         if window.y is not undefined: # collaboration
             if tag.title in y.share.files.keys():
                 y.share.files.get(tag.title).unbindCodeMirror(editor)
@@ -599,11 +612,13 @@ def init():
             tag.update()
             if overwrite:
                 if filename in window.files:
-                    window.files[filename].setValue(data)
-            if window.y is not undefined: # collaboration
-                if filename not in y.share.files.keys():
-                    y.share.files.set(filename, Y.Text)
-                y.share.files.get(filename).bindCodeMirror(editor)
+                    setTimeout( def():
+                                    window.files[filename].setValue(data)
+                              )
+                if window.y is not undefined: # collaboration
+                    if filename not in y.share.files.keys():
+                        y.share.files.set(filename, Y.Text)
+                    y.share.files.get(filename).bindCodeMirror(editor)
             editor.focus()
             return
         if filename is None:

@@ -123,6 +123,9 @@ def start_server():
     })
     dav_app = WsgiDAVApp(config)
     cors_dav_app = CORS(dav_app, headers="*", methods="*", maxage="180", origin="*")
+    # CORS middleware doesn't like exc_info
+    app.wsgi_app.start_response = lambda status, headers, exc_info  : \
+         app.wsgidav_app.start_response( status, headers )
     filtered_dav_app = DAVFilterMiddleWare(cors_dav_app)
     app.wsgi_app = DispatcherMiddleware(app.wsgi_app, {
         '/dav' : filtered_dav_app
@@ -131,9 +134,6 @@ def start_server():
             mime_types = [ 'application/javascript', 'application/x-rapyd',
                            'application/xml','image/svg+xml', 'text/*' ]
                 )
-    # GzipMiddleware doesn't like exc_info
-    app.wsgi_app.start_response = lambda status, headers, exc_info  : \
-         app.wsgidav_app.start_response( status, headers )
     socketio.run(app, host='0.0.0.0', port=54991)
 
 class EventHandler(pyinotify.ProcessEvent):
@@ -163,7 +163,8 @@ class EventHandler(pyinotify.ProcessEvent):
         socketio.emit('jappyEvent', { 'event': 'file-rename',
                                          'data': {
                                             'filename':event.name,
-                                            'src_file':event.src_pathname }
+        # 'src_file':event.src_pathname # isn't always defined
+                                            }
                                          },
                                       room=room, broadcast=True)
 
