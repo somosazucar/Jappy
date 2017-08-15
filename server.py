@@ -124,16 +124,14 @@ def start_server():
     dav_app = WsgiDAVApp(config)
     cors_dav_app = CORS(dav_app, headers="*", methods="*", maxage="180", origin="*")
     # CORS middleware doesn't like exc_info
-    app.wsgi_app.start_response = lambda status, headers, exc_info  : \
-         app.wsgidav_app.start_response( status, headers )
     filtered_dav_app = DAVFilterMiddleWare(cors_dav_app)
-    app.wsgi_app = DispatcherMiddleware(app.wsgi_app, {
-        '/dav' : filtered_dav_app
-    })
-    app.wsgi_app = GzipMiddleware(app.wsgi_app, 
+    filtered_dav_app = GzipMiddleware(filtered_dav_app, 
             mime_types = [ 'application/javascript', 'application/x-rapyd',
                            'application/xml','image/svg+xml', 'text/*' ]
                 )
+    app.wsgi_app = DispatcherMiddleware(app.wsgi_app, {
+        '/dav' : filtered_dav_app
+    })
     socketio.run(app, host='0.0.0.0', port=54991)
 
 class EventHandler(pyinotify.ProcessEvent):
