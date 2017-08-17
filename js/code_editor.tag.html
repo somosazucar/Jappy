@@ -118,6 +118,43 @@ window.files = {}
 #loadCSS(['lib/cm/theme/solarized.css',
 #         'lib/cm/addon/scroll/simplescrollbars.css', 'css/activity.css'])
 
+class CollaborationBinding:
+    '''
+    This class is for abstracting away yjs<->codemirror binding.
+    '''
+    def __init__(self):
+        self.currentDoc = None
+
+    def bind(self, filename):
+        console.debug('binding: ' + filename)
+        if filename is self.currentDoc:
+            console.debug('warning: already bound to ' + self.currentDoc)
+        elif self.currentDoc is None:
+            y.share.files.get(filename).bindCodeMirror(editor)
+            self.currentDoc = filename
+        else:
+            console.debug('warning: already bound to ' + self.currentDoc)
+            self.unbind()
+            y.share.files.get(filename).bindCodeMirror(editor)
+            self.currentDoc = filename
+
+    def unbind(self):
+        console.debug('unbinding: ' + self.currentDoc)
+        if self.currentDoc is None:
+            console.debug('warning: not unbinding, not bound!')
+        else:
+            y.share.files.get(filename).unbindCodeMirror(editor)
+            self.currentDoc = filename
+
+    def unbindAll(self):
+        console.debug('unbinding everywhere: ' + self.currentDoc)
+        if self.currentDoc is None:
+            console.debug('warning: not unbinding, not bound!')
+        else:
+            y.share.files.get(filename).unbindCodeMirrorAll()
+            self.currentDoc = filename
+        
+
 def init():
     editor = CodeMirror.fromTextArea(this.refs.code,
                     { 'lineNumbers': True,

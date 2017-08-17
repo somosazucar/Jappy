@@ -1452,6 +1452,71 @@ var re = ρσ_modules.re;
 tag = this;
 this.marker = null;
 window.files = {};
+function CollaborationBinding() {
+    if (this.ρσ_object_id === undefined) Object.defineProperty(this, "ρσ_object_id", {"value":++ρσ_object_counter});
+    CollaborationBinding.prototype.__init__.apply(this, arguments);
+}
+CollaborationBinding.prototype.__init__ = function __init__() {
+    var self = this;
+    self.currentDoc = null;
+};
+if (!CollaborationBinding.prototype.__init__.__argnames__) Object.defineProperties(CollaborationBinding.prototype.__init__, {
+    __argnames__ : {value: []}
+});
+CollaborationBinding.__argnames__ = CollaborationBinding.prototype.__init__.__argnames__;
+CollaborationBinding.__handles_kwarg_interpolation__ = CollaborationBinding.prototype.__init__.__handles_kwarg_interpolation__;
+CollaborationBinding.prototype.bind = function bind(filename) {
+    var self = this;
+    console.debug("binding: " + filename);
+    if (filename === self.currentDoc) {
+        console.debug("warning: already bound to " + self.currentDoc);
+    } else if (self.currentDoc === null) {
+        y.share.files.get(filename).bindCodeMirror(editor);
+        self.currentDoc = filename;
+    } else {
+        console.debug("warning: already bound to " + self.currentDoc);
+        self.unbind();
+        y.share.files.get(filename).bindCodeMirror(editor);
+        self.currentDoc = filename;
+    }
+};
+if (!CollaborationBinding.prototype.bind.__argnames__) Object.defineProperties(CollaborationBinding.prototype.bind, {
+    __argnames__ : {value: ["filename"]}
+});
+CollaborationBinding.prototype.unbind = function unbind() {
+    var self = this;
+    console.debug("unbinding: " + self.currentDoc);
+    if (self.currentDoc === null) {
+        console.debug("warning: not unbinding, not bound!");
+    } else {
+        y.share.files.get(filename).unbindCodeMirror(editor);
+        self.currentDoc = filename;
+    }
+};
+if (!CollaborationBinding.prototype.unbind.__argnames__) Object.defineProperties(CollaborationBinding.prototype.unbind, {
+    __argnames__ : {value: []}
+});
+CollaborationBinding.prototype.unbindAll = function unbindAll() {
+    var self = this;
+    console.debug("unbinding everywhere: " + self.currentDoc);
+    if (self.currentDoc === null) {
+        console.debug("warning: not unbinding, not bound!");
+    } else {
+        y.share.files.get(filename).unbindCodeMirrorAll();
+        self.currentDoc = filename;
+    }
+};
+if (!CollaborationBinding.prototype.unbindAll.__argnames__) Object.defineProperties(CollaborationBinding.prototype.unbindAll, {
+    __argnames__ : {value: []}
+});
+CollaborationBinding.prototype.__repr__ = function __repr__ () {
+        return "<" + __name__ + "." + this.constructor.name + " #" + this.ρσ_object_id + ">";
+};
+CollaborationBinding.prototype.__str__ = function __str__ () {
+    return this.__repr__();
+};
+Object.defineProperty(CollaborationBinding.prototype, "__bases__", {value: []});
+
 function init() {
     var editor, iframe;
     editor = CodeMirror.fromTextArea(this.refs.code, (function(){
