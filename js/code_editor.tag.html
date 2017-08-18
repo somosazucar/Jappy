@@ -126,34 +126,61 @@ class CollaborationBinding:
         self.currentDoc = None
 
     def bind(self, filename):
+        if window.y is undefined: # collaboration
+            return # No collaboration available
+        if filename not in y.share.files.keys():
+            console.debug('creating: ' + filename)
+            y.share.files.set(filename, Y.Text)
+            y.share.files.get(filename).insert(0, '')
         console.debug('binding: ' + filename)
         if filename is self.currentDoc:
             console.debug('warning: already bound to ' + self.currentDoc)
         elif self.currentDoc is None:
+            if filename not in y.share.files.keys():
+                y.share.files.set(filename, Y.Text)
+                y.share.files.get(filename).insert(0, editor.getValue())
             y.share.files.get(filename).bindCodeMirror(editor)
             self.currentDoc = filename
         else:
-            console.debug('warning: already bound to ' + self.currentDoc)
+            console.debug('warning: possibly already bound to ' + self.currentDoc)
             self.unbind()
             y.share.files.get(filename).bindCodeMirror(editor)
             self.currentDoc = filename
 
     def unbind(self):
+        if window.y is undefined: # collaboration
+            return # No collaboration available
         console.debug('unbinding: ' + self.currentDoc)
         if self.currentDoc is None:
             console.debug('warning: not unbinding, not bound!')
         else:
-            y.share.files.get(filename).unbindCodeMirror(editor)
-            self.currentDoc = filename
+            if self.currentDoc in y.share.files.keys():
+                y.share.files.get(self.currentDoc).unbindCodeMirror(editor)
+            self.currentDoc = None
 
     def unbindAll(self):
+        if window.y is undefined: # collaboration
+            return # No collaboration available
         console.debug('unbinding everywhere: ' + self.currentDoc)
         if self.currentDoc is None:
             console.debug('warning: not unbinding, not bound!')
         else:
-            y.share.files.get(filename).unbindCodeMirrorAll()
-            self.currentDoc = filename
+            y.share.files.get(self.currentDoc).unbindCodeMirrorAll()
+            self.currentDoc = None
         
+    def deleteDoc(self):
+        if window.y is undefined: # collaboration
+            return # No collaboration available
+        y.share.files.get(self.currentDoc).unbindCodeMirrorAll()
+        y.share.files.delete(self.currentDoc)
+
+    def create(self, filename, data=''):
+        if window.y is undefined: # collaboration
+            return # No collaboration available
+        if filename not in y.share.files.keys():
+            y.share.files.set(filename, Y.Text)
+            y.share.files.get(filename).insert(0, data)
+
 
 def init():
     editor = CodeMirror.fromTextArea(this.refs.code,
@@ -178,6 +205,7 @@ def init():
                     editor.execCommand('insertSoftTab')
     })
 
+    collab = CollaborationBinding()
     iframe = this.refs.vmframe
 
     def load_datastore(activity):
@@ -193,6 +221,7 @@ def init():
             if len(window.files) > 0:
                 tag.title = list(parsed_data)[0]
                 if window.files[tag.title]!=undefined:
+                    collab.unbind()
                     editor.swapDoc(window.files[tag.title])
             tag.update()
         if datastore.objectId is not undefined:
@@ -228,6 +257,7 @@ def init():
                     y.share.files.set(tag.title, Y.Text)
         window.document.title = tag.title
         guess_mode()
+        collab.bind(tag.title)
     this.on('update', update_tabs)
     window.addEventListener("resize", update_tabs)
     window.addEventListener("orientationchange", update_tabs)
@@ -243,19 +273,13 @@ def init():
             editor.setOption('mode', 'css')
 
     def switchtab(e=None, filename=None):
+        console.debug('switchtab: ' + filename)
         if filename is None:
             filename = e.target.innerHTML # tab button
         if filename is not tag.title:
-            if window.y is not undefined: # collaboration
-                if tag.title in y.share.files.keys():
-                    console.debug('unbinding: ' + tag.title)
-                    y.share.files.get(tag.title).unbindCodeMirror(editor)
             tag.title = filename
+            collab.unbind()
             editor.swapDoc(window.files[tag.title])
-            if window.y is not undefined: # collaboration
-                if tag.title in y.share.files.keys():
-                    console.debug('binding ' + tag.title)
-                    y.share.files.get(tag.title).bindCodeMirror(editor)
             editor.focus()
         else:
             if e is not None:
@@ -266,14 +290,6 @@ def init():
                     if editbox.value not in window.files:
                         window.files[editbox.value] = editor.getDoc()
                         del window.files[tag.title]
-                        if window.y is not undefined: # collaboration
-                            console.debug('unbinding: ' + tag.title)
-                            y.share.files.get(tag.title).unbindCodeMirrorAll()
-                            y.share.files.set(editbox.value, Y.Text)
-                            y.share.files.get(editbox.value).insert(0, editor.getValue())
-                            console.debug('binding ' + editbox.value)
-                            y.share.files.get(editbox.value).bindCodeMirror(editor)
-                            y.share.files.delete(tag.title)
                         if window.fs not undefined:
                             if window.server_files is not undefined:
                                 path = location.hash.slice(1)
@@ -305,14 +321,12 @@ def init():
 
     def close_all():
         window.files = []
-        if window.y is not undefined: # collaboration
-            if tag.title in y.share.files.keys():
-                console.debug('unbinding: ' + tag.title)
-                y.share.files.get(tag.title).unbindCodeMirror(editor)
         new_session = CodeMirror.Doc('')
+        collab.unbind()
         editor.swapDoc(new_session)
 
     def closetab(e=None, filename=None):
+        console.debug('closetab: ' + filename)
         if len(window.files) > 1:
             active_title = tag.title
             if filename is None:
@@ -329,16 +343,8 @@ def init():
                 
             index = list(window.files).index(filename)
             del window.files[filename]
-            if window.y is not undefined: # collaboration
-                if e is not None:
-                    if filename in y.share.files.keys():
-                        console.debug('unbinding: ' + filename)
-                        y.share.files.get(filename).unbindCodeMirrorAll()
-                        y.share.files.delete(filename)
-                else:
-                    if filename in y.share.files.keys():
-                        console.debug('unbinding: ' + filename)
-                        y.share.files.get(filename).unbindCodeMirrorAll()
+            if e is None:
+                collab.deleteDoc()
             if filename == active_title:
                 if index > 0:
                     index = index - 1
@@ -346,14 +352,8 @@ def init():
             if '__stdlib__/' + filename in RapydScript.file_data:
                 del RapydScript.file_data['__stdlib__/' + filename]
             if tag.title is not active_title:
+                collab.unbind()
                 editor.swapDoc(window.files[tag.title])
-            if window.y is not undefined: # collaboration
-                if filename == active_title:
-                    if tag.title in y.share.files.keys():
-                        setTimeout(def():
-                                console.debug('binding ' + tag.title)
-                                y.share.files.get(tag.title).bindCodeMirror(editor)
-                            )
             tag.update()
             editor.focus()
     tag.closetab = closetab
@@ -371,16 +371,9 @@ def init():
         file = get_new_untitled()
         new_session = CodeMirror.Doc('')
         window.files[file] = new_session
+        collab.unbind()
         editor.swapDoc(new_session)
         editor.focus()
-        if window.y is not undefined: # collaboration
-            if tag.title in y.share.files.keys():
-                console.debug('unbinding: ' + tag.title)
-                y.share.files.get(tag.title).unbindCodeMirror(editor)
-            y.share.files.set(file, Y.Text)
-            y.share.files.get(file).insert(0, '')
-            console.debug('binding ' + file)
-            y.share.files.get(file).bindCodeMirror(editor)
         tag.title = file
         tag.update()
     tag.newtab = newtab
@@ -489,11 +482,12 @@ def init():
             path = location.hash.slice(1)
             rel_url = 'dav/' + path + '/.index.html'
             iframe.contentWindow.location = rel_url
-            if 'index.html' in window.files:
-                switchtab(filename='index.html')
-            else:
-                if event.filename in window.files:
-                    switchtab(filename=event.filename)
+            if event.filename is not tag.title:
+                if 'index.html' in window.files:
+                    switchtab(filename='index.html')
+                else:
+                    if event.filename in window.files:
+                        switchtab(filename=event.filename)
             event_bus.trigger("traybutton-open")
             if window.innerWidth < 720:
                 run_fullscreen(False)
@@ -618,6 +612,7 @@ def init():
     def example_load(file, execute=True):
         if file in window.files:
             tag.title = file
+            collab.unbind()
             editor.swapDoc(window.files[file])
             tag.update()
             editor.focus()
@@ -632,14 +627,9 @@ def init():
         require(['text!examples/' + file], def(data):
             new_session = CodeMirror.Doc(data)
             files[file] = new_session
+            collab.unbind()
+            collab.create(file, data or '')
             editor.swapDoc(new_session)
-            if window.y is not undefined: # collaboration
-                console.debug('unbinding: ' + tag.title)
-                y.share.files.get(tag.title).unbindCodeMirror(editor)
-                y.share.files.set(file, Y.Text)
-                y.share.files.get(file).insert(0, data)
-                console.debug('binding ' + file)
-                y.share.files.get(file).bindCodeMirror(editor)
             tag.title = file
             tag.update()
             editor.focus()
@@ -653,37 +643,23 @@ def init():
 
     def new_from_data(data, filename=None, overwrite=False):
         console.debug('Read: ' + filename)
-        if window.y is not undefined: # collaboration
-            if tag.title in y.share.files.keys():
-                console.debug('unbinding: ' + tag.title)
-                y.share.files.get(tag.title).unbindCodeMirror(editor)
         if filename in window.files:
             tag.title = filename
+            collab.unbind()
             editor.swapDoc(window.files[filename])
-            tag.update()
             if overwrite:
                 if filename in window.files:
-                    setTimeout( def():
-                                    window.files[filename].setValue(data)
-                              )
-                if window.y is not undefined: # collaboration
-                    if filename not in y.share.files.keys():
-                        y.share.files.set(filename, Y.Text)
-                    console.debug('binding ' + filename)
-                    y.share.files.get(filename).bindCodeMirror(editor)
+                    window.files[filename].setValue(data)
+            tag.update()
             editor.focus()
             return
         if filename is None:
             filename = get_new_untitled()
         new_session = CodeMirror.Doc(data or '')
-        files[filename] = new_session
+        window.files[filename] = new_session
+        collab.unbind()
+        collab.create(filename, data or '')
         editor.swapDoc(new_session)
-        if window.y is not undefined: # collaboration
-            if filename not in y.share.files.keys():
-                y.share.files.set(filename, Y.Text)
-                y.share.files.get(filename).insert(0, data or '')
-            console.debug('binding ' + filename)
-            y.share.files.get(filename).bindCodeMirror(editor)
         tag.title = filename
         tag.update()
         editor.focus()
@@ -872,6 +848,8 @@ def init():
                         tag.title = list(y.share.files.keys())[0]
                     y.share.files.observe(  def(event): 
                                 if event.type == 'delete':
+                                    if event.name in y.share.files.keys():
+                                        collab.unbind()
                                     if event.name in window.files:
                                         closetab(e=None, filename=event.name)
                                 elif event.type == 'add':
@@ -889,8 +867,6 @@ def init():
                                                 tag.update()
                                             else:
                                                 tag.update()
-                                                console.debug('binding ' + tag.title)
-                                                y.share.files.get(tag.title).bindCodeMirror(editor)
                                 )
                     y.connector.socket.on('jappyEvent', def(msg):
                             if msg:

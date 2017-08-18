@@ -423,6 +423,9 @@ function load_file() {
         overwrite = ρσ_kwargs_obj.overwrite;
     }
     var path, target_file;
+    if (window.fs === undefined) {
+        window.fs = new WebDAV.Fs(address);
+    }
     tag.workspace_palette.popDown();
     path = location.hash.slice(1);
     target_file = (ρσ_expr_temp = url.split("/"))[ρσ_expr_temp.length-1];
