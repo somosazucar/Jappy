@@ -118,8 +118,8 @@ def filter_latest(files):
                 return result
             elif prev is undefined:
                 return result.concat(item)
-            elif Math.abs(item.mtime.getTime() - prev.mtime.getTime()) < 5000:
-                # Files written within 5 seconds of last are considered to be "one session"
+            elif Math.abs(item.mtime.getTime() - prev.mtime.getTime()) < 500:
+                # Files written within 0,5 seconds of last are "one session"
                 return result.concat(item)
             else:
                 ''' We filter out those that don't have the same mtime
@@ -225,6 +225,8 @@ def update_workspace_menu():
                     event_bus.trigger('url-open', url)
             else:
                 span.classList.add('document')
+            span.onclick = def():
+                item.click()
             item.setAttribute('data-uri', file.name)
             text = document.createTextNode(str(file.name))
             item.appendChild(span)

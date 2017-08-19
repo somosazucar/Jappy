@@ -343,7 +343,7 @@ function filter_latest(files) {
                 return result;
             } else if (prev === undefined) {
                 return result.concat(item);
-            } else if (Math.abs(item.mtime.getTime() - prev.mtime.getTime()) < 5e3) {
+            } else if (Math.abs(item.mtime.getTime() - prev.mtime.getTime()) < 500) {
                 return result.concat(item);
             } else {
                 " We filter out those that don't have the same mtime\n                as the first entry.";
@@ -526,6 +526,9 @@ function update_workspace_menu() {
             } else {
                 span.classList.add("document");
             }
+            span.onclick = function () {
+                item.click();
+            };
             item.setAttribute("data-uri", file.name);
             text = document.createTextNode(str(file.name));
             item.appendChild(span);

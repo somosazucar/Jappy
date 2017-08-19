@@ -143,7 +143,6 @@ class CollaborationBinding:
             self.currentDoc = filename
         else:
             console.debug('warning: possibly already bound to ' + self.currentDoc)
-            self.unbind()
             y.share.files.get(filename).bindCodeMirror(editor)
             self.currentDoc = filename
 
@@ -162,17 +161,16 @@ class CollaborationBinding:
         if window.y is undefined: # collaboration
             return # No collaboration available
         console.debug('unbinding everywhere: ' + self.currentDoc)
-        if self.currentDoc is None:
-            console.debug('warning: not unbinding, not bound!')
-        else:
-            y.share.files.get(self.currentDoc).unbindCodeMirrorAll()
-            self.currentDoc = None
+        y.share.files.get(self.currentDoc).unbindCodeMirrorAll()
         
     def deleteDoc(self):
         if window.y is undefined: # collaboration
             return # No collaboration available
-        y.share.files.get(self.currentDoc).unbindCodeMirrorAll()
-        y.share.files.delete(self.currentDoc)
+        console.debug('removing: ' + self.currentDoc)
+        toDelete = self.currentDoc
+        self.unbindAll()
+        self.unbind()
+        y.share.files.delete(toDelete)
 
     def create(self, filename, data=''):
         if window.y is undefined: # collaboration
@@ -180,6 +178,11 @@ class CollaborationBinding:
         if filename not in y.share.files.keys():
             y.share.files.set(filename, Y.Text)
             y.share.files.get(filename).insert(0, data)
+
+    def clear(self, ytext):
+        if window.y is undefined: # collaboration
+            return # No collaboration available
+        ytext.unbindCodeMirror(editor)
 
 
 def init():
@@ -255,9 +258,9 @@ def init():
             window.files = {tag.title: editor.getDoc()}
             if window.y is not undefined: # collaboration
                     y.share.files.set(tag.title, Y.Text)
+                    y.share.files.get(tag.title).insert(0, '')
         window.document.title = tag.title
         guess_mode()
-        collab.bind(tag.title)
     this.on('update', update_tabs)
     window.addEventListener("resize", update_tabs)
     window.addEventListener("orientationchange", update_tabs)
@@ -276,10 +279,14 @@ def init():
         console.debug('switchtab: ' + filename)
         if filename is None:
             filename = e.target.innerHTML # tab button
+        if filename is tag.title:
+            return # nothing to do
         if filename is not tag.title:
             tag.title = filename
             collab.unbind()
             editor.swapDoc(window.files[tag.title])
+            tag.update()
+            collab.bind(tag.title)
             editor.focus()
         else:
             if e is not None:
@@ -316,7 +323,6 @@ def init():
                     editbox.setSelectionRange(0, tag.title.indexOf('.'))
                 else:
                     editbox.select()
-        tag.update()
     tag.switchtab = switchtab
 
     def close_all():
@@ -340,21 +346,21 @@ def init():
                             pass # TODO: Notify user.
                         console.debug('removing ' + filename)
                         window.fs.file('/' + path + '/' + filename).rm(file_removed)
-                
             index = list(window.files).index(filename)
             del window.files[filename]
-            if e is None:
-                collab.deleteDoc()
             if filename == active_title:
                 if index > 0:
                     index = index - 1
                 tag.title = list(window.files)[index]
             if '__stdlib__/' + filename in RapydScript.file_data:
                 del RapydScript.file_data['__stdlib__/' + filename]
-            if tag.title is not active_title:
+            if e is not None: # called from a ui event
+                collab.deleteDoc()
+            else:
                 collab.unbind()
-                editor.swapDoc(window.files[tag.title])
+            editor.swapDoc(window.files[tag.title])
             tag.update()
+            collab.bind(tag.title)
             editor.focus()
     tag.closetab = closetab
 
@@ -373,9 +379,10 @@ def init():
         window.files[file] = new_session
         collab.unbind()
         editor.swapDoc(new_session)
-        editor.focus()
         tag.title = file
         tag.update()
+        collab.bind(tag.title)
+        editor.focus()
     tag.newtab = newtab
 
     def toggle_tray():
@@ -615,6 +622,7 @@ def init():
             collab.unbind()
             editor.swapDoc(window.files[file])
             tag.update()
+            collab.bind(tag.title)
             editor.focus()
             if execute:
                 if window.innerWidth > 720:
@@ -632,6 +640,7 @@ def init():
             editor.swapDoc(new_session)
             tag.title = file
             tag.update()
+            collab.bind(tag.title)
             editor.focus()
             if execute:
                 if window.innerWidth > 720:
@@ -651,6 +660,7 @@ def init():
                 if filename in window.files:
                     window.files[filename].setValue(data)
             tag.update()
+            collab.bind(tag.title)
             editor.focus()
             return
         if filename is None:
@@ -662,6 +672,7 @@ def init():
         editor.swapDoc(new_session)
         tag.title = filename
         tag.update()
+        collab.bind(tag.title)
         editor.focus()
     event_bus.on("new-from-data", new_from_data)
 
@@ -845,11 +856,11 @@ def init():
                             new_session = CodeMirror.Doc(text)
                             window.files[filename] = new_session
                     if tag.title not in y.share.files.keys():
-                        tag.title = list(y.share.files.keys())[0]
+                        tag.title = list(window.files)[-1]
                     y.share.files.observe(  def(event): 
                                 if event.type == 'delete':
-                                    if event.name in y.share.files.keys():
-                                        collab.unbind()
+                                    if event.name is tag.title:
+                                        collab.clear(event.oldValue)
                                     if event.name in window.files:
                                         closetab(e=None, filename=event.name)
                                 elif event.type == 'add':
@@ -867,6 +878,7 @@ def init():
                                                 tag.update()
                                             else:
                                                 tag.update()
+                                            collab.bind(tag.title)
                                 )
                     y.connector.socket.on('jappyEvent', def(msg):
                             if msg:

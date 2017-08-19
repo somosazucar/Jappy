@@ -1487,7 +1487,6 @@ CollaborationBinding.prototype.bind = function bind(filename) {
         self.currentDoc = filename;
     } else {
         console.debug("warning: possibly already bound to " + self.currentDoc);
-        self.unbind();
         y.share.files.get(filename).bindCodeMirror(editor);
         self.currentDoc = filename;
     }
@@ -1519,23 +1518,22 @@ CollaborationBinding.prototype.unbindAll = function unbindAll() {
         return;
     }
     console.debug("unbinding everywhere: " + self.currentDoc);
-    if (self.currentDoc === null) {
-        console.debug("warning: not unbinding, not bound!");
-    } else {
-        y.share.files.get(self.currentDoc).unbindCodeMirrorAll();
-        self.currentDoc = null;
-    }
+    y.share.files.get(self.currentDoc).unbindCodeMirrorAll();
 };
 if (!CollaborationBinding.prototype.unbindAll.__argnames__) Object.defineProperties(CollaborationBinding.prototype.unbindAll, {
     __argnames__ : {value: []}
 });
 CollaborationBinding.prototype.deleteDoc = function deleteDoc() {
     var self = this;
+    var toDelete;
     if (window.y === undefined) {
         return;
     }
-    y.share.files.get(self.currentDoc).unbindCodeMirrorAll();
-    y.share.files.delete(self.currentDoc);
+    console.debug("removing: " + self.currentDoc);
+    toDelete = self.currentDoc;
+    self.unbindAll();
+    self.unbind();
+    y.share.files.delete(toDelete);
 };
 if (!CollaborationBinding.prototype.deleteDoc.__argnames__) Object.defineProperties(CollaborationBinding.prototype.deleteDoc, {
     __argnames__ : {value: []}
@@ -1561,6 +1559,16 @@ if (!CollaborationBinding.prototype.create.__defaults__) Object.defineProperties
     __defaults__ : {value: {data:""}},
     __handles_kwarg_interpolation__ : {value: true},
     __argnames__ : {value: ["filename", "data"]}
+});
+CollaborationBinding.prototype.clear = function clear(ytext) {
+    var self = this;
+    if (window.y === undefined) {
+        return;
+    }
+    ytext.unbindCodeMirror(editor);
+};
+if (!CollaborationBinding.prototype.clear.__argnames__) Object.defineProperties(CollaborationBinding.prototype.clear, {
+    __argnames__ : {value: ["ytext"]}
 });
 CollaborationBinding.prototype.__repr__ = function __repr__ () {
         return "<" + __name__ + "." + this.constructor.name + " #" + this.ρσ_object_id + ">";
@@ -1674,11 +1682,11 @@ function init() {
             }).call(this);
             if (window.y !== undefined) {
                 y.share.files.set(tag.title, Y.Text);
+                y.share.files.get(tag.title).insert(0, "");
             }
         }
         window.document.title = tag.title;
         guess_mode();
-        collab.bind(tag.title);
     };
 
     this.on("update", update_tabs);
@@ -1712,10 +1720,15 @@ function init() {
         if (filename === null) {
             filename = e.target.innerHTML;
         }
+        if (filename === tag.title) {
+            return;
+        }
         if (filename !== tag.title) {
             tag.title = filename;
             collab.unbind();
             editor.swapDoc((ρσ_expr_temp = window.files)[ρσ_bound_index(tag.title, ρσ_expr_temp)]);
+            tag.update();
+            collab.bind(tag.title);
             editor.focus();
         } else {
             if (e !== null) {
@@ -1774,7 +1787,6 @@ function init() {
                 }
             }
         }
-        tag.update();
     };
     if (!switchtab.__defaults__) Object.defineProperties(switchtab, {
         __defaults__ : {value: {e:null, filename:null}},
@@ -1827,9 +1839,6 @@ function init() {
             }
             index = list(window.files).index(filename);
             ρσ_delitem(window.files, filename);
-            if (e === null) {
-                collab.deleteDoc();
-            }
             if ((filename === active_title || typeof filename === "object" && ρσ_equals(filename, active_title))) {
                 if (index > 0) {
                     index = index - 1;
@@ -1839,11 +1848,14 @@ function init() {
             if (ρσ_in("__stdlib__/" + filename, RapydScript.file_data)) {
                 ρσ_delitem(RapydScript.file_data, ("__stdlib__/" + filename));
             }
-            if (tag.title !== active_title) {
+            if (e !== null) {
+                collab.deleteDoc();
+            } else {
                 collab.unbind();
-                editor.swapDoc((ρσ_expr_temp = window.files)[ρσ_bound_index(tag.title, ρσ_expr_temp)]);
             }
+            editor.swapDoc((ρσ_expr_temp = window.files)[ρσ_bound_index(tag.title, ρσ_expr_temp)]);
             tag.update();
+            collab.bind(tag.title);
             editor.focus();
         }
     };
@@ -1884,9 +1896,10 @@ function init() {
         (ρσ_expr_temp = window.files)[(typeof file === "number" && file < 0) ? ρσ_expr_temp.length + file : file] = new_session;
         collab.unbind();
         editor.swapDoc(new_session);
-        editor.focus();
         tag.title = file;
         tag.update();
+        collab.bind(tag.title);
+        editor.focus();
     };
     if (!newtab.__argnames__) Object.defineProperties(newtab, {
         __argnames__ : {value: ["e"]}
@@ -2263,6 +2276,7 @@ function init() {
             collab.unbind();
             editor.swapDoc((ρσ_expr_temp = window.files)[(typeof file === "number" && file < 0) ? ρσ_expr_temp.length + file : file]);
             tag.update();
+            collab.bind(tag.title);
             editor.focus();
             if (execute) {
                 if (window.innerWidth > 720) {
@@ -2284,6 +2298,7 @@ function init() {
                 editor.swapDoc(new_session);
                 tag.title = file;
                 tag.update();
+                collab.bind(tag.title);
                 editor.focus();
                 if (execute) {
                     if (window.innerWidth > 720) {
@@ -2330,6 +2345,7 @@ function init() {
                 }
             }
             tag.update();
+            collab.bind(tag.title);
             editor.focus();
             return;
         }
@@ -2343,6 +2359,7 @@ function init() {
         editor.swapDoc(new_session);
         tag.title = filename;
         tag.update();
+        collab.bind(tag.title);
         editor.focus();
     };
     if (!new_from_data.__defaults__) Object.defineProperties(new_from_data, {
@@ -2645,14 +2662,14 @@ function init() {
                     }
                 }
                 if (!(ρσ_in(tag.title, y.share.files.keys()))) {
-                    tag.title = list(y.share.files.keys())[0];
+                    tag.title = (ρσ_expr_temp = list(window.files))[ρσ_expr_temp.length-1];
                 }
                 y.share.files.observe((function() {
                     var ρσ_anonfunc = function (event) {
                         var text, new_session;
                         if ((event.type === "delete" || typeof event.type === "object" && ρσ_equals(event.type, "delete"))) {
-                            if (ρσ_in(event.name, y.share.files.keys())) {
-                                collab.unbind();
+                            if (event.name === tag.title) {
+                                collab.clear(event.oldValue);
                             }
                             if (ρσ_in(event.name, window.files)) {
                                 ρσ_interpolate_kwargs.call(this, closetab, [ρσ_desugar_kwargs({e: null, filename: event.name})]);
@@ -2680,6 +2697,7 @@ function init() {
                     } else {
                         tag.update();
                     }
+                    collab.bind(tag.title);
                 });
                 y.connector.socket.on("jappyEvent", (function() {
                     var ρσ_anonfunc = function (msg) {
