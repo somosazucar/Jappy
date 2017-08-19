@@ -279,8 +279,6 @@ def init():
         console.debug('switchtab: ' + filename)
         if filename is None:
             filename = e.target.innerHTML # tab button
-        if filename is tag.title:
-            return # nothing to do
         if filename is not tag.title:
             tag.title = filename
             collab.unbind()
@@ -297,6 +295,10 @@ def init():
                     if editbox.value not in window.files:
                         window.files[editbox.value] = editor.getDoc()
                         del window.files[tag.title]
+                        collab.unbindAll()
+                        collab.deleteDoc()
+                        collab.create(editbox.value, editor.getValue())
+                        collab.bind(editbox.value)
                         if window.fs not undefined:
                             if window.server_files is not undefined:
                                 path = location.hash.slice(1)

@@ -1720,9 +1720,6 @@ function init() {
         if (filename === null) {
             filename = e.target.innerHTML;
         }
-        if (filename === tag.title) {
-            return;
-        }
         if (filename !== tag.title) {
             tag.title = filename;
             collab.unbind();
@@ -1740,6 +1737,10 @@ function init() {
                     if (!(ρσ_in(editbox.value, window.files))) {
                         (ρσ_expr_temp = window.files)[ρσ_bound_index(editbox.value, ρσ_expr_temp)] = editor.getDoc();
                         ρσ_delitem(window.files, tag.title);
+                        collab.unbindAll();
+                        collab.deleteDoc();
+                        collab.create(editbox.value, editor.getValue());
+                        collab.bind(editbox.value);
                         if (window.fs) !undefined;
                         {
                             if (window.server_files !== undefined) {
