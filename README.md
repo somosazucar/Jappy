@@ -1,3 +1,4 @@
+
 Jappy.activity
 ==============
 
@@ -31,6 +32,8 @@ You may also try our experimental standalone app:
 ```
 python webview.py
 ```
+
+This version is run with a WebKitGTK browser and only been tested on GNU/Linux.
 
 ## References
 
