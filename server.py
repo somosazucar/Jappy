@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 from flask import Flask
 from flask_socketio import SocketIO, emit, join_room, leave_room
-from flask import request, send_from_directory
+from flask import request, send_from_directory, jsonify
 from wsgidav.wsgidav_app import DEFAULT_CONFIG, WsgiDAVApp
 from wsgidav.fs_dav_provider import FilesystemProvider
 from werkzeug.wsgi import DispatcherMiddleware
@@ -15,6 +15,14 @@ import sys
 import mimetypes
 import pyinotify
 import signal
+import subprocess
+
+try:
+    from flask_hookserver import Hooks
+    hooks = Hooks(url='/hooks')
+except ImportError:
+    hooks = None
+
 signal.signal(signal.SIGINT, signal.SIG_DFL)
 mimetypes.add_type('image/svg+xml', '.svg')
 mimetypes.add_type('application/x-font-woff', '.woff')
@@ -132,6 +140,8 @@ def start_server():
     app.wsgi_app = DispatcherMiddleware(app.wsgi_app, {
         '/dav' : filtered_dav_app
     })
+    if hooks:
+        register_hooks(app)
     socketio.run(app, host='0.0.0.0', port=54991)
 
 class EventHandler(pyinotify.ProcessEvent):
@@ -165,6 +175,26 @@ class EventHandler(pyinotify.ProcessEvent):
                                             }
                                          },
                                       room=room, broadcast=True)
+
+def register_hooks(app):
+    def ping(data, delivery):
+        return 'pong'
+    hooks.register_hook('ping', ping)
+
+    def new_code(data, delivery):
+        print ('New push to %s' % data['ref'])
+        if data['ref'] == 'master':
+            try:
+                cmd_output = subprocess.check_output(
+                    ['git', 'pull', 'origin', 'master'],)
+                return jsonify({'msg': str(cmd_output)})
+            except subprocess.CalledProcessError as error:
+                print ("Code deployment failed", error.output)
+                return jsonify({'msg': str(error.output)})
+        return 'Thanks'
+    hooks.register_hook('push', new_code)
+
+    return None
 
 def launch_file_monitor():
     print ('Starting file monitor...')
