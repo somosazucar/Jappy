@@ -90,6 +90,7 @@ examples = ['welcome.pyj', 'memorize.pyj', 'mandala.pyj', 'input.pyj', 'repl.pyj
 special = ['template.html']
 window.state = 'clean'
 tag.fetching_files = False
+tag.dir_created = False
 prefetch_files()
 
 
@@ -179,9 +180,6 @@ def load_file(url, overwrite=False):
 def update_workspace_menu():
     if window.fs is undefined:
         return
-    if window.server_files is undefined:
-        prefetch_files()
-        return
     path = location.hash.slice(1)
     def list_files(found_files):
         window.server_files = found_files
@@ -246,9 +244,10 @@ def update_workspace_menu():
     def try_make_dir(body, existed_previously):
         fs.dir('/' + path).children(list_files)
     if window.server_files is undefined:
+        prefetch_files()
+    if not tag.dir_created:
+        tag.dir_created = True
         fs.dir('/' + path).mkdir(try_make_dir)
-    else:
-        fs.dir('/' + path).children(list_files)
 tag.update_workspace_menu = update_workspace_menu
 event_bus.on("file-list-update", update_workspace_menu)
 event_bus.on("update-workspace-menu", update_workspace_menu)

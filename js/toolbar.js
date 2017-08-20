@@ -312,6 +312,7 @@ examples = ρσ_list_decorate([ "welcome.pyj", "memorize.pyj", "mandala.pyj", "i
 special = ρσ_list_decorate([ "template.html" ]);
 window.state = "clean";
 tag.fetching_files = false;
+tag.dir_created = false;
 prefetch_files();
 function enable_run() {
     tag.refs.runbutton.disabled = false;
@@ -453,10 +454,6 @@ function update_workspace_menu() {
     if (window.fs === undefined) {
         return;
     }
-    if (window.server_files === undefined) {
-        prefetch_files();
-        return;
-    }
     path = location.hash.slice(1);
     function list_files(found_files) {
         var items, palette, container, row, item, span, editor_load, text, file, browse_button, lastrow;
@@ -561,9 +558,11 @@ function update_workspace_menu() {
     });
 
     if (window.server_files === undefined) {
+        prefetch_files();
+    }
+    if (!tag.dir_created) {
+        tag.dir_created = true;
         fs.dir("/" + path).mkdir(try_make_dir);
-    } else {
-        fs.dir("/" + path).children(list_files);
     }
 };
 
