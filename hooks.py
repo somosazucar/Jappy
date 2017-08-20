@@ -14,13 +14,14 @@ def register_hooks(app):
 
     def new_code(data, delivery):
         print ('New push to %s' % data['ref'])
-        try:
-            cmd_output = subprocess.check_output(
-                ['git', 'pull', 'origin', 'master'],)
-            return jsonify({'msg': str(cmd_output)})
-        except subprocess.CalledProcessError as error:
-            print ("Code deployment failed", error.output)
-            return jsonify({'msg': str(error.output)})
+        if data['ref'] == 'refs/heads/master':
+            try:
+                cmd_output = subprocess.check_output(
+                    ['git', 'pull', 'origin', 'master'],)
+                return jsonify({'msg': str(cmd_output)})
+            except subprocess.CalledProcessError as error:
+                print ("Code deployment failed", error.output)
+                return jsonify({'msg': str(error.output)})
         return 'Thanks'
     hooks.register_hook('push', new_code)
 
