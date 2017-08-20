@@ -1,0 +1,24 @@
+
+print ('<input type="button" value="hola" onclick="javascript:parent.android.takePic()"/>')
+print ('<img id="myimg" src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAAAAXNSR0IArs4c6QAAAAlwSFlzAAALEwAACxMBAJqcGAAAAAd0SU1FB94FGRIWN7qWJ1wAAABVSURBVDjLY2AY8oARm6CSgsl/bOL3HpxhJGiikoLJf1wAm8EsuAx6f2Q2UV5gwidpEjsLhSbZgDOL0xhMYmcxnFmcRr4LYIYMYRcg0yQbMDApke4AAJ9/PTX/54W+AAAAAElFTkSuQmCC" />')
+
+def acceptImage(path, base64image):
+    i = document.getElementById('myimg')
+    i.src = 'data:image/png;base64,' + base64image
+    print (path)
+parent.acceptImage = acceptImage
+
+def succeed(position):
+    lat = position.coords.latitude
+    lng = position.coords.longitude
+    print (lng, lat)
+
+def error(ee):
+    print (ee.message)
+
+navigator.geolocation.getCurrentPosition(succeed, error, {
+                                        "maximumAge" : 3000,
+                                        "timeout" : 5000,
+                                        "enableHighAccuracy" : True } )
+# navigator.geolocation.watchPosition(succeed, error)
+
