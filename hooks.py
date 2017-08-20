@@ -3,6 +3,9 @@ from flask import jsonify
 from flask_hookserver import Hooks
 
 def register_hooks(app):
+    app.config['VALIDATE_IP'] = False
+    app.config['VALIDATE_SIGNATURE'] = False
+
     hooks = Hooks(app, url='/hooks')
 
     def ping(data, delivery):
