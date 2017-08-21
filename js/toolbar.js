@@ -388,10 +388,12 @@ function prefetch_files() {
 };
 
 function restore_last_session() {
-    var recent_files, path, item;
+    var path, recent_files, item;
+    path = location.hash.slice(1);
     if (window.server_files !== undefined) {
         recent_files = filter_latest(window.server_files);
         path = location.hash.slice(1);
+        makeToast("<b>#" + path + "</b><br>" + "Restoring saved session from file system." + "<br><i>" + str(len(recent_files)) + " files.</i>");
         var ρσ_Iter2 = ρσ_Iterable(reversed(recent_files));
         for (var ρσ_Index2 = 0; ρσ_Index2 < ρσ_Iter2.length; ρσ_Index2++) {
             item = ρσ_Iter2[ρσ_Index2];
@@ -494,7 +496,7 @@ function update_workspace_menu() {
                     var ρσ_anonfunc = function (ev) {
                         var target_file;
                         target_file = ev.target.getAttribute("data-uri");
-                        event_bus.trigger("url-open", "dav://" + location.host + "/dav/" + path + "/" + target_file);
+                        location.href = "dav://" + location.host + "/dav/" + path + "/" + target_file;
                     };
                     if (!ρσ_anonfunc.__argnames__) Object.defineProperties(ρσ_anonfunc, {
                         __argnames__ : {value: ["ev"]}
@@ -540,7 +542,7 @@ function update_workspace_menu() {
         browse_button = ρσ_interpolate_kwargs.call(E, E.button, [ρσ_interpolate_kwargs.call(E, E.span, [ρσ_desugar_kwargs({class_: "folder"})]), "Browse..."].concat([ρσ_desugar_kwargs({class_: "icon"})]));
         browse_button.onclick = function () {
             tag.workspace_palette.popDown();
-            event_bus.trigger("url-open", "dav://" + location.host + "/dav/" + path);
+            location.href = "dav://" + location.host + "/dav/" + path;
         };
         lastrow = ρσ_interpolate_kwargs.call(E, E.div, [browse_button].concat([ρσ_desugar_kwargs({class_: "menu"})]));
         items.append(lastrow);
@@ -560,8 +562,8 @@ function update_workspace_menu() {
     if (window.server_files === undefined) {
         prefetch_files();
     }
-    if (!tag.dir_created) {
-        tag.dir_created = true;
+    if (tag.dir_created !== path) {
+        tag.dir_created = path;
         fs.dir("/" + path).mkdir(try_make_dir);
     }
 };

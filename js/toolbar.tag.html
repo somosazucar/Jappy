@@ -147,9 +147,13 @@ def prefetch_files():
         fs.dir('/' + path).children(got_files)
 
 def restore_last_session():
+    path = location.hash.slice(1)
     if window.server_files is not undefined:
         recent_files = filter_latest(window.server_files)
         path = location.hash.slice(1)
+        makeToast('<b>#' + path + '</b><br>' + \
+                'Restoring saved session from file system.' + '<br><i>' + \
+                    str(len(recent_files)) + ' files.</i>')
         for item in reversed(recent_files):
             load_file('/' + path + '/' + item.name, False)
     else:
@@ -207,8 +211,8 @@ def update_workspace_menu():
                 editor_load = False
                 item.onclick = def(ev):
                     target_file = ev.target.getAttribute('data-uri')
-                    event_bus.trigger('url-open', 'dav://' + location.host \
-                                      + '/dav/' + path + '/' + target_file)
+                    location.href =  'dav://' + location.host \
+                                      + '/dav/' + path + '/' + target_file
             elif file.name.endswith('.pyj'):
                 span.classList.add('pyj')
             elif file.name.endswith('.html'):
@@ -237,7 +241,7 @@ def update_workspace_menu():
         browse_button = E.button(class_='icon', E.span(class_='folder'), 'Browse...')
         browse_button.onclick = def():
             tag.workspace_palette.popDown()
-            event_bus.trigger('url-open', 'dav://' + location.host + '/dav/' + path)
+            location.href = 'dav://' + location.host + '/dav/' + path
         lastrow = E.div(class_='menu', browse_button)
         items.append(lastrow)
         tag.workspace_palette.setContent(items)
@@ -245,8 +249,8 @@ def update_workspace_menu():
         fs.dir('/' + path).children(list_files)
     if window.server_files is undefined:
         prefetch_files()
-    if not tag.dir_created:
-        tag.dir_created = True
+    if tag.dir_created is not path:
+        tag.dir_created = path
         fs.dir('/' + path).mkdir(try_make_dir)
 tag.update_workspace_menu = update_workspace_menu
 event_bus.on("file-list-update", update_workspace_menu)

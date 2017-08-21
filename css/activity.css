@@ -8,6 +8,17 @@ body, html {
 .palette {
     z-index: 10;
 }
+.toast {
+    position: absolute;
+    font-size: 14pt;
+    padding: 20px;
+    border: 1px solid #C1A846;
+    background: #F8EBB7;
+    border-radius: 6px;
+    opacity: 1;
+    transition: opacity 2s 5s;
+    z-index: 10;
+}
 .special_file {
 	font-style: italic;
 }

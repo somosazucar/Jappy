@@ -1,4 +1,4 @@
-riot.tag2('code-editor', '<div id="vsplit" ref="vsplit"> <div id="split" ref="split"> <input ref="file_input" id="file-input" type="file" style="display: none;"> <div id="tabs"> <button onclick="{this.newtab}" id="newtab">&nbsp;</button><span class="{selected: name==parent.title}" each="{name in list(files)}"><button class="{selected: name==parent.title, special_file: name==⁗template.html⁗}" onclick="{parent.switchtab}">{str(name)}</button><button if="{name==parent.title && len(files)>1}" id="closetab" onclick="{parent.closetab}">&nbsp;</button></span><button class="pull-right" id="tray-button" ref="traybutton">&nbsp;</button> </div> <textarea id="code-container" ref="code"></textarea> </div> <iframe src="template.html" allowtransparency="false" ref="vmframe" name="_vmframe"></iframe> </div>', 'code-editor { display: flex; flex: 1 1; height: 100%; } code-editor .CodeMirror,[data-is="code-editor"] .CodeMirror{ height: 100%; width: 100%; font-size: 15pt; font-family: "Noto Mono", "DejaVu Sans Mono", monospace, "Noto Emoji"; } code-editor .CodeMirror-scroll,[data-is="code-editor"] .CodeMirror-scroll{ margin-right: 0px; overflow: hidden !important; } code-editor .CodeMirror-linenumber,[data-is="code-editor"] .CodeMirror-linenumber{ font-size: 14pt; } code-editor .cm-s-solarized .CodeMirror-cursor,[data-is="code-editor"] .cm-s-solarized .CodeMirror-cursor{ width: 4px; border: 0; background: transparent; background: rgba(0, 200, 0, .4); } code-editor .CodeMirror-overlayscroll-vertical div,[data-is="code-editor"] .CodeMirror-overlayscroll-vertical div,code-editor .CodeMirror-overlayscroll-horizontal div,[data-is="code-editor"] .CodeMirror-overlayscroll-horizontal div{ background: #808080; } code-editor .error-marker,[data-is="code-editor"] .error-marker{ border: 1px solid red; background-color: rgba(255, 0, 0,0.2); border-radius: 3px; } code-editor iframe,[data-is="code-editor"] iframe{ border: 0px; display: none; flex: 1 1; } code-editor #split,[data-is="code-editor"] #split{ display: flex; width: 100%; flex-direction: column; flex: 1 1; height: 100%; float: left; } code-editor #vsplit,[data-is="code-editor"] #vsplit{ display: flex; flex-direction: row; flex: 1 1; height: 100%; } code-editor #tabs button,[data-is="code-editor"] #tabs button{ font-size: 13pt; border-radius: 0; padding: 10px 10px; border: 0px; margin: 0px; } code-editor #tabs button.selected,[data-is="code-editor"] #tabs button.selected{ background-color: #282828; } code-editor #tabs span.selected,[data-is="code-editor"] #tabs span.selected{ white-space: nowrap; } code-editor #closetab,[data-is="code-editor"] #closetab{ background-image: url(lib/sugar-web/graphics/icons/actions/entry-cancel-active.svg); background-repeat: no-repeat; background-color: #282828; width: 28px; background-position: center; background-size: 16px 16px; } code-editor #closetab:active,[data-is="code-editor"] #closetab:active{ background-image: url(lib/sugar-web/graphics/icons/actions/entry-cancel.svg); } code-editor #newtab,[data-is="code-editor"] #newtab{ background-image: url(icons/tab-add.svg); background-repeat: no-repeat; width: 28px; background-position: center; background-size: 20px 20px; } code-editor #tray-button,[data-is="code-editor"] #tray-button{ background-image: url(icons/tray-show.svg); background-repeat: no-repeat; width: 28px; background-position: center; background-size: 20px 20px; }', '', function(opts) {
+riot.tag2('code-editor', '<div id="vsplit" ref="vsplit"> <div id="split" ref="split"> <input ref="file_input" id="file-input" type="file" style="display: none;"> <div id="tabs"> <button onclick="{this.newtab}" id="newtab">&nbsp;</button><span class="{selected: name==parent.title}" each="{name in list(files)}"><button class="{selected: name==parent.title, special_file: name==⁗template.html⁗}" onclick="{parent.switchtab}" ondblclick="{parent.renametab}">{str(name)}</button><button if="{name==parent.title && len(files)>1}" id="closetab" onclick="{parent.closetab}">&nbsp;</button></span><button class="pull-right" id="tray-button" ref="traybutton">&nbsp;</button> </div> <textarea id="code-container" ref="code"></textarea> </div> <iframe src="template.html" allowtransparency="false" ref="vmframe" name="_vmframe"></iframe> </div>', 'code-editor { display: flex; flex: 1 1; height: 100%; } code-editor .CodeMirror,[data-is="code-editor"] .CodeMirror{ height: 100%; width: 100%; font-size: 15pt; font-family: "Noto Mono", "DejaVu Sans Mono", monospace, "Noto Emoji"; } code-editor .CodeMirror-scroll,[data-is="code-editor"] .CodeMirror-scroll{ margin-right: 0px; overflow: hidden !important; } code-editor .CodeMirror-linenumber,[data-is="code-editor"] .CodeMirror-linenumber{ font-size: 14pt; } code-editor .cm-s-solarized .CodeMirror-cursor,[data-is="code-editor"] .cm-s-solarized .CodeMirror-cursor{ width: 4px; border: 0; background: transparent; background: rgba(0, 200, 0, .4); } code-editor .CodeMirror-overlayscroll-vertical div,[data-is="code-editor"] .CodeMirror-overlayscroll-vertical div,code-editor .CodeMirror-overlayscroll-horizontal div,[data-is="code-editor"] .CodeMirror-overlayscroll-horizontal div{ background: #808080; } code-editor .error-marker,[data-is="code-editor"] .error-marker{ border: 1px solid red; background-color: rgba(255, 0, 0,0.2); border-radius: 3px; } code-editor iframe,[data-is="code-editor"] iframe{ border: 0px; display: none; flex: 1 1; } code-editor #split,[data-is="code-editor"] #split{ display: flex; width: 100%; flex-direction: column; flex: 1 1; height: 100%; float: left; } code-editor #vsplit,[data-is="code-editor"] #vsplit{ display: flex; flex-direction: row; flex: 1 1; height: 100%; } code-editor #tabs button,[data-is="code-editor"] #tabs button{ font-size: 13pt; border-radius: 0; padding: 10px 10px; border: 0px; margin: 0px; } code-editor #tabs button.selected,[data-is="code-editor"] #tabs button.selected{ background-color: #282828; } code-editor #tabs span.selected,[data-is="code-editor"] #tabs span.selected{ white-space: nowrap; } code-editor #closetab,[data-is="code-editor"] #closetab{ background-image: url(lib/sugar-web/graphics/icons/actions/entry-cancel-active.svg); background-repeat: no-repeat; background-color: #282828; width: 28px; background-position: center; background-size: 16px 16px; } code-editor #closetab:active,[data-is="code-editor"] #closetab:active{ background-image: url(lib/sugar-web/graphics/icons/actions/entry-cancel.svg); } code-editor #newtab,[data-is="code-editor"] #newtab{ background-image: url(icons/tab-add.svg); background-repeat: no-repeat; width: 28px; background-position: center; background-size: 20px 20px; } code-editor #tray-button,[data-is="code-editor"] #tray-button{ background-image: url(icons/tray-show.svg); background-repeat: no-repeat; width: 28px; background-position: center; background-size: 20px 20px; }', '', function(opts) {
 var ρσ_modules = {};
 ρσ_modules.re = {};
 
@@ -1673,20 +1673,10 @@ function init() {
         } else {
             editor.setSize(window.innerWidth / 2, target_size);
         }
-        if (ρσ_equals(len(window.files), 0)) {
-            tag.title = get_new_untitled();
-            window.files = (function(){
-                var ρσ_d = {};
-                ρσ_d[tag.title] = editor.getDoc();
-                return ρσ_d;
-            }).call(this);
-            if (window.y !== undefined) {
-                y.share.files.set(tag.title, Y.Text);
-                y.share.files.get(tag.title).insert(0, "");
-            }
+        if (len(window.files) > 0) {
+            window.document.title = tag.title;
+            guess_mode();
         }
-        window.document.title = tag.title;
-        guess_mode();
     };
 
     this.on("update", update_tabs);
@@ -1715,7 +1705,6 @@ function init() {
         if (Object.prototype.hasOwnProperty.call(ρσ_kwargs_obj, "filename")){
             filename = ρσ_kwargs_obj.filename;
         }
-        var editbox;
         console.debug("switchtab: " + filename);
         if (filename === null) {
             filename = e.target.innerHTML;
@@ -1727,66 +1716,6 @@ function init() {
             tag.update();
             collab.bind(tag.title);
             editor.focus();
-        } else {
-            if (e !== null) {
-                e.target.style.display = "none";
-                editbox = document.createElement("input");
-                editbox.value = tag.title;
-                function rename_tab() {
-                    var path;
-                    if (!(ρσ_in(editbox.value, window.files))) {
-                        (ρσ_expr_temp = window.files)[ρσ_bound_index(editbox.value, ρσ_expr_temp)] = editor.getDoc();
-                        ρσ_delitem(window.files, tag.title);
-                        collab.unbindAll();
-                        collab.deleteDoc();
-                        collab.create(editbox.value, editor.getValue());
-                        collab.bind(editbox.value);
-                        if (window.fs) !undefined;
-                        {
-                            if (window.server_files !== undefined) {
-                                path = location.hash.slice(1);
-                                function file_moved(ev) {
-                                };
-                                if (!file_moved.__argnames__) Object.defineProperties(file_moved, {
-                                    __argnames__ : {value: ["ev"]}
-                                });
-
-                                console.debug("moving " + tag.title + " to " + editbox.value);
-                                window.fs.file("/" + path + "/" + tag.title).mv("/" + path + "/" + editbox.value, file_moved);
-                            }
-                        }
-                        tag.title = editbox.value;
-                    }
-                    e.target.style.display = "inline-block";
-                    e.target.parentNode.removeChild(editbox);
-                    tag.update();
-                    editor.focus();
-                };
-
-                editbox.onblur = rename_tab;
-                editbox.onkeyup = (function() {
-                    var ρσ_anonfunc = function (e) {
-                        if ((e.keyCode === 13 || typeof e.keyCode === "object" && ρσ_equals(e.keyCode, 13))) {
-                            editor.focus();
-                        }
-                        if ((e.keyCode === 27 || typeof e.keyCode === "object" && ρσ_equals(e.keyCode, 27))) {
-                            editbox.value = tag.title;
-                            editor.focus();
-                        }
-                    };
-                    if (!ρσ_anonfunc.__argnames__) Object.defineProperties(ρσ_anonfunc, {
-                        __argnames__ : {value: ["e"]}
-                    });
-                    return ρσ_anonfunc;
-                })();
-                e.target.parentNode.insertBefore(editbox, e.target);
-                editbox.focus();
-                if (tag.title.indexOf(".") > 0) {
-                    editbox.setSelectionRange(0, tag.title.indexOf("."));
-                } else {
-                    editbox.select();
-                }
-            }
         }
     };
     if (!switchtab.__defaults__) Object.defineProperties(switchtab, {
@@ -1796,14 +1725,72 @@ function init() {
     });
 
     tag.switchtab = switchtab;
-    function close_all() {
-        var new_session;
-        window.files = ρσ_list_decorate([]);
-        new_session = CodeMirror.Doc("");
-        collab.unbind();
-        editor.swapDoc(new_session);
-    };
+    function renametab(e) {
+        var filename, editbox;
+        e.target.style.display = "none";
+        filename = e.target.innerHTML;
+        editbox = document.createElement("input");
+        editbox.value = tag.title;
+        function do_rename_tab() {
+            var path;
+            if (!(ρσ_in(editbox.value, window.files))) {
+                (ρσ_expr_temp = window.files)[ρσ_bound_index(editbox.value, ρσ_expr_temp)] = editor.getDoc();
+                ρσ_delitem(window.files, tag.title);
+                collab.unbindAll();
+                collab.deleteDoc();
+                collab.create(editbox.value, editor.getValue());
+                collab.bind(editbox.value);
+                if (window.fs) !undefined;
+                {
+                    if (window.server_files !== undefined) {
+                        path = location.hash.slice(1);
+                        function file_moved(ev) {
+                        };
+                        if (!file_moved.__argnames__) Object.defineProperties(file_moved, {
+                            __argnames__ : {value: ["ev"]}
+                        });
 
+                        console.debug("moving " + tag.title + " to " + editbox.value);
+                        window.fs.file("/" + path + "/" + tag.title).mv("/" + path + "/" + editbox.value, file_moved);
+                    }
+                }
+                tag.title = editbox.value;
+            }
+            e.target.style.display = "inline-block";
+            e.target.parentNode.removeChild(editbox);
+            tag.update();
+            editor.focus();
+        };
+
+        editbox.onblur = do_rename_tab;
+        editbox.onkeyup = (function() {
+            var ρσ_anonfunc = function (e) {
+                if ((e.keyCode === 13 || typeof e.keyCode === "object" && ρσ_equals(e.keyCode, 13))) {
+                    editor.focus();
+                }
+                if ((e.keyCode === 27 || typeof e.keyCode === "object" && ρσ_equals(e.keyCode, 27))) {
+                    editbox.value = tag.title;
+                    editor.focus();
+                }
+            };
+            if (!ρσ_anonfunc.__argnames__) Object.defineProperties(ρσ_anonfunc, {
+                __argnames__ : {value: ["e"]}
+            });
+            return ρσ_anonfunc;
+        })();
+        e.target.parentNode.insertBefore(editbox, e.target);
+        editbox.focus();
+        if (tag.title.indexOf(".") > 0) {
+            editbox.setSelectionRange(0, tag.title.indexOf("."));
+        } else {
+            editbox.select();
+        }
+    };
+    if (!renametab.__argnames__) Object.defineProperties(renametab, {
+        __argnames__ : {value: ["e"]}
+    });
+
+    tag.renametab = renametab;
     function closetab() {
         var e = (arguments[0] === undefined || ( 0 === arguments.length-1 && arguments[arguments.length-1] !== null && typeof arguments[arguments.length-1] === "object" && arguments[arguments.length-1] [ρσ_kwargs_symbol] === true)) ? closetab.__defaults__.e : arguments[0];
         var filename = (arguments[1] === undefined || ( 1 === arguments.length-1 && arguments[arguments.length-1] !== null && typeof arguments[arguments.length-1] === "object" && arguments[arguments.length-1] [ρσ_kwargs_symbol] === true)) ? closetab.__defaults__.filename : arguments[1];
@@ -2355,9 +2342,16 @@ function init() {
         }
         new_session = CodeMirror.Doc(data || "");
         (ρσ_expr_temp = window.files)[(typeof filename === "number" && filename < 0) ? ρσ_expr_temp.length + filename : filename] = new_session;
-        collab.unbind();
+        if (tag.title !== undefined) {
+            collab.unbind();
+        }
         collab.create(filename, data || "");
         editor.swapDoc(new_session);
+        if (tag.title !== undefined) {
+            if (ρσ_equals(tag.title.slice(0, 8), "untitled") && ρσ_equals(len((ρσ_expr_temp = window.files)[ρσ_bound_index(tag.title, ρσ_expr_temp)].getValue()), 0)) {
+                ρσ_delitem(window.files, tag.title);
+            }
+        }
         tag.title = filename;
         tag.update();
         collab.bind(tag.title);
@@ -2589,13 +2583,7 @@ function init() {
 
     event_bus.on("save-as-zip", save_zip);
     function reset_collab(ev) {
-        clear_output();
-        close_all();
-        if (window.y !== undefined) {
-            y.destroy();
-            delete window.y;
-        }
-        init_collab();
+        location.reload();
     };
     if (!reset_collab.__argnames__) Object.defineProperties(reset_collab, {
         __argnames__ : {value: ["ev"]}
@@ -2609,9 +2597,7 @@ function init() {
             tag.update();
             return;
         }
-        if (address === undefined) {
-            address = location.host;
-        }
+        address = location.host;
         path = location.hash.slice(1);
         event_bus.trigger("update-workspace-menu");
         Y((function(){
@@ -2694,11 +2680,13 @@ function init() {
                     event_bus.trigger("collaboration-ready");
                     if (ρσ_equals(len(y.share.files.keys()), 0)) {
                         event_bus.trigger("restore-last-session");
-                        tag.update();
                     } else {
+                        makeToast("<b>#" + path + "</b><br>" + "Joining live edit session." + "<br><i>" + str(len(y.share.files.keys())) + " files.</i>");
                         tag.update();
                     }
-                    collab.bind(tag.title);
+                    if (tag.title !== undefined) {
+                        collab.bind(tag.title);
+                    }
                 });
                 y.connector.socket.on("jappyEvent", (function() {
                     var ρσ_anonfunc = function (msg) {
@@ -2729,6 +2717,29 @@ function init() {
     editor.focus();
 };
 
+function makeToast(msg) {
+    var toast;
+    toast = document.createElement("div");
+    toast.innerHTML = msg;
+    toast.classList.add("toast");
+    toast.style.right = "30px";
+    toast.style.bottom = "30px";
+    document.body.appendChild(toast);
+    setTimeout(function () {
+        toast.style.opacity = "0";
+    });
+    function clearToast() {
+        document.body.removeChild(toast);
+    };
+
+    toast.addEventListener("transitionend", clearToast);
+    toast.addEventListener("click", clearToast);
+};
+if (!makeToast.__argnames__) Object.defineProperties(makeToast, {
+    __argnames__ : {value: ["msg"]}
+});
+
+window.makeToast = makeToast;
 require(ρσ_list_decorate([ "rapydscript" ]), (function() {
     var ρσ_anonfunc = function (RapydScript) {
         var compiler;

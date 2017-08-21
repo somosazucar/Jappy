@@ -99,7 +99,7 @@ iframe {
         <button onclick={ this.newtab } id='newtab'>&nbsp;</button><!--
         --><span class={selected: name==parent.title} each={name in list(files)}><!--
         --><button class={ selected: name==parent.title, special_file: name=="template.html" }
-                    onclick={ parent.switchtab }>{str(name)}</button><!--
+            onclick={ parent.switchtab } ondblclick={ parent.renametab }>{str(name)}</button><!--
         --><button if={ name==parent.title && len(files)>1 } id='closetab'
             onclick={ parent.closetab }>&nbsp;</button></span><!--
         --><button class="pull-right" id="tray-button" ref="traybutton">&nbsp;</button>
@@ -253,14 +253,9 @@ def init():
             editor.setSize(window.innerWidth, target_size)
         else:
             editor.setSize(window.innerWidth/2, target_size)
-        if len(window.files)==0:
-            tag.title = get_new_untitled()
-            window.files = {tag.title: editor.getDoc()}
-            if window.y is not undefined: # collaboration
-                    y.share.files.set(tag.title, Y.Text)
-                    y.share.files.get(tag.title).insert(0, '')
-        window.document.title = tag.title
-        guess_mode()
+        if len(window.files) > 0:
+            window.document.title = tag.title
+            guess_mode()
     this.on('update', update_tabs)
     window.addEventListener("resize", update_tabs)
     window.addEventListener("orientationchange", update_tabs)
@@ -286,52 +281,48 @@ def init():
             tag.update()
             collab.bind(tag.title)
             editor.focus()
-        else:
-            if e is not None:
-                e.target.style.display = 'none'
-                editbox = document.createElement('input')
-                editbox.value = tag.title
-                def rename_tab():
-                    if editbox.value not in window.files:
-                        window.files[editbox.value] = editor.getDoc()
-                        del window.files[tag.title]
-                        collab.unbindAll()
-                        collab.deleteDoc()
-                        collab.create(editbox.value, editor.getValue())
-                        collab.bind(editbox.value)
-                        if window.fs not undefined:
-                            if window.server_files is not undefined:
-                                path = location.hash.slice(1)
-                                def file_moved(ev):
-                                    pass # TODO: Notify user.
-                                console.debug('moving ' + tag.title + ' to ' + editbox.value)
-                                window.fs.file('/' + path + '/' + tag.title)\
-                                   .mv('/' + path + '/' + editbox.value, file_moved)
-                        tag.title = editbox.value
-                    e.target.style.display = 'inline-block'
-                    e.target.parentNode.removeChild(editbox)
-                    tag.update()
-                    editor.focus()
-                editbox.onblur = rename_tab
-                editbox.onkeyup = def(e):
-                    if e.keyCode==13: # Enter
-                        editor.focus()
-                    if e.keyCode==27: # Esc
-                        editbox.value = tag.title
-                        editor.focus()
-                e.target.parentNode.insertBefore(editbox, e.target)
-                editbox.focus()
-                if tag.title.indexOf('.') > 0:
-                    editbox.setSelectionRange(0, tag.title.indexOf('.'))
-                else:
-                    editbox.select()
     tag.switchtab = switchtab
 
-    def close_all():
-        window.files = []
-        new_session = CodeMirror.Doc('')
-        collab.unbind()
-        editor.swapDoc(new_session)
+    def renametab(e):
+        e.target.style.display = 'none'
+        filename = e.target.innerHTML # tab button
+        editbox = document.createElement('input')
+        editbox.value = tag.title
+        def do_rename_tab():
+            if editbox.value not in window.files:
+                window.files[editbox.value] = editor.getDoc()
+                del window.files[tag.title]
+                collab.unbindAll()
+                collab.deleteDoc()
+                collab.create(editbox.value, editor.getValue())
+                collab.bind(editbox.value)
+                if window.fs not undefined:
+                    if window.server_files is not undefined:
+                        path = location.hash.slice(1)
+                        def file_moved(ev):
+                            pass # TODO: Notify user.
+                        console.debug('moving ' + tag.title + ' to ' + editbox.value)
+                        window.fs.file('/' + path + '/' + tag.title)\
+                           .mv('/' + path + '/' + editbox.value, file_moved)
+                tag.title = editbox.value
+            e.target.style.display = 'inline-block'
+            e.target.parentNode.removeChild(editbox)
+            tag.update()
+            editor.focus()
+        editbox.onblur = do_rename_tab
+        editbox.onkeyup = def(e):
+            if e.keyCode==13: # Enter
+                editor.focus()
+            if e.keyCode==27: # Esc
+                editbox.value = tag.title
+                editor.focus()
+        e.target.parentNode.insertBefore(editbox, e.target)
+        editbox.focus()
+        if tag.title.indexOf('.') > 0:
+            editbox.setSelectionRange(0, tag.title.indexOf('.'))
+        else:
+            editbox.select()
+    tag.renametab = renametab
 
     def closetab(e=None, filename=None):
         console.debug('closetab: ' + filename)
@@ -669,9 +660,14 @@ def init():
             filename = get_new_untitled()
         new_session = CodeMirror.Doc(data or '')
         window.files[filename] = new_session
-        collab.unbind()
+        if tag.title is not undefined:
+            collab.unbind()
         collab.create(filename, data or '')
         editor.swapDoc(new_session)
+        if tag.title is not undefined:
+            if tag.title[:8]==('untitled') \
+                        and len(window.files[tag.title].getValue())==0:
+                del window.files[tag.title]
         tag.title = filename
         tag.update()
         collab.bind(tag.title)
@@ -816,12 +812,8 @@ def init():
     event_bus.on("save-as-zip", save_zip)
 
     def reset_collab(ev):
-        clear_output()
-        close_all()
-        if window.y is not undefined: # collaboration
-            y.destroy()
-            del window.y
-        init_collab()
+        # This is by far the simplest and most clear to the user ;-)
+        location.reload()
     window.onhashchange = reset_collab
 
     def init_collab():
@@ -829,8 +821,7 @@ def init():
             console.log('Add a hash id to synchronize.')
             tag.update()
             return
-        if address is undefined:
-                address = location.host
+        address = location.host
         path = location.hash.slice(1)
         event_bus.trigger('update-workspace-menu')
 
@@ -873,15 +864,18 @@ def init():
                                         tag.update()
                         )
                     y.connector.whenSynced( def():
-                                            console.log('Synchronized.')
-                                            event_bus.trigger("collaboration-ready")
-                                            if len(y.share.files.keys())==0:
-                                                event_bus.trigger("restore-last-session")
-                                                tag.update()
-                                            else:
-                                                tag.update()
-                                            collab.bind(tag.title)
-                                )
+                            console.log('Synchronized.')
+                            event_bus.trigger("collaboration-ready")
+                            if len(y.share.files.keys())==0:
+                                event_bus.trigger("restore-last-session")
+                            else:
+                                makeToast('<b>#' + path + '</b><br>' + \
+                                    'Joining live edit session.' + '<br><i>' + \
+                                    str(len(y.share.files.keys())) +  ' files.</i>')
+                                tag.update()
+                            if tag.title is not undefined:
+                                collab.bind(tag.title)
+                        )
                     y.connector.socket.on('jappyEvent', def(msg):
                             if msg:
                                 event = msg.event
@@ -895,6 +889,26 @@ def init():
     window.editor = editor
     window.init_collab = init_collab
     editor.focus()
+
+def makeToast(msg):
+    toast = document.createElement('div')
+    toast.innerHTML = msg
+    toast.classList.add('toast')
+    toast.style.right =  '30px'
+    toast.style.bottom = '30px'
+
+    document.body.appendChild(toast)
+
+    setTimeout(def():
+        toast.style.opacity = '0'
+    )
+
+    def clearToast():
+        document.body.removeChild(toast)
+
+    toast.addEventListener('transitionend', clearToast)
+    toast.addEventListener('click', clearToast)
+window.makeToast = makeToast
 
 require(['rapydscript'], def(RapydScript):
         print('RapydScript-ng ' + RapydScript.rs_version)
