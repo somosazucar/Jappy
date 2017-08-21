@@ -816,6 +816,11 @@ def init():
         location.reload()
     window.onhashchange = reset_collab
 
+    def fresh_start():
+        if not location.hash:
+            newtab()
+    event_bus.on("activity-not-ready", fresh_start)
+
     def init_collab():
         if not location.hash:
             console.log('Add a hash id to synchronize.')

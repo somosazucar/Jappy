@@ -2590,6 +2590,13 @@ function init() {
     });
 
     window.onhashchange = reset_collab;
+    function fresh_start() {
+        if (!location.hash) {
+            newtab();
+        }
+    };
+
+    event_bus.on("activity-not-ready", fresh_start);
     function init_collab() {
         var address, path;
         if (!location.hash) {
