@@ -106,7 +106,7 @@ iframe {
         </div>
         <textarea id="code-container" ref="code"></textarea>
     </div>
-    <iframe src="template.html" allowTransparency="false" ref="vmframe" name="_vmframe"></iframe>
+    <iframe src="{ getpath() }template.html" allowTransparency="false" ref="vmframe" name="_vmframe"></iframe>
 </div>
 
 <script type="text/Rapyd">
@@ -117,6 +117,13 @@ this.marker = None
 window.files = {}
 #loadCSS(['lib/cm/theme/solarized.css',
 #         'lib/cm/addon/scroll/simplescrollbars.css', 'css/activity.css'])
+
+tag.getpath = def():
+    if location.hash:
+        path = location.hash.slice(1)
+        return 'dav/' + path + '/'
+    else:
+        return ''
 
 class CollaborationBinding:
     '''
@@ -261,6 +268,7 @@ def init():
     window.addEventListener("orientationchange", update_tabs)
 
     def guess_mode():
+        editor.setOption('lineWrapping', False)
         if tag.title.toLowerCase().endswith(['.pyj', '.py']):
             editor.setOption('mode', 'python')
         elif tag.title.toLowerCase().endswith(['.html', '.htm', '.svg', '.xml']):
@@ -269,6 +277,9 @@ def init():
             editor.setOption('mode', 'javascript')
         elif tag.title.toLowerCase().endswith('.css'):
             editor.setOption('mode', 'css')
+        elif tag.title.toLowerCase().endswith('.md'):
+            editor.setOption('mode', 'markdown')
+            editor.setOption('lineWrapping', True)
 
     def switchtab(e=None, filename=None):
         console.debug('switchtab: ' + filename)
@@ -457,6 +468,9 @@ def init():
                 iframe.contentDocument.open()
                 iframe.contentDocument.write(editor.getValue())
                 iframe.contentDocument.close()
+        elif tag.title.toLowerCase().endswith('.md'):
+            # Not really 'run'
+            parse_markdown()
         else:
             # This is what we're about after all
             run_rapydscript()
@@ -481,6 +495,7 @@ def init():
         if window.fs is not undefined:
             path = location.hash.slice(1)
             rel_url = 'dav/' + path + '/.index.html'
+            makeToast('Running from remote: ' + event.filename)
             iframe.contentWindow.location = rel_url
             if event.filename is not tag.title:
                 if 'index.html' in window.files:
@@ -491,6 +506,7 @@ def init():
             event_bus.trigger("traybutton-open")
             if window.innerWidth < 720:
                 run_fullscreen(False)
+            window.state = 'run'
             riot.update()
     event_bus.on('run-code-slave', def(ev):
                  trigger_on_next_run( def():
@@ -516,6 +532,39 @@ def init():
             iframe.contentDocument.body.appendChild(script)
             iframe.contentDocument.close()
         iframe.addEventListener('load', write_script)
+        if window.y is not undefined: # collaboration
+            path = location.hash.slice(1)
+            if 'template.html' in window.files:
+                iframe.contentDocument.open()
+                iframe.contentDocument.write(files['template.html'].getValue())
+                iframe.contentDocument.close()
+            else:
+                iframe.contentWindow.location = 'dav/' + path + '/template.html'
+        else:
+            if 'template.html' in window.files:
+                iframe.contentDocument.open()
+                iframe.contentDocument.write(files['template.html'].getValue())
+                iframe.contentDocument.close()
+            else:
+                iframe.contentWindow.location = 'template.html'
+
+    def parse_markdown():
+        src = editor.getValue()
+        output = marked(src)
+        def write_output():
+            iframe.removeEventListener('load', write_output)
+            html = iframe.contentDocument.documentElement.outerHTML
+            if window.fs is not undefined:
+                place = html.toLowerCase().indexOf('</html>')
+                if place is not -1:
+                    html = html[:place] + '\n' + output \
+                                            + '\n' + html[place:]
+                publish_script(html)
+            containerDiv = iframe.contentDocument.createElement('div')
+            containerDiv.innerHTML = output
+            iframe.contentDocument.body.appendChild(containerDiv)
+            iframe.contentDocument.close()
+        iframe.addEventListener('load', write_output)
         if window.y is not undefined: # collaboration
             path = location.hash.slice(1)
             if 'template.html' in window.files:
