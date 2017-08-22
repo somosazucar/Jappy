@@ -559,6 +559,8 @@ function update_workspace_menu() {
     if (tag.dir_created !== path) {
         tag.dir_created = path;
         fs.dir("/" + path).mkdir(try_make_dir);
+    } else {
+        fs.dir("/" + path).children(list_files);
     }
 };
 

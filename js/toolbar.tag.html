@@ -243,6 +243,8 @@ def update_workspace_menu():
     if tag.dir_created is not path:
         tag.dir_created = path
         fs.dir('/' + path).mkdir(try_make_dir)
+    else:
+        fs.dir('/' + path).children(list_files)
 tag.update_workspace_menu = update_workspace_menu
 event_bus.on("file-list-update", update_workspace_menu)
 event_bus.on("update-workspace-menu", update_workspace_menu)
