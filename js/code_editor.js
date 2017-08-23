@@ -2023,7 +2023,7 @@ function init() {
                 iframe.contentDocument.close();
             }
         } else if (tag.title.toLowerCase().endswith(".md")) {
-            parse_markdown();
+            render_markdown();
         } else {
             run_rapydscript();
         }
@@ -2142,25 +2142,33 @@ function init() {
         }
     };
 
-    function parse_markdown() {
+    function render_markdown() {
         var src, output, path;
         src = editor.getValue();
         output = marked(src);
         function write_output() {
-            var html, place, containerDiv;
+            var idoc, containerDiv, link, head, html, place;
             iframe.removeEventListener("load", write_output);
-            html = iframe.contentDocument.documentElement.outerHTML;
+            idoc = iframe.contentDocument;
+            containerDiv = idoc.createElement("div");
+            containerDiv.classList.add("markdown-body");
+            containerDiv.style.maxWidth = "980px";
+            link = idoc.createElement("link");
+            link.rel = "stylesheet";
+            link.href = "css/github-markdown.css";
+            head = idoc.getElementsByTagName("head")[0];
+            head.appendChild(link);
+            containerDiv.innerHTML = output;
+            html = idoc.documentElement.outerHTML;
             if (window.fs !== undefined) {
                 place = html.toLowerCase().indexOf("</html>");
                 if (place !== -1) {
-                    html = html.slice(0, place) + "\n" + output + "\n" + html.slice(place);
+                    html = html.slice(0, place) + "\n" + containerDiv.outerHTML + "\n" + html.slice(place);
                 }
                 publish_script(html);
             }
-            containerDiv = iframe.contentDocument.createElement("div");
-            containerDiv.innerHTML = output;
-            iframe.contentDocument.body.appendChild(containerDiv);
-            iframe.contentDocument.close();
+            idoc.body.appendChild(containerDiv);
+            idoc.close();
         };
 
         iframe.addEventListener("load", write_output);
@@ -2747,7 +2755,7 @@ function init() {
                     if (ρσ_equals(len(y.share.files.keys()), 0)) {
                         event_bus.trigger("restore-last-session");
                     } else {
-                        makeToast("<b>#" + path + "</b><br>" + "Joining live edit session." + "<br><i>" + str(len(y.share.files.keys())) + " files.</i>");
+                        makeToast("<b>#" + path + "</b><br><br>" + "Joining live edit session." + "<br><i>" + str(len(y.share.files.keys())) + " files.</i>");
                         tag.update();
                     }
                     if (tag.title !== undefined) {
