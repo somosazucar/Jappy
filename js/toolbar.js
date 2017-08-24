@@ -387,7 +387,12 @@ function restore_last_session() {
     if (window.server_files !== undefined) {
         recent_files = filter_latest(window.server_files);
         path = location.hash.slice(1);
-        makeToast("<b>#" + path + "</b><br><br>" + "Restoring saved session from file system." + "<br><i>" + str(len(recent_files)) + " files.</i>");
+        if (len(recent_files) > 0) {
+            makeToast("<b>#" + path + "</b><br><br>" + "Restoring saved session from file system." + "<br><i>" + str(len(recent_files)) + " files.</i>");
+        } else {
+            event_bus.trigger("new-from-data", "");
+            makeToast("<b>#" + path + "</b><br><br><i>" + "Welcome" + "</i> " + "new project!");
+        }
         var ρσ_Iter2 = ρσ_Iterable(reversed(recent_files));
         for (var ρσ_Index2 = 0; ρσ_Index2 < ρσ_Iter2.length; ρσ_Index2++) {
             item = ρσ_Iter2[ρσ_Index2];
