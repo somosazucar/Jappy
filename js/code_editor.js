@@ -2129,7 +2129,7 @@ function init() {
                 iframe.contentDocument.write(files["template.html"].getValue());
                 iframe.contentDocument.close();
             } else {
-                iframe.contentWindow.location = "dav/" + path + "/template.html";
+                iframe.contentWindow.location = location.protocol + "dav/" + path + "/template.html";
             }
         } else {
             if (ρσ_in("template.html", window.files)) {
@@ -2137,7 +2137,7 @@ function init() {
                 iframe.contentDocument.write(files["template.html"].getValue());
                 iframe.contentDocument.close();
             } else {
-                iframe.contentWindow.location = "template.html";
+                iframe.contentWindow.location = location.protocol + "template.html";
             }
         }
     };
@@ -2182,10 +2182,10 @@ function init() {
                 iframe.contentDocument.write(files["template.html"].getValue());
                 iframe.contentDocument.close();
             } else {
-                iframe.contentWindow.location = "dav/" + path + "/template.html";
+                iframe.contentWindow.location = location.protocol + "dav/" + path + "/template.html";
             }
         } else {
-            iframe.contentWindow.location = "template.html";
+            iframe.contentWindow.location = location.protocol + "template.html";
         }
     };
 
@@ -2226,9 +2226,9 @@ function init() {
         var path;
         if (window.fs !== undefined) {
             path = location.hash.slice(1);
-            iframe.contentWindow.location = "dav/" + path + "/template.html";
+            iframe.contentWindow.location = location.protocol + "dav/" + path + "/template.html";
         } else {
-            iframe.contentWindow.location = "template.html";
+            iframe.contentWindow.location = location.protocol + "template.html";
         }
     };
 

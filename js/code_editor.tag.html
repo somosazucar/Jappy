@@ -539,14 +539,15 @@ def init():
                 iframe.contentDocument.write(files['template.html'].getValue())
                 iframe.contentDocument.close()
             else:
-                iframe.contentWindow.location = 'dav/' + path + '/template.html'
+                iframe.contentWindow.location = location.protocol + 'dav/' + \
+                                                        path + '/template.html'
         else:
             if 'template.html' in window.files:
                 iframe.contentDocument.open()
                 iframe.contentDocument.write(files['template.html'].getValue())
                 iframe.contentDocument.close()
             else:
-                iframe.contentWindow.location = 'template.html'
+                iframe.contentWindow.location = location.protocol + 'template.html'
 
     def render_markdown():
         src = editor.getValue()
@@ -583,9 +584,10 @@ def init():
                 iframe.contentDocument.write(files['template.html'].getValue())
                 iframe.contentDocument.close()
             else:
-                iframe.contentWindow.location = 'dav/' + path + '/template.html'
+                iframe.contentWindow.location = location.protocol + 'dav/' + \
+                                                         path + '/template.html'
         else:
-            iframe.contentWindow.location = 'template.html'
+            iframe.contentWindow.location = location.protocol + 'template.html'
 
     def break_code():
         iwindow = iframe.contentWindow
@@ -609,9 +611,10 @@ def init():
     def clear_output():
         if window.fs is not undefined:
             path = location.hash.slice(1)
-            iframe.contentWindow.location = 'dav/' + path + '/template.html'
+            iframe.contentWindow.location = location.protocol + 'dav/' + \
+                                                    path + '/template.html'
         else:
-            iframe.contentWindow.location = 'template.html'
+            iframe.contentWindow.location = location.protocol + 'template.html'
     event_bus.on("clear-output", clear_output)
 
     def serialize():
