@@ -1454,7 +1454,7 @@ this.marker = null;
 window.files = {};
 tag.getpath = function () {
     var path;
-    if (location.hash) {
+    if (len(location.hash) > 0) {
         path = location.hash.slice(1);
         return "dav/" + path + "/";
     } else {
@@ -2175,7 +2175,7 @@ function init() {
         };
 
         iframe.addEventListener("load", write_output);
-        if (window.y !== undefined) {
+        if (len(location.hash) > 0) {
             path = location.hash.slice(1);
             if (ρσ_in("template.html", window.files)) {
                 iframe.contentDocument.open();
@@ -2688,7 +2688,7 @@ function init() {
                 var ρσ_d = {};
                 ρσ_d["name"] = "websockets-client";
                 ρσ_d["room"] = path;
-                ρσ_d["url"] = "ws://" + address;
+                ρσ_d["url"] = address;
                 return ρσ_d;
             }).call(this);
             ρσ_d["share"] = (function(){
