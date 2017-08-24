@@ -11,7 +11,7 @@ html {
 	margin: 10px auto;
 	background-color: lightyellow;
 	box-shadow: 6px 6px #333 !important;
-	font-family: "Noto Sans";
+	font-family: "Noto Sans", "Roboto Sans", "Droid Sans", "DejaVu Sans";
 	font-size: 15pt;
 }
 td, th {
