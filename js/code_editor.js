@@ -2147,16 +2147,19 @@ function init() {
         src = editor.getValue();
         output = marked(src);
         function write_output() {
-            var idoc, containerDiv, link, head, html, place;
+            var idoc, head, containerDiv, link, html, place;
             iframe.removeEventListener("load", write_output);
             idoc = iframe.contentDocument;
+            head = idoc.getElementsByTagName("head")[0];
             containerDiv = idoc.createElement("div");
             containerDiv.classList.add("markdown-body");
-            containerDiv.style.maxWidth = "980px";
             link = idoc.createElement("link");
             link.rel = "stylesheet";
             link.href = "css/github-markdown.css";
-            head = idoc.getElementsByTagName("head")[0];
+            head.appendChild(link);
+            link = idoc.createElement("link");
+            link.rel = "stylesheet";
+            link.href = "css/markdown-extra.css";
             head.appendChild(link);
             containerDiv.innerHTML = output;
             html = idoc.documentElement.outerHTML;
