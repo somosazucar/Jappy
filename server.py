@@ -100,14 +100,11 @@ class DAVFilterMiddleWare(object):
             if path and os.path.exists('workspace/' + \
                                         filename):
                 pass
-            elif path and filename.endswith('.html'):
+            elif path:
                 if filename[len(path)+1:] != 'index.html':
                     environ['PATH_INFO'] = '/' + filename[len(path)+1:]
                     response = static.Cling(app.root_path)
                     return response(environ, start_response)
-            elif path:
-                response = redirect('/' + filename[len(path)+1:])
-                return response(environ, start_response)
         elif environ.get('PATH_INFO').count('/') < 2 and \
                 environ.get('REQUEST_METHOD')=='DELETE':
             # Let's disallow removing project directories
