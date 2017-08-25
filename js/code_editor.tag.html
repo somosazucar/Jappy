@@ -613,7 +613,7 @@ def init():
     event_bus.on("break-code", break_code)
 
     def clear_output():
-        if window.fs is not undefined:
+        if len(location.hash) > 0:
             path = location.hash.slice(1)
             iframe.contentWindow.location = location.protocol + '//' + \
                                             location.host + '/dav/' + \

@@ -2224,7 +2224,7 @@ function init() {
     event_bus.on("break-code", break_code);
     function clear_output() {
         var path;
-        if (window.fs !== undefined) {
+        if (len(location.hash) > 0) {
             path = location.hash.slice(1);
             iframe.contentWindow.location = location.protocol + "//" + location.host + "/dav/" + path + "/template.html";
         } else {

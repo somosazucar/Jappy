@@ -15,6 +15,7 @@ import sys
 import mimetypes
 import pyinotify
 import signal
+import static
 from hooks import register_hooks
 
 signal.signal(signal.SIGINT, signal.SIG_DFL)
@@ -99,6 +100,11 @@ class DAVFilterMiddleWare(object):
             if path and os.path.exists('workspace/' + \
                                         filename):
                 pass
+            elif path and filename.endswith('.html'):
+                if filename[len(path)+1:] != 'index.html':
+                    environ['PATH_INFO'] = '/' + filename[len(path)+1:]
+                    response = static.Cling(app.root_path)
+                    return response(environ, start_response)
             elif path:
                 response = redirect('/' + filename[len(path)+1:])
                 return response(environ, start_response)
