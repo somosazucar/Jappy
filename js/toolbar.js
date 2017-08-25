@@ -334,6 +334,8 @@ function filter_latest(files) {
             prev = result[0];
             if ((item.name[0] === "." || typeof item.name[0] === "object" && ρσ_equals(item.name[0], "."))) {
                 return result;
+            } else if (!item.name.endswith(ρσ_list_decorate([ ".pyj", ".md", ".html", ".css", ".js", ".svg", ".htm" ]))) {
+                return result;
             } else if (item.type !== "file") {
                 return result;
             } else if (prev === undefined) {

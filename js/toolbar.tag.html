@@ -106,6 +106,9 @@ def filter_latest(files):
             prev = result[0]
             if item.name[0]=='.':
                 return result
+            elif not item.name.endswith(['.pyj', '.md', '.html', \
+                                            '.css', '.js', '.svg', '.htm']):
+                return result
             elif item.type is not 'file':
                 return result
             elif prev is undefined:
