@@ -2688,6 +2688,11 @@ function init() {
                 var ρσ_d = {};
                 ρσ_d["name"] = "websockets-client";
                 ρσ_d["room"] = path;
+                ρσ_d["options"] = (function(){
+                    var ρσ_d = {};
+                    ρσ_d["transports"] = ρσ_list_decorate([ "websocket" ]);
+                    return ρσ_d;
+                }).call(this);
                 ρσ_d["url"] = address;
                 return ρσ_d;
             }).call(this);

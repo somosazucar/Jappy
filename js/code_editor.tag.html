@@ -903,6 +903,7 @@ def init():
         Y({'db'       : { 'name': 'memory'},
            'connector': { 'name': 'websockets-client',
                           'room': path,
+                          'options': { 'transports': ['websocket'] },
                           'url':  address },
             'share'   : { 'files': 'Map' }}).then(  
                 def(y):
