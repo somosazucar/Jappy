@@ -77,8 +77,9 @@ if location.hash:
 require(["text!../jappy.json"],
         def(raw_translation_data):
             translation_data = JSON.parse(raw_translation_data)
-            install(translation_data)
-            riot.update()
+            if translation_data['language']==tag.lang:
+                install(translation_data)
+                riot.update()
     )
 
 

@@ -973,8 +973,10 @@ require(ρσ_list_decorate([ "text!../jappy.json" ]), (function() {
     var ρσ_anonfunc = function (raw_translation_data) {
         var translation_data;
         translation_data = JSON.parse(raw_translation_data);
-        install(translation_data);
-        riot.update();
+        if ((translation_data["language"] === tag.lang || typeof translation_data["language"] === "object" && ρσ_equals(translation_data["language"], tag.lang))) {
+            install(translation_data);
+            riot.update();
+        }
     };
     if (!ρσ_anonfunc.__argnames__) Object.defineProperties(ρσ_anonfunc, {
         __argnames__ : {value: ["raw_translation_data"]}
