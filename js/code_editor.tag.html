@@ -112,8 +112,10 @@ iframe {
 
 <script type="text/Rapyd">
 
+from gettext import install, gettext as _
 import re
 tag = this
+tag.lang = (navigator.language or navigator.userLanguage)[:2]
 this.marker = None
 window.files = {}
 #loadCSS(['lib/cm/theme/solarized.css',
@@ -496,7 +498,7 @@ def init():
         if window.fs is not undefined:
             path = location.hash.slice(1)
             rel_url = 'dav/' + path + '/.index.html'
-            makeToast('Running from remote: ' + event.filename)
+            makeToast(_('Running from remote: ' + event.filename))
             iframe.contentWindow.location = rel_url
             if event.filename is not tag.title:
                 if 'index.html' in window.files:
@@ -945,10 +947,17 @@ def init():
                             if len(y.share.files.keys())==0:
                                 event_bus.trigger("restore-last-session")
                             else:
-                                makeToast('<b>#' + path + '</b><br><br>' + \
-                                    'Joining live edit session.' + '<br><i>' + \
-                                    str(len(y.share.files.keys())) +  ' files.</i>')
-                                tag.update()
+                                require(["text!../jappy.json"],
+                                    def(raw_translation_data):
+                                        translation_data = JSON.parse(raw_translation_data)
+                                        if translation_data['language']==tag.lang:
+                                            install(translation_data)
+                                        makeToast('<b>#' + path + '</b><br><br>' + \
+                                            _('Joining live edit session.') + '<br><i>' + \
+                                            str(len(y.share.files.keys())) +  _(' files.') + '</i>')
+                                        riot.update()
+                                )
+
                             if tag.title is not undefined:
                                 collab.bind(tag.title)
                         )

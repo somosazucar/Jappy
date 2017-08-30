@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Jappy\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2017-08-30 00:04-0500\n"
+"POT-Creation-Date: 2017-08-30 01:01-0500\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -17,15 +17,27 @@ msgstr ""
 "Content-Type: text/plain; charset=CHARSET\n"
 "Content-Transfer-Encoding: 8bit\n"
 
+#: js/code_editor.tag.html:499
+msgid "Running from remote: "
+msgstr ""
+
+#: js/code_editor.tag.html:949
+msgid "Joining live edit session."
+msgstr ""
+
+#: js/code_editor.tag.html:950 js/toolbar.tag.html:165
+msgid " files."
+msgstr ""
+
 #: js/toolbar.tag.html:42
 msgid "Jappy Activity"
 msgstr ""
 
-#: js/toolbar.tag.html:45 js/toolbar.tag.html:306
+#: js/toolbar.tag.html:45 js/toolbar.tag.html:318
 msgid "Load an example"
 msgstr ""
 
-#: js/toolbar.tag.html:47 js/toolbar.tag.html:357
+#: js/toolbar.tag.html:47 js/toolbar.tag.html:369
 msgid "Workspace"
 msgstr ""
 
@@ -57,34 +69,30 @@ msgstr ""
 msgid "Stop"
 msgstr ""
 
-#: js/toolbar.tag.html:152
+#: js/toolbar.tag.html:164
 msgid "Restoring saved session from file system."
 msgstr ""
 
-#: js/toolbar.tag.html:153
-msgid " files."
-msgstr ""
-
-#: js/toolbar.tag.html:157
+#: js/toolbar.tag.html:169
 msgid "Welcome"
 msgstr ""
 
-#: js/toolbar.tag.html:157
+#: js/toolbar.tag.html:169
 msgid "new project!"
 msgstr ""
 
-#: js/toolbar.tag.html:243
+#: js/toolbar.tag.html:255
 msgid "Browse..."
 msgstr ""
 
-#: js/toolbar.tag.html:360
+#: js/toolbar.tag.html:372
 msgid "Export"
 msgstr ""
 
-#: js/toolbar.tag.html:362
+#: js/toolbar.tag.html:374
 msgid "Export as zipped HTML"
 msgstr ""
 
-#: js/toolbar.tag.html:366
+#: js/toolbar.tag.html:378
 msgid "Import"
 msgstr ""
