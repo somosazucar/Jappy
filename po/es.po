@@ -1,0 +1,90 @@
+# Jappy Latin American spanish.
+# Copyright (C) 2017 Jappy Authors
+# This file is distributed under the same license as the Jappy package.
+# Sebastian Silva <sebastian@fuentelibre.org>, 2017.
+msgid ""
+msgstr ""
+"Project-Id-Version: Jappy\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2017-08-30 00:04-0500\n"
+"PO-Revision-Date: 2017-08-30 00:07-0500\n"
+"Last-Translator: Sebastian Silva <sebastian@fuentelibre.org>\n"
+"Language-Team: SomosAzucar.Org\n"
+"Language: es\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+"X-Generator: Virtaal 0.7.1\n"
+
+#: js/toolbar.tag.html:42
+msgid "Jappy Activity"
+msgstr "Actividad Jappy"
+
+#: js/toolbar.tag.html:45 js/toolbar.tag.html:306
+msgid "Load an example"
+msgstr "Cargar un ejemplo"
+
+#: js/toolbar.tag.html:47 js/toolbar.tag.html:357
+msgid "Workspace"
+msgstr "Área de trabajo"
+
+#: js/toolbar.tag.html:50
+msgid "Execute"
+msgstr "Ejecutar"
+
+#: js/toolbar.tag.html:52
+msgid "Break execution"
+msgstr "Interrumpir ejecución"
+
+#: js/toolbar.tag.html:54
+msgid "Clear the canvas"
+msgstr "Limpiar el lienzo"
+
+#: js/toolbar.tag.html:56
+msgid "Start fullscreen"
+msgstr "Iniciar en pantalla completa"
+
+#: js/toolbar.tag.html:58
+msgid "View fullscreen"
+msgstr "Ver en pantalla completa"
+
+#: js/toolbar.tag.html:60
+msgid "Export or publish"
+msgstr "Exportar o publicar"
+
+#: js/toolbar.tag.html:62
+msgid "Stop"
+msgstr "Salir"
+
+#: js/toolbar.tag.html:152
+msgid "Restoring saved session from file system."
+msgstr "Restaurando sesión guardada en el sistema de archivos."
+
+#: js/toolbar.tag.html:153
+msgid " files."
+msgstr " archivos."
+
+#: js/toolbar.tag.html:157
+msgid "Welcome"
+msgstr "Bienvenido"
+
+#: js/toolbar.tag.html:157
+msgid "new project!"
+msgstr "nuevo proyecto!"
+
+#: js/toolbar.tag.html:243
+msgid "Browse..."
+msgstr "Examinar..."
+
+#: js/toolbar.tag.html:360
+msgid "Export"
+msgstr "Exportar"
+
+#: js/toolbar.tag.html:362
+msgid "Export as zipped HTML"
+msgstr "Exportar como HTML comprimido"
+
+#: js/toolbar.tag.html:366
+msgid "Import"
+msgstr "Importar"

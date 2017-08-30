@@ -39,38 +39,51 @@
 </style>
 
 <div id="main-toolbar" class="toolbar">
-  <button class="toolbutton" id="activity-button" title="Jappy Activity"></button>
+  <button class="toolbutton" id="activity-button" title={ _('Jappy Activity') }></button>
 
   <hr />
-  <button class="toolbutton" id="example-button" title="Load an example" ref="examplebutton"></button>
+  <button class="toolbutton" id="example-button" title={ _('Load an example') } ref="examplebutton"></button>
 
-  <button show={ location.hash } class="toolbutton" id="workspace-button" title="Workspace" ref="workspacebutton"></button>
+  <button show={ location.hash } class="toolbutton" id="workspace-button" title={ _('Workspace') } ref="workspacebutton"></button>
   <hr />
 
-  <button class="toolbutton { colored: window.state!='run' }" id="run-button" title="Execute" ref="runbutton"></button>
+  <button class="toolbutton { colored: window.state!='run' }" id="run-button" title={ _('Execute') } ref="runbutton"></button>
 
-  <button class="toolbutton { colored: window.state=='run' }" id="break-button" title="Break execution" ref="breakbutton"></button>
+  <button class="toolbutton { colored: window.state=='run' }" id="break-button" title={ _('Break execution') } ref="breakbutton"></button>
 
-  <button class="toolbutton { colored: window.state!='clean' }" id="erase-button" title="Clear the canvas" ref="erasebutton"></button>
+  <button class="toolbutton { colored: window.state!='clean' }" id="erase-button" title={ _('Clear the canvas') } ref="erasebutton"></button>
 
-  <button class="toolbutton { hidden: window.state=='run' }" id="start-button" title="Start fullscreen" ref="startbutton"></button>
+  <button class="toolbutton { hidden: window.state=='run' }" id="start-button" title={ _('Start fullscreen') } ref="startbutton"></button>
 
-  <button class="toolbutton { hidden: window.state=='stopped' } { hidden: window.state=='clean' }" id="full-button" title="View fullscreen" ref="fullbutton"></button>
+  <button class="toolbutton { hidden: window.state=='stopped' } { hidden: window.state=='clean' }" id="full-button" title={ _('View fullscreen') } ref="fullbutton"></button>
 
-  <button class="toolbutton" id="export-button" title="Export or publish" ref="exportbutton"></button>
+  <button class="toolbutton" id="export-button" title={ _('Export or publish') } ref="exportbutton"></button>
 
-  <button class="toolbutton pull-right" id="stop-button" title="Stop" ref="stopbutton"></button>
+  <button class="toolbutton pull-right" id="stop-button" title={ _('Stop') } ref="stopbutton"></button>
 </div>
 
 <script type="text/Rapyd">
 
 from elementmaker import E
+from gettext import install, gettext as _
 tag = this
+tag._ = _
+tag.lang = (navigator.language or navigator.userLanguage)[:2]
 url_base = location.protocol
 address = url_base + '//' + location.host + '/dav'
 if location.hash:
     window.fs = new WebDAV.Fs(address)
 
+require(["text!../jappy.json"],
+        def(raw_translation_data):
+            translation_data = JSON.parse(raw_translation_data)
+            install(translation_data)
+            riot.update()
+    )
+
+
+##  These turned out to mess up formatting due to ordering issues.:
+#
 #loadCSSAsync("lib/sugar-web/graphics/css/sugar-96dpi.css",
 #			 "not screen and (device-width: 1200px) and (device-height: 900px)")
 #loadCSSAsync("lib/sugar-web/graphics/css/sugar-200dpi.css",
@@ -147,12 +160,12 @@ def restore_last_session():
         path = location.hash.slice(1)
         if len(recent_files) > 0:
             makeToast('<b>#' + path + '</b><br><br>' + \
-                    'Restoring saved session from file system.' + '<br><i>' + \
-                        str(len(recent_files)) + ' files.</i>')
+                _('Restoring saved session from file system.') + '<br><i>' + \
+                        str(len(recent_files)) + _(' files.') + '</i>')
         else:
             event_bus.trigger('new-from-data', '')
             makeToast('<b>#' + path + '</b><br><br><i>' + \
-                    'Welcome' + '</i> ' + 'new project!')
+                _('Welcome') + '</i> ' + _('new project!'))
 
         for item in reversed(recent_files):
             load_file('/' + path + '/' + item.name, False)
@@ -238,7 +251,7 @@ def update_workspace_menu():
             row.appendChild(item)
             items.append(row)
         items.append(E.hr(class_='header-separator'))
-        browse_button = E.button(class_='icon', E.span(class_='folder'), 'Browse...')
+        browse_button = E.button(class_='icon', E.span(class_='folder'), _('Browse...'))
         browse_button.onclick = def():
             tag.workspace_palette.popDown()
             location.href = 'dav://' + location.host + '/dav/' + path
@@ -299,9 +312,9 @@ def init():
     if window.RapydScript is not undefined:
         enable_run()
 
-    require(["sugar-web/graphics/palette"],
+    require(["sugar-web/graphics/palette", "text!../jappy.json"],
         def(palette):
-            tag.example_palette = new palette.Palette(tag.refs.examplebutton, 'Load an example')
+            tag.example_palette = new palette.Palette(tag.refs.examplebutton, _('Load an example'))
             items = []
             for i in examples:
                 row = document.createElement('div')
@@ -352,16 +365,16 @@ def init():
 
             tag.example_palette.setContent(items)
 
-            tag.workspace_palette = new palette.Palette(tag.refs.workspacebutton, 'Workspace')
+            tag.workspace_palette = new palette.Palette(tag.refs.workspacebutton, _('Workspace'))
             update_workspace_menu()
 
-            tag.export_palette = new palette.Palette(tag.refs.exportbutton, 'Export')
+            tag.export_palette = new palette.Palette(tag.refs.exportbutton, _('Export'))
             class as_zip:
-                label = 'Export as zipped HTML'
+                label = _('Export as zipped HTML')
                 icon = 'html'
                 trigger = 'save-as-zip'
             class import_file:
-                label = 'Import'
+                label = _('Import')
                 icon = 'zip'
                 trigger = 'import-file'
             items = []

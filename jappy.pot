@@ -1,0 +1,90 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR Jappy Authors
+# This file is distributed under the same license as the Jappy package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: Jappy\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2017-08-30 00:04-0500\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"Language: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=CHARSET\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+#: js/toolbar.tag.html:42
+msgid "Jappy Activity"
+msgstr ""
+
+#: js/toolbar.tag.html:45 js/toolbar.tag.html:306
+msgid "Load an example"
+msgstr ""
+
+#: js/toolbar.tag.html:47 js/toolbar.tag.html:357
+msgid "Workspace"
+msgstr ""
+
+#: js/toolbar.tag.html:50
+msgid "Execute"
+msgstr ""
+
+#: js/toolbar.tag.html:52
+msgid "Break execution"
+msgstr ""
+
+#: js/toolbar.tag.html:54
+msgid "Clear the canvas"
+msgstr ""
+
+#: js/toolbar.tag.html:56
+msgid "Start fullscreen"
+msgstr ""
+
+#: js/toolbar.tag.html:58
+msgid "View fullscreen"
+msgstr ""
+
+#: js/toolbar.tag.html:60
+msgid "Export or publish"
+msgstr ""
+
+#: js/toolbar.tag.html:62
+msgid "Stop"
+msgstr ""
+
+#: js/toolbar.tag.html:152
+msgid "Restoring saved session from file system."
+msgstr ""
+
+#: js/toolbar.tag.html:153
+msgid " files."
+msgstr ""
+
+#: js/toolbar.tag.html:157
+msgid "Welcome"
+msgstr ""
+
+#: js/toolbar.tag.html:157
+msgid "new project!"
+msgstr ""
+
+#: js/toolbar.tag.html:243
+msgid "Browse..."
+msgstr ""
+
+#: js/toolbar.tag.html:360
+msgid "Export"
+msgstr ""
+
+#: js/toolbar.tag.html:362
+msgid "Export as zipped HTML"
+msgstr ""
+
+#: js/toolbar.tag.html:366
+msgid "Import"
+msgstr ""
