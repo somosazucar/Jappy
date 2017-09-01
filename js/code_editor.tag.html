@@ -117,6 +117,7 @@ import re
 tag = this
 tag.lang = (navigator.language or navigator.userLanguage)[:2]
 this.marker = None
+tag.cursor_pos = {}
 window.files = {}
 #loadCSS(['lib/cm/theme/solarized.css',
 #         'lib/cm/addon/scroll/simplescrollbars.css', 'css/activity.css'])
@@ -155,6 +156,12 @@ class CollaborationBinding:
             console.debug('warning: possibly already bound to ' + self.currentDoc)
             y.share.files.get(filename).bindCodeMirror(editor)
             self.currentDoc = filename
+        if self.currentDoc in tag.cursor_pos:
+            try:
+                editor.setCursor(tag.cursor_pos[self.currentDoc])
+            except:
+                console.debug('warning: could not restore cursor position')
+            del tag.cursor_pos[self.currentDoc]
 
     def unbind(self):
         if window.y is undefined: # collaboration
@@ -164,6 +171,7 @@ class CollaborationBinding:
             console.debug('warning: not unbinding, not bound!')
         else:
             if self.currentDoc in y.share.files.keys():
+                tag.cursor_pos[self.currentDoc] = editor.getCursor()
                 y.share.files.get(self.currentDoc).unbindCodeMirror(editor)
             self.currentDoc = None
 

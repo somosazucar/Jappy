@@ -2111,6 +2111,7 @@ var re = ρσ_modules.re;
 tag = this;
 tag.lang = (navigator.language || navigator.userLanguage).slice(0, 2);
 this.marker = null;
+tag.cursor_pos = {};
 window.files = {};
 tag.getpath = function () {
     var path;
@@ -2159,6 +2160,17 @@ CollaborationBinding.prototype.bind = function bind(filename) {
         y.share.files.get(filename).bindCodeMirror(editor);
         self.currentDoc = filename;
     }
+    if (ρσ_in(self.currentDoc, tag.cursor_pos)) {
+        try {
+            editor.setCursor((ρσ_expr_temp = tag.cursor_pos)[ρσ_bound_index(self.currentDoc, ρσ_expr_temp)]);
+        } catch (ρσ_Exception) {
+            ρσ_last_exception = ρσ_Exception;
+            {
+                console.debug("warning: could not restore cursor position");
+            }
+        }
+        ρσ_delitem(tag.cursor_pos, self.currentDoc);
+    }
 };
 if (!CollaborationBinding.prototype.bind.__argnames__) Object.defineProperties(CollaborationBinding.prototype.bind, {
     __argnames__ : {value: ["filename"]}
@@ -2173,6 +2185,7 @@ CollaborationBinding.prototype.unbind = function unbind() {
         console.debug("warning: not unbinding, not bound!");
     } else {
         if (ρσ_in(self.currentDoc, y.share.files.keys())) {
+            (ρσ_expr_temp = tag.cursor_pos)[ρσ_bound_index(self.currentDoc, ρσ_expr_temp)] = editor.getCursor();
             y.share.files.get(self.currentDoc).unbindCodeMirror(editor);
         }
         self.currentDoc = null;
