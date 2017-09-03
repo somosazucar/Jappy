@@ -2693,15 +2693,27 @@ function init() {
         event_bus.trigger("activity-save");
         if (tag.title.toLowerCase().endswith(ρσ_list_decorate([ ".html", ".htm" ]))) {
             if (location.hash) {
+                path = location.hash.slice(1);
+                target = "dav/" + path + "/.index.html";
                 if (ρσ_in("index.html", window.files)) {
                     src = window.files["index.html"].getValue();
+                } else if (len((function() {
+                    var ρσ_Iter = ρσ_Iterable(parent.server_files), ρσ_Result = [], fil;
+                    for (var ρσ_Index = 0; ρσ_Index < ρσ_Iter.length; ρσ_Index++) {
+                        fil = ρσ_Iter[ρσ_Index];
+                        if ((fil.name === "index.html" || typeof fil.name === "object" && ρσ_equals(fil.name, "index.html"))) {
+                            ρσ_Result.push(fil);
+                        }
+                    }
+                    ρσ_Result = ρσ_list_constructor(ρσ_Result);
+                    return ρσ_Result;
+                })())) {
+                    target = "dav/" + path + "/index.html";
                 } else {
                     src = editor.getValue();
                 }
                 publish_script(src, function () {
-                    var path;
-                    path = location.hash.slice(1);
-                    iframe.contentWindow.location = "dav/" + path + "/.index.html";
+                    iframe.contentWindow.location = target;
                     if (ρσ_in("index.html", window.files)) {
                         ρσ_interpolate_kwargs.call(this, switchtab, [ρσ_desugar_kwargs({filename: "index.html"})]);
                     }

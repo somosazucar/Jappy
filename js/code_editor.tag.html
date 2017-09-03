@@ -490,14 +490,17 @@ def init():
         event_bus.trigger("activity-save")
         if tag.title.toLowerCase().endswith(['.html', '.htm']):
             if location.hash:
+                path = location.hash.slice(1)
+                target = 'dav/' + path + '/.index.html'
                 if 'index.html' in window.files:
                     src = window.files['index.html'].getValue()
+                elif len([fil for fil in parent.server_files \
+                                      if fil.name=='index.html']):
+                    target =  'dav/' + path + '/index.html'
                 else:
                     src = editor.getValue()
                 publish_script(src, def():
-                        path = location.hash.slice(1)
-                        iframe.contentWindow.location = 'dav/' + path + \
-                                                                '/.index.html'
+                        iframe.contentWindow.location = target
                         if 'index.html' in window.files:
                             switchtab(filename='index.html')
                     )
