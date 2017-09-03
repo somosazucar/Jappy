@@ -6,8 +6,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Jappy\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2017-08-30 01:01-0500\n"
-"PO-Revision-Date: 2017-08-30 01:03-0500\n"
+"POT-Creation-Date: 2017-09-02 23:52-0500\n"
+"PO-Revision-Date: 2017-09-02 23:53-0500\n"
 "Last-Translator: Sebastian Silva <sebastian@fuentelibre.org>\n"
 "Language-Team: SomosAzucar.Org\n"
 "Language: es\n"
@@ -17,15 +17,19 @@ msgstr ""
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 "X-Generator: Virtaal 0.7.1\n"
 
-#: js/code_editor.tag.html:499
+#: js/code_editor.tag.html:244
+msgid "Find"
+msgstr "Buscar"
+
+#: js/code_editor.tag.html:529
 msgid "Running from remote: "
 msgstr "Ejecutando a distancia: "
 
-#: js/code_editor.tag.html:949
+#: js/code_editor.tag.html:984
 msgid "Joining live edit session."
 msgstr "Sesión colaborativa en vivo."
 
-#: js/code_editor.tag.html:950 js/toolbar.tag.html:165
+#: js/code_editor.tag.html:985 js/toolbar.tag.html:165
 msgid " files."
 msgstr " archivos."
 

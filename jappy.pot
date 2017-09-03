@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Jappy\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2017-08-30 01:01-0500\n"
+"POT-Creation-Date: 2017-09-02 23:52-0500\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -17,15 +17,19 @@ msgstr ""
 "Content-Type: text/plain; charset=CHARSET\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-#: js/code_editor.tag.html:499
+#: js/code_editor.tag.html:244
+msgid "Find"
+msgstr ""
+
+#: js/code_editor.tag.html:529
 msgid "Running from remote: "
 msgstr ""
 
-#: js/code_editor.tag.html:949
+#: js/code_editor.tag.html:984
 msgid "Joining live edit session."
 msgstr ""
 
-#: js/code_editor.tag.html:950 js/toolbar.tag.html:165
+#: js/code_editor.tag.html:985 js/toolbar.tag.html:165
 msgid " files."
 msgstr ""
 

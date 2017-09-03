@@ -20,10 +20,10 @@ code-editor {
     font-size: 14pt;
 }
 .cm-s-solarized .CodeMirror-cursor {
-    width: 4px;
+    width: 2px;
     border: 0;
     background: transparent;
-    background: rgba(0, 200, 0, .4);
+    background: rgba(0, 200, 0, .6);
 }
 .CodeMirror-overlayscroll-vertical div, .CodeMirror-overlayscroll-horizontal div {
     background: #808080;
@@ -76,6 +76,18 @@ iframe {
 }
 #closetab:active {
     background-image: url(lib/sugar-web/graphics/icons/actions/entry-cancel.svg);
+}
+.CodeMirror-search-label {
+    background-image: url(icons/entry-search.svg);
+    background-repeat: no-repeat;
+    background-color: #282828;
+    width: 28px;
+    background-position: center;
+    background-size: 15px 15px;
+}
+.CodeMirror-search-hint {
+    font-family: sans-serif;
+    color: white;
 }
 #newtab {
     background-image: url(icons/tab-add.svg);
@@ -225,6 +237,20 @@ def init():
                 else:
                     editor.execCommand('insertSoftTab')
     })
+
+    require(["text!../jappy.json"],
+            def(raw_translation_data):
+                translation_data = JSON.parse(raw_translation_data)
+                if translation_data['language']==tag.lang:
+                    install(translation_data)
+                editor.setOption('queryDialog', \
+                    '<span class="CodeMirror-search-label">&nbsp;&nbsp;</span>&nbsp;' + \
+                    '<input type="text" style="width: 10em" class="CodeMirror-search-field"/>' + \
+                    '&nbsp;<span class="CodeMirror-search-hint">'+ _('Find') +'</span>')
+        )
+
+    CodeMirror.commands.replace = undefined
+    CodeMirror.commands.replaceAll = undefined
 
     collab = CollaborationBinding()
     iframe = this.refs.vmframe
@@ -955,16 +981,10 @@ def init():
                             if len(y.share.files.keys())==0:
                                 event_bus.trigger("restore-last-session")
                             else:
-                                require(["text!../jappy.json"],
-                                    def(raw_translation_data):
-                                        translation_data = JSON.parse(raw_translation_data)
-                                        if translation_data['language']==tag.lang:
-                                            install(translation_data)
-                                        makeToast('<b>#' + path + '</b><br><br>' + \
-                                            _('Joining live edit session.') + '<br><i>' + \
-                                            str(len(y.share.files.keys())) +  _(' files.') + '</i>')
-                                        riot.update()
-                                )
+                                makeToast('<b>#' + path + '</b><br><br>' + \
+                                    _('Joining live edit session.') + '<br><i>' + \
+                                    str(len(y.share.files.keys())) +  _(' files.') + '</i>')
+                                riot.update()
 
                             if tag.title is not undefined:
                                 collab.bind(tag.title)
