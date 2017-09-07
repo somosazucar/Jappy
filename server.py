@@ -85,8 +85,6 @@ class DAVFilterMiddleWare(object):
             return start_response(status, headers, exc_info)
         if environ.get('PATH_INFO').count('/')>1:
             path = environ.get('PATH_INFO')[1:environ.get('PATH_INFO')[1:].index('/')+1]
-        elif environ.get('PATH_INFO').count('/')>1:
-            path = environ.get('PATH_INFO')[1:]
         else:
             path = ''
         if environ.get('PATH_INFO') in ['', '/'] and \
@@ -136,7 +134,8 @@ def start_server():
                            'application/xml','image/svg+xml', 'text/*' ]
                 )
     app.wsgi_app = DispatcherMiddleware(app.wsgi_app, {
-        '/dav' : filtered_dav_app
+        '/dav' : filtered_dav_app,
+        '/!' : filtered_dav_app
     })
     socketio.run(app, host='0.0.0.0', port=54991)
 
