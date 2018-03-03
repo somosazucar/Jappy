@@ -2523,7 +2523,9 @@ function init() {
                         });
 
                         console.debug("removing " + filename);
-                        window.fs.file("/" + path + "/" + filename).rm(file_removed);
+                        if (window.fs !== undefined) {
+                            window.fs.file("/" + path + "/" + filename).rm(file_removed);
+                        }
                     }
                 }
             }

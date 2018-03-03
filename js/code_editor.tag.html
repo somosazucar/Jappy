@@ -386,7 +386,8 @@ def init():
                         def file_removed(ev):
                             pass # TODO: Notify user.
                         console.debug('removing ' + filename)
-                        window.fs.file('/' + path + '/' + filename).rm(file_removed)
+                        if window.fs is not undefined:
+                            window.fs.file('/' + path + '/' + filename).rm(file_removed)
             index = list(window.files).index(filename)
             del window.files[filename]
             if filename == active_title:
