@@ -48,7 +48,7 @@ def favicon():
 @app.route('/manifest.json')
 def manifest():
     return send_from_directory(app.root_path, 'manifest.json',
-                                        mimetype='application/json')
+                                        mimetype='application/manifest+json')
 
 @app.route("/shutdown")
 def bye(*args):
