@@ -1,0 +1,21 @@
+{
+    "dir": "ltr",
+    "lang": "es",
+    "name": "Jappy Activity",
+    "scope": "/",
+    "display": "fullscreen",
+    "start_url": "https://educa.juegos/",
+    "short_name": "Jappy",
+    "theme_color": "#808080",
+    "background_color": "#282828",
+    "description": "Javascript Programming in Python (Rapydscript-ng). Be Jappy - Code Together.",
+    "orientation": "any",
+    "related_applications": [],
+    "prefer_related_applications": false,
+    "icons": [
+        {
+            "src": "/activity/app-icon.png",
+            "sizes": "512x512"
+        }
+    ]
+}
