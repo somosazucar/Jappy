@@ -1,0 +1,104 @@
+# Jappy paraguayan Guaraní
+# Copyright (C) 2017 Jappy Authors & Translators
+# This file is distributed under the same license as the Jappy package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: Jappy\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2017-09-02 23:52-0500\n"
+"PO-Revision-Date: 2017-09-24 21:59+0000\n"
+"Last-Translator: Chris <cjl@sugarlabs.org>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"Language: gug\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+"X-Generator: Pootle 2.5.1.1\n"
+"X-POOTLE-MTIME: 1506290344.000000\n"
+
+#: js/code_editor.tag.html:244
+msgid "Find"
+msgstr "Heka"
+
+#: js/code_editor.tag.html:529
+msgid "Running from remote: "
+msgstr "Ejecutando distancia:pe "
+
+#: js/code_editor.tag.html:984
+msgid "Joining live edit session."
+msgstr "Sesión colaborativa aikove . me/pe"
+
+#: js/code_editor.tag.html:985 js/toolbar.tag.html:165
+msgid " files."
+msgstr " ñongatuha kuera."
+
+#: js/toolbar.tag.html:42
+msgid "Jappy Activity"
+msgstr "Actividad Jappy"
+
+#: js/toolbar.tag.html:45 js/toolbar.tag.html:318
+msgid "Load an example"
+msgstr "﻿Hupi peteĩ techapyrã"
+
+#: js/toolbar.tag.html:47 js/toolbar.tag.html:369
+msgid "Workspace"
+msgstr "Área mba'apo mba'e"
+
+#: js/toolbar.tag.html:50
+msgid "Execute"
+msgstr "Japo"
+
+#: js/toolbar.tag.html:52
+msgid "Break execution"
+msgstr "Interrumpir jejapo"
+
+#: js/toolbar.tag.html:54
+msgid "Clear the canvas"
+msgstr "Mopotĩ pe lienzo"
+
+#: js/toolbar.tag.html:56
+msgid "Start fullscreen"
+msgstr "Iniciar tenda jepyso ohechaukáva ta'anga ojapopa me/pe"
+
+#: js/toolbar.tag.html:58
+msgid "View fullscreen"
+msgstr "Hecha tenda jepyso ohechaukáva ta'anga ojapopa me/pe"
+
+#: js/toolbar.tag.html:60
+msgid "Export or publish"
+msgstr "Mondo o mbojekuaa"
+
+#: js/toolbar.tag.html:62
+msgid "Stop"
+msgstr "Sẽ"
+
+#: js/toolbar.tag.html:164
+msgid "Restoring saved session from file system."
+msgstr "Restaurando sesión guardada pe sistema ñongatuha kuera mba'e . me/pe."
+
+#: js/toolbar.tag.html:169
+msgid "Welcome"
+msgstr "Tereg̃uaheporãite"
+
+#: js/toolbar.tag.html:169
+msgid "new project!"
+msgstr "pyahu proyecto!"
+
+#: js/toolbar.tag.html:255
+msgid "Browse..."
+msgstr "Examinar..."
+
+#: js/toolbar.tag.html:372
+msgid "Export"
+msgstr "Mondo"
+
+#: js/toolbar.tag.html:374
+msgid "Export as zipped HTML"
+msgstr "Mondo akaru HTML comprimido"
+
+#: js/toolbar.tag.html:378
+msgid "Import"
+msgstr "Gueru"

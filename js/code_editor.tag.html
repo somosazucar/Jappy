@@ -475,7 +475,8 @@ def init():
 
     def run():
         window.state = 'run'
-        event_bus.trigger("traybutton-open")
+        clear_output()
+        event_bus.trigger('traybutton-open')
         riot.update()
         if window.y is not undefined: # collaboration
             path = location.hash.slice(1)
@@ -513,7 +514,7 @@ def init():
             render_markdown()
         else:
             # This is what we're about after all
-            run_rapydscript()
+            setTimeout(run_rapydscript, 300)
     event_bus.on("run-code", run)
 
     def url_open(url):
@@ -642,6 +643,11 @@ def init():
         highestIntervalId = iwindow.setInterval(';')
         for i in range(0, highestIntervalId):
             iwindow.clearInterval(i)
+        highestAnimationId = iwindow.requestAnimationFrame(def():
+                                                                pass
+                                                          )
+        for i in range(0, highestAnimationId):
+            iwindow.cancelAnimationFrame(i)
         iwindow.stop()
         iwindow.document.body.style.opacity = '0.5'
         inputs = iwindow.document.getElementsByTagName('input')

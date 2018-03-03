@@ -32,7 +32,12 @@ socketio = SocketIO(app)
 
 @app.route("/")
 def hello():
-    return send_from_directory(app.root_path, 'index.html', 
+    return send_from_directory(app.root_path, 'index.html',
+                                                    mimetype='text/html')
+
+@app.route("/%21/<path>")
+def execute(path):
+    return send_from_directory(app.root_path, path + '/.index.html',
                                                     mimetype='text/html')
 
 @app.route('/favicon.ico')
@@ -134,8 +139,7 @@ def start_server():
                            'application/xml','image/svg+xml', 'text/*' ]
                 )
     app.wsgi_app = DispatcherMiddleware(app.wsgi_app, {
-        '/dav' : filtered_dav_app,
-        '/!' : filtered_dav_app
+        '/dav' : filtered_dav_app
     })
     socketio.run(app, host='0.0.0.0', port=54991)
 

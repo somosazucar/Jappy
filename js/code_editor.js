@@ -2670,6 +2670,7 @@ function init() {
     function run() {
         var path, target, src;
         window.state = "run";
+        clear_output();
         event_bus.trigger("traybutton-open");
         riot.update();
         if (window.y !== undefined) {
@@ -2726,7 +2727,7 @@ function init() {
         } else if (tag.title.toLowerCase().endswith(".md")) {
             render_markdown();
         } else {
-            run_rapydscript();
+            setTimeout(run_rapydscript, 300);
         }
     };
 
@@ -2891,7 +2892,7 @@ function init() {
     };
 
     function break_code() {
-        var iwindow, highestTimeoutId, i, highestIntervalId, inputs;
+        var iwindow, highestTimeoutId, i, highestIntervalId, highestAnimationId, inputs;
         iwindow = iframe.contentWindow;
         highestTimeoutId = iwindow.setTimeout(";");
         for (var ρσ_Index4 = 0; ρσ_Index4 < highestTimeoutId; ρσ_Index4++) {
@@ -2903,12 +2904,18 @@ function init() {
             i = ρσ_Index5;
             iwindow.clearInterval(i);
         }
+        highestAnimationId = iwindow.requestAnimationFrame(function () {
+        });
+        for (var ρσ_Index6 = 0; ρσ_Index6 < highestAnimationId; ρσ_Index6++) {
+            i = ρσ_Index6;
+            iwindow.cancelAnimationFrame(i);
+        }
         iwindow.stop();
         iwindow.document.body.style.opacity = "0.5";
         inputs = iwindow.document.getElementsByTagName("input");
-        var ρσ_Iter6 = ρσ_Iterable(inputs);
-        for (var ρσ_Index6 = 0; ρσ_Index6 < ρσ_Iter6.length; ρσ_Index6++) {
-            i = ρσ_Iter6[ρσ_Index6];
+        var ρσ_Iter7 = ρσ_Iterable(inputs);
+        for (var ρσ_Index7 = 0; ρσ_Index7 < ρσ_Iter7.length; ρσ_Index7++) {
+            i = ρσ_Iter7[ρσ_Index7];
             i.disabled = true;
         }
         iwindow.addEventListener("click", (function() {
@@ -2937,9 +2944,9 @@ function init() {
     function serialize() {
         var result, file;
         result = {};
-        var ρσ_Iter7 = ρσ_Iterable(window.files);
-        for (var ρσ_Index7 = 0; ρσ_Index7 < ρσ_Iter7.length; ρσ_Index7++) {
-            file = ρσ_Iter7[ρσ_Index7];
+        var ρσ_Iter8 = ρσ_Iterable(window.files);
+        for (var ρσ_Index8 = 0; ρσ_Index8 < ρσ_Iter8.length; ρσ_Index8++) {
+            file = ρσ_Iter8[ρσ_Index8];
             result[(typeof file === "number" && file < 0) ? result.length + file : file] = (ρσ_expr_temp = window.files)[(typeof file === "number" && file < 0) ? ρσ_expr_temp.length + file : file].getValue();
         }
         return JSON.stringify(result);
@@ -2963,9 +2970,9 @@ function init() {
             } else {
                 target = tag.title;
             }
-            var ρσ_Iter8 = ρσ_Iterable(window.files);
-            for (var ρσ_Index8 = 0; ρσ_Index8 < ρσ_Iter8.length; ρσ_Index8++) {
-                item = ρσ_Iter8[ρσ_Index8];
+            var ρσ_Iter9 = ρσ_Iterable(window.files);
+            for (var ρσ_Index9 = 0; ρσ_Index9 < ρσ_Iter9.length; ρσ_Index9++) {
+                item = ρσ_Iter9[ρσ_Index9];
                 if (item !== target) {
                     data = (ρσ_expr_temp = window.files)[(typeof item === "number" && item < 0) ? ρσ_expr_temp.length + item : item].getValue();
                     if (data) {
@@ -3301,18 +3308,18 @@ function init() {
                 closing_tag = data.indexOf("</body>");
                 html = data.slice(0, closing_tag) + enc_js + data.slice(closing_tag);
                 external_files = ρσ_list_decorate([]);
-                var ρσ_Iter9 = ρσ_Iterable(re.findall("script.*src=\"(.*)\"", data));
-                for (var ρσ_Index9 = 0; ρσ_Index9 < ρσ_Iter9.length; ρσ_Index9++) {
-                    match = ρσ_Iter9[ρσ_Index9];
+                var ρσ_Iter10 = ρσ_Iterable(re.findall("script.*src=\"(.*)\"", data));
+                for (var ρσ_Index10 = 0; ρσ_Index10 < ρσ_Iter10.length; ρσ_Index10++) {
+                    match = ρσ_Iter10[ρσ_Index10];
                     ref = "text!" + match.slice(match.indexOf("=") + 2, -1);
                     ref = ref.replace("lib/", "");
                     external_files.append(ref);
                 }
                 zip = new JSZip;
                 zip.file("index.html", html);
-                var ρσ_Iter10 = ρσ_Iterable(window.files);
-                for (var ρσ_Index10 = 0; ρσ_Index10 < ρσ_Iter10.length; ρσ_Index10++) {
-                    name = ρσ_Iter10[ρσ_Index10];
+                var ρσ_Iter11 = ρσ_Iterable(window.files);
+                for (var ρσ_Index11 = 0; ρσ_Index11 < ρσ_Iter11.length; ρσ_Index11++) {
+                    name = ρσ_Iter11[ρσ_Index11];
                     zip.file("src/" + name, (ρσ_expr_temp = window.files)[(typeof name === "number" && name < 0) ? ρσ_expr_temp.length + name : name].getValue());
                 }
                 require(external_files, function () {
@@ -3320,9 +3327,9 @@ function init() {
                     if (arguments[arguments.length-1] !== null && typeof arguments[arguments.length-1] === "object" && arguments[arguments.length-1] [ρσ_kwargs_symbol] === true) data.pop();
                     var index, file;
                     index = 0;
-                    var ρσ_Iter11 = ρσ_Iterable(external_files);
-                    for (var ρσ_Index11 = 0; ρσ_Index11 < ρσ_Iter11.length; ρσ_Index11++) {
-                        file = ρσ_Iter11[ρσ_Index11];
+                    var ρσ_Iter12 = ρσ_Iterable(external_files);
+                    for (var ρσ_Index12 = 0; ρσ_Index12 < ρσ_Iter12.length; ρσ_Index12++) {
+                        file = ρσ_Iter12[ρσ_Index12];
                         file = file.slice(5);
                         if (!(ρσ_in("/", file))) {
                             file = "lib/" + file;
@@ -3407,9 +3414,9 @@ function init() {
             var ρσ_anonfunc = function (y) {
                 var filename, text, new_session;
                 this.y = y;
-                var ρσ_Iter12 = ρσ_Iterable(window.files);
-                for (var ρσ_Index12 = 0; ρσ_Index12 < ρσ_Iter12.length; ρσ_Index12++) {
-                    filename = ρσ_Iter12[ρσ_Index12];
+                var ρσ_Iter13 = ρσ_Iterable(window.files);
+                for (var ρσ_Index13 = 0; ρσ_Index13 < ρσ_Iter13.length; ρσ_Index13++) {
+                    filename = ρσ_Iter13[ρσ_Index13];
                     if (ρσ_equals(filename.slice(0, 8), "untitled") && ρσ_equals(len((ρσ_expr_temp = window.files)[(typeof filename === "number" && filename < 0) ? ρσ_expr_temp.length + filename : filename].getValue()), 0)) {
                         ρσ_delitem(window.files, filename);
                         if (ρσ_in("__stdlib__/" + filename, RapydScript.file_data)) {
@@ -3422,9 +3429,9 @@ function init() {
                         y.share.files.get(filename).insert(0, (ρσ_expr_temp = window.files)[(typeof filename === "number" && filename < 0) ? ρσ_expr_temp.length + filename : filename].getValue());
                     }
                 }
-                var ρσ_Iter13 = ρσ_Iterable(y.share.files.keys());
-                for (var ρσ_Index13 = 0; ρσ_Index13 < ρσ_Iter13.length; ρσ_Index13++) {
-                    filename = ρσ_Iter13[ρσ_Index13];
+                var ρσ_Iter14 = ρσ_Iterable(y.share.files.keys());
+                for (var ρσ_Index14 = 0; ρσ_Index14 < ρσ_Iter14.length; ρσ_Index14++) {
+                    filename = ρσ_Iter14[ρσ_Index14];
                     if (!(ρσ_in(filename, window.files))) {
                         text = y.share.files.get(filename).toString();
                         new_session = CodeMirror.Doc(text);
@@ -3545,9 +3552,9 @@ require(ρσ_list_decorate([ "rapydscript" ]), (function() {
                 ρσ_d["omit_baselib"] = true;
                 return ρσ_d;
             }).call(this);
-            var ρσ_Iter14 = ρσ_Iterable(window.files);
-            for (var ρσ_Index14 = 0; ρσ_Index14 < ρσ_Iter14.length; ρσ_Index14++) {
-                file = ρσ_Iter14[ρσ_Index14];
+            var ρσ_Iter15 = ρσ_Iterable(window.files);
+            for (var ρσ_Index15 = 0; ρσ_Index15 < ρσ_Iter15.length; ρσ_Index15++) {
+                file = ρσ_Iter15[ρσ_Index15];
                 if (file !== tag.title) {
                     (ρσ_expr_temp = RapydScript.file_data)[ρσ_bound_index("__stdlib__/" + file, ρσ_expr_temp)] = (ρσ_expr_temp = window.files)[(typeof file === "number" && file < 0) ? ρσ_expr_temp.length + file : file].getValue();
                 }
