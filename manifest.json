@@ -3,7 +3,7 @@
     "lang": "es",
     "name": "Jappy Activity",
     "scope": "/",
-    "display": "fullscreen",
+    "display": "standalone",
     "start_url": "https://educa.juegos/",
     "short_name": "Jappy",
     "theme_color": "#808080",
