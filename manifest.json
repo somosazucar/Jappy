@@ -10,12 +10,26 @@
     "background_color": "#282828",
     "description": "Javascript Programming in Python (Rapydscript-ng). Be Jappy - Code Together.",
     "orientation": "any",
-    "related_applications": [],
-    "prefer_related_applications": false,
     "icons": [
-        {
-            "src": "/activity/app-icon.png",
-            "sizes": "512x512"
-        }
+      {
+        "src": "activity/app-icon.png",
+        "sizes": "512x512"
+      },
+      {
+        "src": "icons/ios/ios-appicon-180-180.png",
+        "sizes": "180x180"
+      },
+      {
+        "src": "icons/ios/ios-appicon-152-152.png",
+        "sizes": "152x152"
+      },
+      {
+        "src": "icons/ios/ios-appicon-120-120.png",
+        "sizes": "120x120"
+      },
+      {
+        "src": "icons/ios/ios-appicon-76-76.png",
+        "sizes": "76x76"
+      }
     ]
 }
