@@ -184,7 +184,8 @@ def load_file_ev(ev):
 def load_file(url, overwrite=False):
     if window.fs is undefined:
         window.fs = new WebDAV.Fs(address)
-    tag.workspace_palette.popDown()
+    if tag.workspace_palette:
+        tag.workspace_palette.popDown()
     path = location.hash.slice(1)
     target_file = url.split('/')[-1]
     fs.file(url).read(def(data, status):

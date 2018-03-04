@@ -152,10 +152,9 @@ class CollaborationBinding:
         if window.y is undefined: # collaboration
             return # No collaboration available
         if filename not in y.share.files.keys():
-            console.debug('creating: ' + filename)
+            console.debug('Creating: ' + filename)
             y.share.files.set(filename, Y.Text)
             y.share.files.get(filename).insert(0, '')
-        console.debug('binding: ' + filename)
         if filename is self.currentDoc:
             console.debug('warning: already bound to ' + self.currentDoc)
         elif self.currentDoc is None:
@@ -165,7 +164,6 @@ class CollaborationBinding:
             y.share.files.get(filename).bindCodeMirror(editor)
             self.currentDoc = filename
         else:
-            console.debug('warning: possibly already bound to ' + self.currentDoc)
             y.share.files.get(filename).bindCodeMirror(editor)
             self.currentDoc = filename
         if self.currentDoc in tag.cursor_pos:
@@ -178,7 +176,6 @@ class CollaborationBinding:
     def unbind(self):
         if window.y is undefined: # collaboration
             return # No collaboration available
-        console.debug('unbinding: ' + self.currentDoc)
         if self.currentDoc is None:
             console.debug('warning: not unbinding, not bound!')
         else:
@@ -190,13 +187,12 @@ class CollaborationBinding:
     def unbindAll(self):
         if window.y is undefined: # collaboration
             return # No collaboration available
-        console.debug('unbinding everywhere: ' + self.currentDoc)
         y.share.files.get(self.currentDoc).unbindCodeMirrorAll()
         
     def deleteDoc(self):
         if window.y is undefined: # collaboration
             return # No collaboration available
-        console.debug('removing: ' + self.currentDoc)
+        console.debug('Removing: ' + self.currentDoc)
         toDelete = self.currentDoc
         self.unbindAll()
         self.unbind()
@@ -255,22 +251,37 @@ def init():
     collab = CollaborationBinding()
     iframe = this.refs.vmframe
 
+    def load_localstore():
+        # No datastore probably means we need to handle stuff ourselves
+        #event_bus.trigger("enable-standalone")
+        if not location.hash:
+            savedSession = localStorage.getItem('jappySession')
+            if savedSession is not None:
+                check_load(None, None, savedSession)
+            tag.update()
+        else:
+            event_bus.trigger("restore-last-session")
+    event_bus.on("activity-not-ready", load_localstore)
+
+
+    def check_load(error, metadata, data):
+        if (data):
+            window.files = {}
+            parsed_data = JSON.parse(data)
+            for file in parsed_data:
+                if parsed_data[file]:
+                    new_session = CodeMirror.Doc(parsed_data[file])
+                    window.files[file] = new_session
+        if len(window.files) > 0:
+            tag.title = list(parsed_data)[0]
+            if window.files[tag.title]!=undefined:
+                collab.unbind()
+                editor.swapDoc(window.files[tag.title])
+        tag.update()
+
+
     def load_datastore(activity):
         datastore = activity.getDatastoreObject()
-        def check_load(error, metadata, data):
-            if (data):
-                window.files = {}
-                parsed_data = JSON.parse(data)
-                for file in parsed_data:
-                    if parsed_data[file]:
-                        new_session = CodeMirror.Doc(parsed_data[file])
-                        window.files[file] = new_session
-            if len(window.files) > 0:
-                tag.title = list(parsed_data)[0]
-                if window.files[tag.title]!=undefined:
-                    collab.unbind()
-                    editor.swapDoc(window.files[tag.title])
-            tag.update()
         if datastore.objectId is not undefined:
             datastore.loadAsText(check_load)
         else:
@@ -282,6 +293,7 @@ def init():
         tag.update()
         window.activity = activity
     event_bus.on("activity-ready", load_datastore)
+
 
     def update_tabs():
         toolbar_div = document.getElementById('main-toolbar')
@@ -319,7 +331,6 @@ def init():
             editor.setOption('lineWrapping', True)
 
     def switchtab(e=None, filename=None):
-        console.debug('switchtab: ' + filename)
         if filename is None:
             filename = e.target.innerHTML # tab button
         if filename is not tag.title:
@@ -373,7 +384,6 @@ def init():
     tag.renametab = renametab
 
     def closetab(e=None, filename=None):
-        console.debug('closetab: ' + filename)
         if len(window.files) > 1:
             active_title = tag.title
             if filename is None:
@@ -385,7 +395,6 @@ def init():
                         path = location.hash.slice(1)
                         def file_removed(ev):
                             pass # TODO: Notify user.
-                        console.debug('removing ' + filename)
                         if window.fs is not undefined:
                             window.fs.file('/' + path + '/' + filename).rm(file_removed)
             index = list(window.files).index(filename)
@@ -933,7 +942,7 @@ def init():
     window.onhashchange = reset_collab
 
     def fresh_start():
-        if not location.hash:
+        if not location.hash and not len(window.files):
             newtab()
     event_bus.on("activity-not-ready", fresh_start)
 

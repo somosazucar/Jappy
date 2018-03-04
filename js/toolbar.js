@@ -1105,7 +1105,9 @@ function load_file() {
     if (window.fs === undefined) {
         window.fs = new WebDAV.Fs(address);
     }
-    tag.workspace_palette.popDown();
+    if (tag.workspace_palette) {
+        tag.workspace_palette.popDown();
+    }
     path = location.hash.slice(1);
     target_file = (ρσ_expr_temp = url.split("/"))[ρσ_expr_temp.length-1];
     fs.file(url).read((function() {

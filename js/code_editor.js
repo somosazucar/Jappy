@@ -2141,11 +2141,10 @@ CollaborationBinding.prototype.bind = function bind(filename) {
         return;
     }
     if (!(ρσ_in(filename, y.share.files.keys()))) {
-        console.debug("creating: " + filename);
+        console.debug("Creating: " + filename);
         y.share.files.set(filename, Y.Text);
         y.share.files.get(filename).insert(0, "");
     }
-    console.debug("binding: " + filename);
     if (filename === self.currentDoc) {
         console.debug("warning: already bound to " + self.currentDoc);
     } else if (self.currentDoc === null) {
@@ -2156,7 +2155,6 @@ CollaborationBinding.prototype.bind = function bind(filename) {
         y.share.files.get(filename).bindCodeMirror(editor);
         self.currentDoc = filename;
     } else {
-        console.debug("warning: possibly already bound to " + self.currentDoc);
         y.share.files.get(filename).bindCodeMirror(editor);
         self.currentDoc = filename;
     }
@@ -2180,7 +2178,6 @@ CollaborationBinding.prototype.unbind = function unbind() {
     if (window.y === undefined) {
         return;
     }
-    console.debug("unbinding: " + self.currentDoc);
     if (self.currentDoc === null) {
         console.debug("warning: not unbinding, not bound!");
     } else {
@@ -2199,7 +2196,6 @@ CollaborationBinding.prototype.unbindAll = function unbindAll() {
     if (window.y === undefined) {
         return;
     }
-    console.debug("unbinding everywhere: " + self.currentDoc);
     y.share.files.get(self.currentDoc).unbindCodeMirrorAll();
 };
 if (!CollaborationBinding.prototype.unbindAll.__argnames__) Object.defineProperties(CollaborationBinding.prototype.unbindAll, {
@@ -2211,7 +2207,7 @@ CollaborationBinding.prototype.deleteDoc = function deleteDoc() {
     if (window.y === undefined) {
         return;
     }
-    console.debug("removing: " + self.currentDoc);
+    console.debug("Removing: " + self.currentDoc);
     toDelete = self.currentDoc;
     self.unbindAll();
     self.unbind();
@@ -2307,36 +2303,50 @@ function init() {
     CodeMirror.commands.replaceAll = undefined;
     collab = new CollaborationBinding;
     iframe = this.refs.vmframe;
+    function load_localstore() {
+        var savedSession;
+        if (!location.hash) {
+            savedSession = localStorage.getItem("jappySession");
+            if (savedSession !== null) {
+                check_load(null, null, savedSession);
+            }
+            tag.update();
+        } else {
+            event_bus.trigger("restore-last-session");
+        }
+    };
+
+    event_bus.on("activity-not-ready", load_localstore);
+    function check_load(error, metadata, data) {
+        var parsed_data, new_session, file;
+        if (data) {
+            window.files = {};
+            parsed_data = JSON.parse(data);
+            var ρσ_Iter3 = ρσ_Iterable(parsed_data);
+            for (var ρσ_Index3 = 0; ρσ_Index3 < ρσ_Iter3.length; ρσ_Index3++) {
+                file = ρσ_Iter3[ρσ_Index3];
+                if (parsed_data[(typeof file === "number" && file < 0) ? parsed_data.length + file : file]) {
+                    new_session = CodeMirror.Doc(parsed_data[(typeof file === "number" && file < 0) ? parsed_data.length + file : file]);
+                    (ρσ_expr_temp = window.files)[(typeof file === "number" && file < 0) ? ρσ_expr_temp.length + file : file] = new_session;
+                }
+            }
+        }
+        if (len(window.files) > 0) {
+            tag.title = list(parsed_data)[0];
+            if (((ρσ_expr_temp = window.files)[ρσ_bound_index(tag.title, ρσ_expr_temp)] !== undefined && (typeof (ρσ_expr_temp = window.files)[ρσ_bound_index(tag.title, ρσ_expr_temp)] !== "object" || ρσ_not_equals((ρσ_expr_temp = window.files)[ρσ_bound_index(tag.title, ρσ_expr_temp)], undefined)))) {
+                collab.unbind();
+                editor.swapDoc((ρσ_expr_temp = window.files)[ρσ_bound_index(tag.title, ρσ_expr_temp)]);
+            }
+        }
+        tag.update();
+    };
+    if (!check_load.__argnames__) Object.defineProperties(check_load, {
+        __argnames__ : {value: ["error", "metadata", "data"]}
+    });
+
     function load_datastore(activity) {
         var datastore, savedSession;
         datastore = activity.getDatastoreObject();
-        function check_load(error, metadata, data) {
-            var parsed_data, new_session, file;
-            if (data) {
-                window.files = {};
-                parsed_data = JSON.parse(data);
-                var ρσ_Iter3 = ρσ_Iterable(parsed_data);
-                for (var ρσ_Index3 = 0; ρσ_Index3 < ρσ_Iter3.length; ρσ_Index3++) {
-                    file = ρσ_Iter3[ρσ_Index3];
-                    if (parsed_data[(typeof file === "number" && file < 0) ? parsed_data.length + file : file]) {
-                        new_session = CodeMirror.Doc(parsed_data[(typeof file === "number" && file < 0) ? parsed_data.length + file : file]);
-                        (ρσ_expr_temp = window.files)[(typeof file === "number" && file < 0) ? ρσ_expr_temp.length + file : file] = new_session;
-                    }
-                }
-            }
-            if (len(window.files) > 0) {
-                tag.title = list(parsed_data)[0];
-                if (((ρσ_expr_temp = window.files)[ρσ_bound_index(tag.title, ρσ_expr_temp)] !== undefined && (typeof (ρσ_expr_temp = window.files)[ρσ_bound_index(tag.title, ρσ_expr_temp)] !== "object" || ρσ_not_equals((ρσ_expr_temp = window.files)[ρσ_bound_index(tag.title, ρσ_expr_temp)], undefined)))) {
-                    collab.unbind();
-                    editor.swapDoc((ρσ_expr_temp = window.files)[ρσ_bound_index(tag.title, ρσ_expr_temp)]);
-                }
-            }
-            tag.update();
-        };
-        if (!check_load.__argnames__) Object.defineProperties(check_load, {
-            __argnames__ : {value: ["error", "metadata", "data"]}
-        });
-
         if (datastore.objectId !== undefined) {
             datastore.loadAsText(check_load);
         } else {
@@ -2407,7 +2417,6 @@ function init() {
         if (Object.prototype.hasOwnProperty.call(ρσ_kwargs_obj, "filename")){
             filename = ρσ_kwargs_obj.filename;
         }
-        console.debug("switchtab: " + filename);
         if (filename === null) {
             filename = e.target.innerHTML;
         }
@@ -2505,7 +2514,6 @@ function init() {
             filename = ρσ_kwargs_obj.filename;
         }
         var active_title, path, index;
-        console.debug("closetab: " + filename);
         if (len(window.files) > 1) {
             active_title = tag.title;
             if (filename === null) {
@@ -2522,7 +2530,6 @@ function init() {
                             __argnames__ : {value: ["ev"]}
                         });
 
-                        console.debug("removing " + filename);
                         if (window.fs !== undefined) {
                             window.fs.file("/" + path + "/" + filename).rm(file_removed);
                         }
@@ -3371,7 +3378,7 @@ function init() {
 
     window.onhashchange = reset_collab;
     function fresh_start() {
-        if (!location.hash) {
+        if (!location.hash && !len(window.files)) {
             newtab();
         }
     };
