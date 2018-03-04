@@ -1152,9 +1152,11 @@ function update_workspace_menu() {
             return ρσ_anonfunc;
         })());
         items = ρσ_list_decorate([]);
-        palette = tag.workspace_palette.getPalette();
-        container = palette.getElementsByClassName("container")[0];
-        container.innerHTML = "";
+        if (tag.workspace_palette) {
+            palette = tag.workspace_palette.getPalette();
+            container = palette.getElementsByClassName("container")[0];
+            container.innerHTML = "";
+        }
         var ρσ_Iter6 = ρσ_Iterable(found_files);
         for (var ρσ_Index6 = 0; ρσ_Index6 < ρσ_Iter6.length; ρσ_Index6++) {
             file = ρσ_Iter6[ρσ_Index6];

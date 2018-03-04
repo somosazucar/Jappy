@@ -209,9 +209,10 @@ def update_workspace_menu():
                            return 1
                       )
         items = []
-        palette = tag.workspace_palette.getPalette()
-        container = palette.getElementsByClassName('container')[0]
-        container.innerHTML = ''
+        if tag.workspace_palette:
+            palette = tag.workspace_palette.getPalette()
+            container = palette.getElementsByClassName('container')[0]
+            container.innerHTML = ''
         for file in found_files:
             if file.name[0]=='.':
                 continue

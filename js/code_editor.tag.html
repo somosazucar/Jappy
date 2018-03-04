@@ -229,7 +229,7 @@ def init():
       'F9': toggle_tray,
       'Tab': def():
                 if editor.somethingSelected():
-                    editor.indentSelection("add");
+                    editor.indentSelection("add")
                 else:
                     editor.execCommand('insertSoftTab')
     })
@@ -253,14 +253,13 @@ def init():
 
     def load_localstore():
         # No datastore probably means we need to handle stuff ourselves
-        #event_bus.trigger("enable-standalone")
         if not location.hash:
             savedSession = localStorage.getItem('jappySession')
             if savedSession is not None:
                 check_load(None, None, savedSession)
             tag.update()
         else:
-            event_bus.trigger("restore-last-session")
+            init_collab()
     event_bus.on("activity-not-ready", load_localstore)
 
 
@@ -971,7 +970,7 @@ def init():
                                 del RapydScript.file_data['__stdlib__/' + filename]
                             continue
                         if filename not in y.share.files.keys():
-                            y.share.files.set(filename, Y.Text);
+                            y.share.files.set(filename, Y.Text)
                             y.share.files.get(filename).insert(0, 
                                                     window.files[filename].getValue())
                     for filename in y.share.files.keys():
@@ -1015,7 +1014,6 @@ def init():
                                 event_bus.trigger(event, data)
                         )
         )
-    event_bus.on("activity-not-ready", init_collab)
 
     this.editor = editor
     window.editor = editor

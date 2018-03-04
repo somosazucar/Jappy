@@ -2312,7 +2312,7 @@ function init() {
             }
             tag.update();
         } else {
-            event_bus.trigger("restore-last-session");
+            init_collab();
         }
     };
 
@@ -3509,7 +3509,6 @@ function init() {
         })());
     };
 
-    event_bus.on("activity-not-ready", init_collab);
     this.editor = editor;
     window.editor = editor;
     window.init_collab = init_collab;
