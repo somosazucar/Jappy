@@ -1,10 +1,10 @@
 {
     "dir": "ltr",
-    "lang": "es",
+    "lang": "en-US",
     "name": "Jappy Activity",
     "scope": "/",
     "display": "standalone",
-    "start_url": "https://educa.juegos/",
+    "start_url": "/",
     "short_name": "Jappy",
     "theme_color": "#808080",
     "background_color": "#282828",

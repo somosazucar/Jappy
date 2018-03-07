@@ -1,5 +1,9 @@
 body, html {
-    overflow: hidden;
+    overflow: auto;
+    height: 100%;
+    position: fixed;
+    left: 0px;
+    right: 0px;
 }
 .canvas {
     display: flex;

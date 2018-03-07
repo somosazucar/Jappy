@@ -1226,7 +1226,9 @@ function update_workspace_menu() {
         };
         lastrow = ρσ_interpolate_kwargs.call(E, E.div, [browse_button].concat([ρσ_desugar_kwargs({class_: "menu"})]));
         items.append(lastrow);
-        tag.workspace_palette.setContent(items);
+        if (tag.workspace_palette) {
+            tag.workspace_palette.setContent(items);
+        }
     };
     if (!list_files.__argnames__) Object.defineProperties(list_files, {
         __argnames__ : {value: ["found_files"]}

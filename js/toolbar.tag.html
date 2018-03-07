@@ -260,7 +260,8 @@ def update_workspace_menu():
             location.href = 'dav://' + location.host + '/dav/' + path
         lastrow = E.div(class_='menu', browse_button)
         items.append(lastrow)
-        tag.workspace_palette.setContent(items)
+        if tag.workspace_palette:
+            tag.workspace_palette.setContent(items)
     def try_make_dir(body, existed_previously):
         fs.dir('/' + path).children(list_files)
     if window.server_files is undefined:
