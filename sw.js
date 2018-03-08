@@ -1,4 +1,4 @@
-//This is the "Offline copy of pages" wervice worker
+//This is the "Offline copy of pages" service worker
 
 //Install stage sets up the index page (home page) in the cahche and opens a new cache
 self.addEventListener('install', function(event) {
@@ -6,7 +6,7 @@ self.addEventListener('install', function(event) {
   event.waitUntil(
     fetch(indexPage).then(function(response) {
       return caches.open('pwabuilder-offline').then(function(cache) {
-        console.log('[PWA Builder] Cached index page during Install'+ response.url);
+        console.log('[PWA Builder] Cached index page during Install '+ response.url);
         return cache.put(indexPage, response);
       });
   }));
@@ -17,14 +17,10 @@ self.addEventListener('fetch', function(event) {
   var updateCache = function(request){
     return caches.open('pwabuilder-offline').then(function (cache) {
       return fetch(request).then(function (response) {
-        console.log('[PWA Builder] add page to offline'+response.url)
-        try {
+        console.log('[PWA] add page to offline '+response.url);
+		if (request.method=="GET") {
 			return cache.put(request, response);
-		} catch (e) {
-			alert(e);
-			console.log(request);
-			console.log(response);
-		}
+		};
       });
     });
   };
@@ -33,7 +29,7 @@ self.addEventListener('fetch', function(event) {
 
   event.respondWith(
     fetch(event.request).catch(function(error) {
-      console.log( '[PWA Builder] Network request Failed. Serving content from cache: ' + error );
+      console.log( '[PWA] Network request Failed. Serving content from cache: ' + error );
 
       //Check to see if you have it in the cache
       //Return response
