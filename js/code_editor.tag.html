@@ -1030,6 +1030,11 @@ def init():
                         )
         )
 
+
+    # Prevent overscroll in Chromium Mobile
+    h = parent.document.getElementsByTagName('html')[0]
+    h.style['overscroll-behavior'] = 'contain'
+
     this.editor = editor
     window.editor = editor
     window.init_collab = init_collab

@@ -2257,7 +2257,7 @@ CollaborationBinding.prototype.__str__ = function __str__ () {
 Object.defineProperty(CollaborationBinding.prototype, "__bases__", {value: []});
 
 function init() {
-    var editor, collab, iframe;
+    var editor, collab, iframe, h;
     editor = CodeMirror.fromTextArea(this.refs.code, (function(){
         var ρσ_d = {};
         ρσ_d["lineNumbers"] = true;
@@ -3512,6 +3512,8 @@ function init() {
         })());
     };
 
+    h = parent.document.getElementsByTagName("html")[0];
+    h.style["overscroll-behavior"] = "contain";
     this.editor = editor;
     window.editor = editor;
     window.init_collab = init_collab;
