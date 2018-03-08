@@ -1,3 +1,7 @@
+html {
+    overscroll-behavior: contain;
+}
+
 body, html {
     overflow: hidden;
     height: 100%;
