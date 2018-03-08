@@ -16,6 +16,7 @@ code-editor {
     margin-right: -30px;
     overflow: auto;
     -webkit-overflow-scrolling: touch;
+    overscroll-behavior: contain;
 }
 .CodeMirror-linenumber {
     font-size: 14pt;
@@ -110,8 +111,9 @@ iframe {
     flex: 1 1;
 }
 #vmframe_cont iframe {
-    width: 100%
+    width: 100%;
     height: 100%;
+    overscroll-behavior: contain;
 }
 </style>
 

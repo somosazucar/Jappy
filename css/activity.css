@@ -1,5 +1,5 @@
 body, html {
-    overflow: auto;
+    overflow: hidden;
     height: 100%;
     position: fixed;
     left: 0px;
