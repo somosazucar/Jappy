@@ -64,7 +64,6 @@
 
 <script type="text/Rapyd">
 
-import re
 from elementmaker import E
 from gettext import install, gettext as _
 tag = this
@@ -74,10 +73,6 @@ url_base = location.protocol
 address = url_base + '//' + location.host + '/dav'
 if location.hash:
     window.fs = new WebDAV.Fs(address)
-
-cookie = re.search('Jappy-Server-Version=(.*);?', document.cookie)
-if cookie:
-    jappy_server_version = cookie.groups()
 
 require(["text!../jappy.json"],
         def(raw_translation_data):
@@ -144,7 +139,7 @@ def filter_latest(files):
 
 def collaboration_triggered():
     tag.workspace_palette.popDown()
-    channel = prompt(_('Join collaboration channel'), location.hash[1:])
+    channel = prompt(_('Join shared workspace (experimental)'), location.hash[1:])
     location.hash = channel or ''
 event_bus.on('collaboration-dialog', collaboration_triggered)
 
@@ -395,12 +390,11 @@ def init():
                 icon = 'zip'
                 trigger = 'import-file'
             class shared_folder:
-                label = _('Folder collaboration')
+                label = _('Shared workspace')
                 icon = 'folder'
                 trigger = 'collaboration-dialog'
             items = []
-            for i in [as_zip(), import_file(),
-                      shared_folder() if jappy_server_version else None]:
+            for i in [as_zip(), import_file(), shared_folder()]:
                 if i:
                     row = document.createElement('div')
                     row.classList.add('menu')
