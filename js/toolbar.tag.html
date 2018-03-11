@@ -64,6 +64,7 @@
 
 <script type="text/Rapyd">
 
+import re
 from elementmaker import E
 from gettext import install, gettext as _
 tag = this
@@ -73,6 +74,10 @@ url_base = location.protocol
 address = url_base + '//' + location.host + '/dav'
 if location.hash:
     window.fs = new WebDAV.Fs(address)
+
+cookie = re.search('Jappy-Server-Version=(.*);?', document.cookie)
+if cookie:
+    jappy_server_version = cookie.groups()
 
 require(["text!../jappy.json"],
         def(raw_translation_data):
@@ -135,6 +140,14 @@ def filter_latest(files):
                 as the first entry.'''
                 return result
         , [])
+
+
+def collaboration_triggered():
+    tag.workspace_palette.popDown()
+    channel = prompt(_('Join collaboration channel'), location.hash[1:])
+    location.hash = channel or ''
+event_bus.on('collaboration-dialog', collaboration_triggered)
+
 
 def prefetch_files():
     if tag.fetching_files:
@@ -381,24 +394,30 @@ def init():
                 label = _('Import')
                 icon = 'zip'
                 trigger = 'import-file'
+            class shared_folder:
+                label = _('Collaboration service')
+                icon = 'folder'
+                trigger = 'collaboration-dialog'
             items = []
-            for i in [as_zip(), import_file()]:
-                row = document.createElement('div')
-                row.classList.add('menu')
-                item = document.createElement('button')
-                item.classList.add('icon')
-                span = document.createElement('span')
-                span.classList.add(i.icon)
-                text = document.createTextNode(i.label)
-                item.appendChild(span)
-                item.appendChild(text)
-                def trigger_export(event):
-                    return def():
-                        tag.export_palette.popDown()
-                        event_bus.trigger(event)
-                item.onclick = trigger_export(i.trigger)
-                row.appendChild(item)
-                items.append(row)
+            for i in [as_zip(), import_file(),
+                      shared_folder() if jappy_server_version else None]:
+                if i:
+                    row = document.createElement('div')
+                    row.classList.add('menu')
+                    item = document.createElement('button')
+                    item.classList.add('icon')
+                    span = document.createElement('span')
+                    span.classList.add(i.icon)
+                    text = document.createTextNode(i.label)
+                    item.appendChild(span)
+                    item.appendChild(text)
+                    def trigger_export(event):
+                        return def():
+                            tag.export_palette.popDown()
+                            event_bus.trigger(event)
+                    item.onclick = trigger_export(i.trigger)
+                    row.appendChild(item)
+                    items.append(row)
             tag.export_palette.setContent(items)
         )
 this.on('mount', init)
