@@ -2,7 +2,10 @@
 import sys
 import threading
 import gi
+import signal
 gi.require_version('WebKit2', '4.0')
+signal.signal(signal.SIGINT, signal.SIG_DFL)
+
 from gi.repository import WebKit2
 from gi.repository import Gtk
 from gi.repository import Gio
@@ -20,11 +23,12 @@ if sys.platform=='linux2':
 
 base_uri = 'http://127.0.0.1:54991#Jappy'
 
-import signal
-signal.signal(signal.SIGINT, signal.SIG_DFL)
-
 
 def start_webview():
+    def title_changed(webview, title):
+        title = webview.get_title()
+        window.set_title(title)
+
     def _app_scheme_cb(request, user_data):
         uri = request.get_path()
         with app.test_client() as c:
@@ -50,6 +54,7 @@ def start_webview():
     web_view = WebKit2.WebView()
     #web_view.connect("load-changed", _loading_changed_cb)
     #web_view.connect('run-file-chooser', __run_file_chooser)
+    web_view.connect('notify::title', title_changed)
 
     window.add(web_view)
 
@@ -59,7 +64,6 @@ def start_webview():
     settings.set_enable_xss_auditor(False)
 
     web_view.load_uri(base_uri)
-    window.set_title("Jappy")
     window.set_title("Jappy")
     window.set_icon_from_file("activity/app-icon.png")
     window.show_all()
