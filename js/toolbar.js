@@ -2893,7 +2893,7 @@ function init() {
                 return this.__repr__();
             };
             Object.defineProperty(shared_folder.prototype, "__bases__", {value: []});
-            shared_folder.prototype.label = _("Collaboration service");
+            shared_folder.prototype.label = _("Folder collaboration");
             shared_folder.prototype.icon = "folder";
             shared_folder.prototype.trigger = "collaboration-dialog";
 
