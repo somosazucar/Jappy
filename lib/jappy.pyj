@@ -6,13 +6,9 @@ def input(*args):
     return prompt(args)
 
 def clearScreen(color=None):
-    def clearScreenAsync():
-        element = document.getElementById('__terminal__')
-        if element:
-            element.innerHTML = ''
     if color:
         document.body.style.backgroundColor = color
-    setTimeout(clearScreenAsync)
+    document.body.innerHTML = ''
 
 def onKeyUp(e):
     if e.keyCode == 13:
@@ -35,27 +31,28 @@ def inputAsync(cb=None):
 
 
 def ρσ_print(*args, **kwargs):
-    end = "\n"
-    sep = " "
+    end = '\n'
+    sep = ' '
+    tag = 'span'
     if 'end' in kwargs:
         end = kwargs['end']
+    if 'sep' in kwargs:
+        sep = kwargs['sep']
+    if 'tag' in kwargs:
+        tag = kwargs['tag']
 
-    def printAsync():
-        element = document.getElementById('__terminal__')
-        if element:
-            addition = sep.join([arg for arg in args]) + end
-            previous = element.innerHTML
-            element.innerHTML = previous + addition.replace('\n', '<br>')
-            element.scrollTop = element.scrollHeight
-        else:
-            console.log (sep.join([str (arg) for arg in args]))
-    setTimeout(printAsync)
+    addition = sep.join([arg for arg in args]) + end
+
+    el = document.createElement(tag)
+    el.innerHTML = addition.replace('\n', '<br>')
+    el.scrollTop = el.scrollHeight
+    document.body.appendChild(el)
+    return el
 
 window.onerror = def(e):
     print(e)
 
 def loadCSS(url_list):
-    link_elements = []
     for urlmedia in url_list:
         loadCSSAsync(urlmedia)
 
