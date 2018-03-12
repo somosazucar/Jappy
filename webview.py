@@ -21,7 +21,7 @@ if sys.platform=='linux2':
     reload(sys)
     sys.setdefaultencoding('utf-8')
 
-base_uri = 'http://127.0.0.1:54991#Jappy'
+base_uri = 'http://127.0.0.1:54991'
 
 
 def start_webview():

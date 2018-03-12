@@ -1036,7 +1036,9 @@ function collaboration_triggered() {
     var channel;
     tag.workspace_palette.popDown();
     channel = prompt(_("Join shared workspace (experimental)"), location.hash.slice(1));
-    location.hash = channel || "";
+    if ((channel !== null && (typeof channel !== "object" || ρσ_not_equals(channel, null)))) {
+        location.hash = channel;
+    }
 };
 
 event_bus.on("collaboration-dialog", collaboration_triggered);
