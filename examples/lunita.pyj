@@ -1,0 +1,16 @@
+clearScreen ('Fuchsia')
+
+i = 0
+EstadoDeLuna = ["🌕","🌖","🌗","🌘","🌑","🌒","🌓","🌔"]
+
+# Nuestro Elemento
+luna = print('🌕')
+luna.style.fontSize = '213pt'
+luna.style.color = 'Aqua'
+
+def animar():
+    global i
+    luna.textContent=EstadoDeLuna[i % 8]
+    i+=1
+
+setInterval (animar, 300)

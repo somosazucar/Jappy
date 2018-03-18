@@ -983,7 +983,7 @@ require(ρσ_list_decorate([ "text!../jappy.json" ]), (function() {
     });
     return ρσ_anonfunc;
 })());
-examples = ρσ_list_decorate([ "welcome.pyj", "memorize.pyj", "mandala.pyj", "input.pyj", "repl.pyj", "unicode.pyj" ]);
+examples = ρσ_list_decorate([ "welcome.pyj", "memorize.pyj", "mandala.pyj", "input.pyj", "repl.pyj", "unicode.pyj", "lunita.pyj" ]);
 special = ρσ_list_decorate([ "template.html" ]);
 window.state = "clean";
 tag.fetching_files = false;
