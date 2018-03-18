@@ -139,7 +139,8 @@ def filter_latest(files):
 
 def collaboration_triggered():
     tag.workspace_palette.popDown()
-    channel = prompt(_('Join shared workspace (experimental)'), location.hash[1:])
+    channel = prompt(_('Join shared workspace') + ' ' + _('(experimental)'),
+                     location.hash[1:])
     if channel != None:
         location.hash = channel
 event_bus.on('collaboration-dialog', collaboration_triggered)

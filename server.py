@@ -21,6 +21,7 @@ signal.signal(signal.SIGINT, signal.SIG_DFL)
 mimetypes.add_type('image/svg+xml', '.svg')
 mimetypes.add_type('application/x-font-woff', '.woff')
 mimetypes.add_type('application/x-rapyd', '.pyj')
+mimetypes.add_type('application/json', '.json')
 
 app_dir = "."
 app = Flask(__name__,
@@ -56,12 +57,14 @@ def favicon():
                                mimetype='vnd.microsoft.icon')
 
 
+@app.route('/jappy.json')
+def i18n():
+    return send_from_directory(app.root_path, 'jappy.json',
+                               mimetype='application/json')
+
+
 @app.route('/manifest.json')
 def manifest():
-    import pprint
-    print ("MANIFEST REQUEST:")
-    pprint.pprint (dir(request))
-    pprint.pprint (request.get_data())
     return send_from_directory(app.root_path, 'manifest.json',
                                mimetype='application/manifest+json')
 

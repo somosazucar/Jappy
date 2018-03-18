@@ -1035,7 +1035,7 @@ if (!filter_latest.__argnames__) Object.defineProperties(filter_latest, {
 function collaboration_triggered() {
     var channel;
     tag.workspace_palette.popDown();
-    channel = prompt(_("Join shared workspace (experimental)"), location.hash.slice(1));
+    channel = prompt(_("Join shared workspace") + " " + _("(experimental)"), location.hash.slice(1));
     if ((channel !== null && (typeof channel !== "object" || ρσ_not_equals(channel, null)))) {
         location.hash = channel;
     }
