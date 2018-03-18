@@ -962,7 +962,13 @@ def init():
 
     def fresh_start():
         if not location.hash and not len(window.files):
-            newtab()
+            require(["text!../jappy.json"],
+                def(raw_translation_data):
+                    translation_data = JSON.parse(raw_translation_data)
+                    if translation_data['language']==tag.lang:
+                        install(translation_data)
+                    newtab()
+                )
     event_bus.on("activity-not-ready", fresh_start)
 
     def init_collab():
