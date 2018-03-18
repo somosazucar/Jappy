@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Jappy\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2017-09-02 23:52-0500\n"
+"POT-Creation-Date: 2018-03-12 00:08-0500\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -17,19 +17,24 @@ msgstr ""
 "Content-Type: text/plain; charset=CHARSET\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-#: js/code_editor.tag.html:244
+#: js/code_editor.tag.html:260
 msgid "Find"
 msgstr ""
 
-#: js/code_editor.tag.html:529
+#: js/code_editor.tag.html:435 js/code_editor.tag.html:810
+#: js/code_editor.tag.html:984
+msgid "untitled"
+msgstr ""
+
+#: js/code_editor.tag.html:566
 msgid "Running from remote: "
 msgstr ""
 
-#: js/code_editor.tag.html:984
+#: js/code_editor.tag.html:1021
 msgid "Joining live edit session."
 msgstr ""
 
-#: js/code_editor.tag.html:985 js/toolbar.tag.html:165
+#: js/code_editor.tag.html:1022 js/toolbar.tag.html:175
 msgid " files."
 msgstr ""
 
@@ -37,11 +42,11 @@ msgstr ""
 msgid "Jappy Activity"
 msgstr ""
 
-#: js/toolbar.tag.html:45 js/toolbar.tag.html:318
+#: js/toolbar.tag.html:45 js/toolbar.tag.html:331
 msgid "Load an example"
 msgstr ""
 
-#: js/toolbar.tag.html:47 js/toolbar.tag.html:369
+#: js/toolbar.tag.html:47 js/toolbar.tag.html:382
 msgid "Workspace"
 msgstr ""
 
@@ -73,30 +78,42 @@ msgstr ""
 msgid "Stop"
 msgstr ""
 
-#: js/toolbar.tag.html:164
+#: js/toolbar.tag.html:142
+msgid "Join shared workspace"
+msgstr ""
+
+#: js/toolbar.tag.html:142
+msgid "(experimental)"
+msgstr ""
+
+#: js/toolbar.tag.html:174
 msgid "Restoring saved session from file system."
 msgstr ""
 
-#: js/toolbar.tag.html:169
+#: js/toolbar.tag.html:179
 msgid "Welcome"
 msgstr ""
 
-#: js/toolbar.tag.html:169
+#: js/toolbar.tag.html:179
 msgid "new project!"
 msgstr ""
 
-#: js/toolbar.tag.html:255
+#: js/toolbar.tag.html:267
 msgid "Browse..."
 msgstr ""
 
-#: js/toolbar.tag.html:372
+#: js/toolbar.tag.html:385
 msgid "Export"
 msgstr ""
 
-#: js/toolbar.tag.html:374
+#: js/toolbar.tag.html:387
 msgid "Export as zipped HTML"
 msgstr ""
 
-#: js/toolbar.tag.html:378
+#: js/toolbar.tag.html:391
 msgid "Import"
+msgstr ""
+
+#: js/toolbar.tag.html:395
+msgid "Shared workspace"
 msgstr ""

@@ -2576,6 +2576,9 @@ function init() {
             file = ρσ_kwargs_obj.file;
         }
         var basename, extension, i;
+        if (file === null) {
+            file = _("untitled") + ".pyj";
+        }
         basename = file.substr(0, file.indexOf("."));
         extension = file.substr(file.indexOf("."));
         i = 1;
@@ -2586,7 +2589,7 @@ function init() {
         return file;
     };
     if (!get_new_untitled.__defaults__) Object.defineProperties(get_new_untitled, {
-        __defaults__ : {value: {file:"untitled.pyj"}},
+        __defaults__ : {value: {file:null}},
         __handles_kwarg_interpolation__ : {value: true},
         __argnames__ : {value: ["file"]}
     });
@@ -3138,7 +3141,7 @@ function init() {
         collab.create(filename, data || "");
         editor.swapDoc(new_session);
         if (tag.title !== undefined) {
-            if (ρσ_equals(tag.title.slice(0, 8), "untitled") && ρσ_equals(len((ρσ_expr_temp = window.files)[ρσ_bound_index(tag.title, ρσ_expr_temp)].getValue()), 0)) {
+            if (ρσ_equals(tag.title.slice(0, 8), _("untitled")) && ρσ_equals(len((ρσ_expr_temp = window.files)[ρσ_bound_index(tag.title, ρσ_expr_temp)].getValue()), 0)) {
                 ρσ_delitem(window.files, tag.title);
             }
         }
@@ -3429,7 +3432,7 @@ function init() {
                 var ρσ_Iter13 = ρσ_Iterable(window.files);
                 for (var ρσ_Index13 = 0; ρσ_Index13 < ρσ_Iter13.length; ρσ_Index13++) {
                     filename = ρσ_Iter13[ρσ_Index13];
-                    if (ρσ_equals(filename.slice(0, 8), "untitled") && ρσ_equals(len((ρσ_expr_temp = window.files)[(typeof filename === "number" && filename < 0) ? ρσ_expr_temp.length + filename : filename].getValue()), 0)) {
+                    if (ρσ_equals(filename.slice(0, 8), _("untitled")) && ρσ_equals(len((ρσ_expr_temp = window.files)[(typeof filename === "number" && filename < 0) ? ρσ_expr_temp.length + filename : filename].getValue()), 0)) {
                         ρσ_delitem(window.files, filename);
                         if (ρσ_in("__stdlib__/" + filename, RapydScript.file_data)) {
                             ρσ_delitem(RapydScript.file_data, ("__stdlib__/" + filename));

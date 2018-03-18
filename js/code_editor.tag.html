@@ -432,7 +432,9 @@ def init():
             editor.focus()
     tag.closetab = closetab
 
-    def get_new_untitled(file='untitled.pyj'):
+    def get_new_untitled(file=None):
+        if file is None:
+            file = _('untitled') + '.pyj'
         basename = file.substr(0, file.indexOf('.'))
         extension = file.substr(file.indexOf('.'))
         i = 1
@@ -807,7 +809,7 @@ def init():
         collab.create(filename, data or '')
         editor.swapDoc(new_session)
         if tag.title is not undefined:
-            if tag.title[:8]==('untitled') \
+            if tag.title[:8]==(_('untitled')) \
                         and len(window.files[tag.title].getValue())==0:
                 del window.files[tag.title]
         tag.title = filename
@@ -981,7 +983,7 @@ def init():
                 def(y):
                     this.y = y
                     for filename in window.files:
-                        if filename[:8]==('untitled') \
+                        if filename[:8]==(_('untitled')) \
                                 and len(window.files[filename].getValue())==0:
                             del window.files[filename]
                             if '__stdlib__/' + filename in RapydScript.file_data:
