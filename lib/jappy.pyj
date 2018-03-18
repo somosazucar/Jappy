@@ -31,20 +31,21 @@ def inputAsync(cb=None):
 
 
 def ρσ_print(*args, **kwargs):
-    end = '\n'
+    end = None
     sep = ' '
-    tag = 'span'
-    if 'end' in kwargs:
-        end = kwargs['end']
     if 'sep' in kwargs:
         sep = kwargs['sep']
-    if 'tag' in kwargs:
-        tag = kwargs['tag']
+    if 'end' in kwargs:
+        end = kwargs['end']
+    
+    tag = kwargs['tag'] if kwargs['tag'] is not undefined \
+            else 'span' if end is not None \
+            else 'div'
 
-    addition = sep.join([arg for arg in args]) + end
+    addition = sep.join([arg for arg in args]) + (end if end else '')
 
     el = document.createElement(tag)
-    el.innerHTML = addition.replace('\n', '<br>')
+    el.innerHTML = addition.replace('\n', '<br/>')
     el.scrollTop = el.scrollHeight
     document.body.appendChild(el)
     return el
