@@ -2382,7 +2382,7 @@ function init() {
             editor.setSize(window.innerWidth / 2, target_size);
         }
         if (len(window.files) > 0) {
-            window.document.title = tag.title;
+            window.document.title = "Jappy : " + tag.title + " @ " + location.host + ((location.hash) ? " # " + location.hash : "");
             guess_mode();
         }
     };
@@ -3404,13 +3404,14 @@ function init() {
 
     event_bus.on("activity-not-ready", fresh_start);
     function init_collab() {
-        var address, path;
+        var protocol, address, path;
         if (!location.hash) {
             console.log("Add a hash id to synchronize.");
             tag.update();
             return;
         }
-        address = location.host;
+        protocol = (ρσ_equals(location.protocol.slice(-2, -1), "s")) ? "wss" : "ws";
+        address = protocol + "://" + location.host;
         path = location.hash.slice(1);
         event_bus.trigger("update-workspace-menu");
         Y((function(){

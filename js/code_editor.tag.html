@@ -316,7 +316,8 @@ def init():
         toolbar_style = window.getComputedStyle(toolbar_div)
         tabs_div = document.getElementById('tabs')
         tabs_style = window.getComputedStyle(tabs_div)
-        target_size = window.innerHeight - int(toolbar_style.height) - int(tabs_style.height)
+        target_size = window.innerHeight - int(toolbar_style.height) \
+                                         - int(tabs_style.height)
         canvas = document.getElementById('canvas')
         canvas.style.top = toolbar_style.height
         if getComputedStyle(iframe).display == 'none':
@@ -324,7 +325,8 @@ def init():
         else:
             editor.setSize(window.innerWidth/2, target_size)
         if len(window.files) > 0:
-            window.document.title = tag.title
+            window.document.title = 'Jappy : ' + tag.title + ' @ ' + \
+                location.host + ((' # ' + location.hash) if location.hash else '')
             guess_mode()
     this.on('update', update_tabs)
     window.addEventListener("resize", deferred_update_tabs)
@@ -976,7 +978,8 @@ def init():
             console.log('Add a hash id to synchronize.')
             tag.update()
             return
-        address = location.host
+        protocol = 'wss' if location.protocol[-2:-1]=='s' else 'ws'
+        address = protocol + '://' + location.host
         path = location.hash.slice(1)
         event_bus.trigger('update-workspace-menu')
 
@@ -984,7 +987,7 @@ def init():
            'connector': { 'name': 'websockets-client',
                           'room': path,
                           'options': { 'transports': ['websocket'] },
-                          'url':  address },
+                          'url': address },
             'share'   : { 'files': 'Map' }}).then(  
                 def(y):
                     this.y = y
