@@ -959,6 +959,7 @@ def init():
 
     def reset_collab(ev):
         # This is by far the simplest and most clear to the user ;-)
+        window.files = []
         location.reload()
     window.onhashchange = reset_collab
 

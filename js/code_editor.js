@@ -3376,6 +3376,7 @@ function init() {
 
     event_bus.on("save-as-zip", save_zip);
     function reset_collab(ev) {
+        window.files = ρσ_list_decorate([]);
         location.reload();
     };
     if (!reset_collab.__argnames__) Object.defineProperties(reset_collab, {
