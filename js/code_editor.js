@@ -2382,7 +2382,7 @@ function init() {
             editor.setSize(window.innerWidth / 2, target_size);
         }
         if (len(window.files) > 0) {
-            window.document.title = "Jappy : " + tag.title + " @ " + location.host + ((location.hash) ? " # " + location.hash : "");
+            window.document.title = "Jappy : " + tag.title + " @ " + location.host + ((location.hash) ? " # " + location.hash.slice(1) : "");
             guess_mode();
         }
     };
@@ -2828,7 +2828,7 @@ function init() {
             iframe.removeEventListener("load", write_script);
             source = iframe.contentDocument.documentElement.outerHTML;
             if (window.fs !== undefined) {
-                script_place = source.toLowerCase().indexOf("</html>");
+                script_place = source.toLowerCase().indexOf("</body>");
                 if (script_place !== -1) {
                     source = source.slice(0, script_place) + "\n" + script.outerHTML + "\n" + source.slice(script_place);
                 }
@@ -3596,7 +3596,8 @@ require(ρσ_list_decorate([ "rapydscript" ]), (function() {
             }
             try {
                 result = RapydScript.compile(inputcode || editor.getValue(), tag.title, options);
-                if (ρσ_in("print;", result)) {
+                if (ρσ_in("print;", result.split("\n"))) {
+                    console.log(result.split("\n"));
                     throw new SyntaxError("Missing parentheses in call to \"print\"");
                 }
             } catch (ρσ_Exception) {
