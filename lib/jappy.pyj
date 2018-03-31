@@ -22,7 +22,7 @@ def inputAsync(cb=None):
             if cb(el.value) in [undefined, True]:
                 e.target.parentNode.removeChild(el)
         def scrolldown():
-            document.body.scrollTop = document.body.scrollHeight
+            document.documentElement.scrollTop = document.documentElement.scrollHeight
         setTimeout(scrolldown)
     el.onkeyup = onKeyUp
     document.body.appendChild(el)
@@ -45,9 +45,13 @@ def ρσ_print(*args, **kwargs):
     addition = sep.join([arg for arg in args]) + (end if end else '')
 
     el = document.createElement(tag)
+    if 'style' in kwargs:
+        el.style.cssText = kwargs['style']
     el.innerHTML = addition.replace('\n', '<br/>')
-    el.scrollTop = el.scrollHeight
+
     document.body.appendChild(el)
+    document.documentElement.scrollTop = document.documentElement.scrollHeight
+
     return el
 
 window.onerror = def(e):
