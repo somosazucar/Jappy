@@ -47,7 +47,7 @@ def ρσ_print(*args, **kwargs):
     el = document.createElement(tag)
     if 'style' in kwargs:
         el.style.cssText = kwargs['style']
-    el.innerHTML = addition.replace('\n', '<br/>')
+    el.innerHTML = addition.replace(/\n/g, '<br/>')
 
     document.body.appendChild(el)
     document.documentElement.scrollTop = document.documentElement.scrollHeight
