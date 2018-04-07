@@ -1,8 +1,11 @@
 import subprocess
 from flask import jsonify
 from flask_hookserver import Hooks
+from flask_cache_bust import CacheBust
 
 def register_hooks(app):
+    cache_bust = CacheBust(app)
+
     app.config['VALIDATE_IP'] = False
     app.config['VALIDATE_SIGNATURE'] = False
 
