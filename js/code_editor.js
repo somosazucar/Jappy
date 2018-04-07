@@ -2834,6 +2834,7 @@ function init() {
                 }
                 publish_script(source);
             }
+            iframe.contentWindow.Jappy = iframe.contentWindow.parent;
             iframe.contentDocument.body.appendChild(script);
             iframe.contentDocument.close();
         };
@@ -3596,10 +3597,6 @@ require(ρσ_list_decorate([ "rapydscript" ]), (function() {
             }
             try {
                 result = RapydScript.compile(inputcode || editor.getValue(), tag.title, options);
-                if (ρσ_in("print;", result.split("\n"))) {
-                    console.log(result.split("\n"));
-                    throw new SyntaxError("Missing parentheses in call to \"print\"");
-                }
             } catch (ρσ_Exception) {
                 ρσ_last_exception = ρσ_Exception;
                 if (ρσ_Exception instanceof Error) {
