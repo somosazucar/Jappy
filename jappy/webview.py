@@ -65,7 +65,7 @@ def start_webview():
 
     web_view.load_uri(base_uri)
     window.set_title("Jappy")
-    window.set_icon_from_file("activity/app-icon.png")
+    window.set_icon_from_file("webapp/activity/app-icon.png")
     window.show_all()
 
     def shutdown(*args):
@@ -79,11 +79,14 @@ def start_backend():
     except Exception as e:
         print ("WARNING: Could not start HTTP service: " + str(e))
 
-if __name__ == "__main__":
+def main():
     t = threading.Thread(target=start_backend)
     t.daemon = True
     t.start()
 
     start_webview()
     Gtk.main()
+
+if __name__ == "__main__":
+    main()
     sys.exit()

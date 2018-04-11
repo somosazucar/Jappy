@@ -23,19 +23,20 @@ mimetypes.add_type('application/x-font-woff', '.woff')
 mimetypes.add_type('application/x-rapyd', '.pyj')
 mimetypes.add_type('application/json', '.json')
 
-app_dir = "."
+app_dir = "../webapp"
 app = Flask(__name__,
             static_url_path='',
             static_folder=app_dir)
 register_hooks(app)
 socketio = SocketIO(app)
+web_app_dir = os.path.abspath(os.path.join(app.root_path, '../webapp/'))
 
 jappy_server_version = '1.0'
 
 
 @app.route("/")
 def hello():
-    return send_from_directory(app.root_path, 'index.html',
+    return send_from_directory(web_app_dir, 'index.html',
                                mimetype='text/html')
 
 
@@ -47,25 +48,25 @@ def add_header(response):
 
 @app.route("/%21/<path>")
 def execute(path):
-    return send_from_directory(app.root_path, path + '/.index.html',
+    return send_from_directory(web_app_dir, path + '/.index.html',
                                mimetype='text/html')
 
 
 @app.route('/favicon.ico')
 def favicon():
-    return send_from_directory(app.root_path, 'favicon.ico',
+    return send_from_directory(web_app_dir, 'favicon.ico',
                                mimetype='vnd.microsoft.icon')
 
 
 @app.route('/jappy.json')
 def i18n():
-    return send_from_directory(app.root_path, 'jappy.json',
+    return send_from_directory(web_app_dir, 'jappy.json',
                                mimetype='application/json')
 
 
 @app.route('/manifest.json')
 def manifest():
-    return send_from_directory(app.root_path, 'manifest.json',
+    return send_from_directory(web_app_dir, 'manifest.json',
                                mimetype='application/manifest+json')
 
 
@@ -139,7 +140,7 @@ class DAVFilterMiddleWare(object):
             elif path:
                 if filename[len(path) + 1:] != 'index.html':
                     environ['PATH_INFO'] = '/' + filename[len(path) + 1:]
-                    response = static.Cling(app.root_path)
+                    response = static.Cling(web_app_dir)
                     return response(environ, start_response)
         elif environ.get('PATH_INFO').count('/') < 2 and \
                 environ.get('REQUEST_METHOD') == 'DELETE':
