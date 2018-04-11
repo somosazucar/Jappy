@@ -15,7 +15,7 @@ import mimetypes
 import pyinotify
 import signal
 import static
-from hooks import register_hooks
+from jappy.hooks import register_hooks
 
 signal.signal(signal.SIGINT, signal.SIG_DFL)
 mimetypes.add_type('image/svg+xml', '.svg')

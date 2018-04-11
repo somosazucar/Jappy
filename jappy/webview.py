@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 import sys
 import threading
+import os
 import gi
 import signal
 gi.require_version('WebKit2', '4.0')
@@ -15,13 +16,16 @@ try:
 except ImportError:
     import urlparse
 
-from server import start_server, bye, app
+from jappy.server import start_server, bye, app
 
 if sys.platform=='linux2':
     reload(sys)
     sys.setdefaultencoding('utf-8')
 
 base_uri = 'http://127.0.0.1:54991'
+app_root = os.path.abspath(os.path.dirname(__file__))
+web_root = os.path.join(app_root, 'webapp') if os.path.isdir(os.path.join(app_root, 'webapp'))\
+    else os.path.join(app_root, '../webapp')
 
 
 def start_webview():
@@ -65,7 +69,7 @@ def start_webview():
 
     web_view.load_uri(base_uri)
     window.set_title("Jappy")
-    window.set_icon_from_file("webapp/activity/app-icon.png")
+    window.set_icon_from_file(os.path.join(web_root, "activity/app-icon.png"))
     window.show_all()
 
     def shutdown(*args):
