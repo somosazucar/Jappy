@@ -374,7 +374,7 @@ def init():
                 collab.deleteDoc()
                 collab.create(editbox.value, editor.getValue())
                 collab.bind(editbox.value)
-                if window.fs not undefined:
+                if window.fs is not undefined:
                     if window.server_files is not undefined:
                         path = location.hash.slice(1)
                         def file_moved(ev):
@@ -410,7 +410,7 @@ def init():
             if e is not None: # called from a ui event
                 if len(window.files[tag.title].getValue())==0:
                     # Special case: remove file in server too! :-)
-                    if window.fs not undefined:
+                    if window.fs is not undefined:
                         path = location.hash.slice(1)
                         def file_removed(ev):
                             pass # TODO: Notify user.
@@ -545,7 +545,7 @@ def init():
             render_markdown()
         else:
             # This is what we're about after all
-            setTimeout(run_rapydscript, 300)
+            run_rapydscript()
     event_bus.on("run-code", run)
 
     def url_open(url):
