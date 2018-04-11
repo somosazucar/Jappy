@@ -5,4 +5,3 @@ wsgigzip
 wsgicors
 gevent-websocket
 pyinotify
--e git+https://github.com/icarito/Flask-CacheBust.git#egg=Flask-CacheBust
