@@ -1,11 +1,17 @@
 import subprocess
 from flask import jsonify
-from flask_hookserver import Hooks
+try:
+    from flask_hookserver import Hooks
+except ImportError:
+    Hooks = False
 
 
 def register_hooks(app):
     app.config['VALIDATE_IP'] = False
     app.config['VALIDATE_SIGNATURE'] = False
+
+    if not Hooks:
+        return None
 
     hooks = Hooks(app, url='/hooks')
 
