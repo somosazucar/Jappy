@@ -31,6 +31,10 @@ register_hooks(app)
 socketio = SocketIO(app)
 web_app_dir = os.path.abspath(os.path.join(app.root_path, '../webapp/'))
 
+workspace_dir = os.path.join(os.path.expanduser("~"), 'Workspace')
+if not os.path.isdir(workspace_dir):
+    os.mkdir(workspace_dir)
+
 jappy_server_version = '1.0'
 
 
@@ -135,7 +139,7 @@ class DAVFilterMiddleWare(object):
             # Let's redirect to static route
             filename = environ.get(
                 'PATH_INFO')[environ.get('PATH_INFO').find('/') + 1:]
-            if path and os.path.exists('workspace/' + filename):
+            if path and os.path.exists(os.path.join(workspace_dir, filename)):
                 pass
             elif path:
                 if filename[len(path) + 1:] != 'index.html':
@@ -148,7 +152,7 @@ class DAVFilterMiddleWare(object):
             return Unauthorized()(environ, start_response)
         elif environ.get('PATH_INFO').count('/') < 2 and \
                 environ.get('REQUEST_METHOD') == 'MKCOL':
-            dirname = 'workspace' + environ.get('PATH_INFO')
+            dirname = os.path.join(workspace_dir, environ.get('PATH_INFO'))
             if os.path.exists(dirname):
                 response = Response('Already exists.')
                 return response(environ, start_response)
@@ -157,7 +161,7 @@ class DAVFilterMiddleWare(object):
 
 def start_server():
     launch_file_monitor()
-    provider = FilesystemProvider('workspace')
+    provider = FilesystemProvider(workspace_dir)
     config = DEFAULT_CONFIG.copy()
     config.update({
         "mount_path": "/dav",
@@ -219,7 +223,7 @@ def launch_file_monitor():
         pyinotify.IN_CLOSE_WRITE | pyinotify.IN_MOVED_TO
     wm = pyinotify.WatchManager()
     notifier = pyinotify.ThreadedNotifier(wm, EventHandler())
-    wm.add_watch('workspace', mask, rec=True, auto_add=True)
+    wm.add_watch(workspace_dir, mask, rec=True, auto_add=True)
     notifier.start()
 
 
