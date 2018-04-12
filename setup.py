@@ -8,17 +8,17 @@ here = os.path.abspath(os.path.dirname(__file__))
 with open(os.path.join(here, 'README.md'), encoding='utf-8') as f:
     long_description = f.read()
 
-matches = []
+files = []
 for root, dirnames, filenames in os.walk('webapp'):
-    for filename in filenames:
-        if os.path.isfile(filename):
-            matches.append(os.path.join(root, filename))
+    files.extend(glob.glob(root + "*"))
+
 
 try:
-    os.symlink('../webapp', 'jappy/webapp')
+    if not os.path.exists('jappy/webapp'):
+        os.symlink('../webapp', 'jappy/webapp')
     setup(
         name='jappy-activity',
-        version='0.2.0a8',
+        version='0.2.0a11',
         description='A Python IDE for the Web',
         long_description=long_description,
         long_description_content_type='text/markdown',
@@ -50,9 +50,9 @@ try:
             'wsgicors',
             'gevent-websocket',
             'pyinotify'],
-
+        include_package_data=True,
         package_data={
-            'jappy': matches
+            'jappy': files
         },
         exclude_package_data={
             'jappy': ['webapp/node_modules']
@@ -70,4 +70,5 @@ try:
         },
     )
 finally:
-    os.unlink('jappy/webapp')
+    if os.path.islink('jappy/webapp'):
+        os.unlink('jappy/webapp')

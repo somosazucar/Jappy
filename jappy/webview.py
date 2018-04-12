@@ -24,9 +24,7 @@ if sys.platform=='linux2':
 
 base_uri = 'http://127.0.0.1:54991'
 app_root = os.path.abspath(os.path.dirname(__file__))
-web_root = os.path.join(app_root, 'webapp') if os.path.isdir(os.path.join(app_root, 'webapp'))\
-    else os.path.join(app_root, '../webapp')
-
+web_root = os.path.join(app_root, 'webapp')
 
 def start_webview():
     def title_changed(webview, title):
