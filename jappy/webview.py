@@ -10,6 +10,7 @@ signal.signal(signal.SIGINT, signal.SIG_DFL)
 from gi.repository import WebKit2
 from gi.repository import Gtk
 from gi.repository import Gio
+from gi.repository import GLib
 
 try:
     from urllib import parse as urlparse
@@ -67,7 +68,11 @@ def start_webview():
 
     web_view.load_uri(base_uri)
     window.set_title("Jappy")
-    window.set_icon_from_file(os.path.join(web_root, "activity/app-icon.png"))
+    window.set_icon_name("jappy")
+    try:
+        window.set_icon_from_file(os.path.join(web_root, "activity/jappy.png"))
+    except GLib.Error:
+        pass
     window.show_all()
 
     def shutdown(*args):

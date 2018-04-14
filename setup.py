@@ -18,10 +18,11 @@ try:
         os.symlink('../webapp', 'jappy/webapp')
     setup(
         name='jappy-activity',
-        version='0.2.0a11',
+        version='0.2.0a12',
         description='A Python IDE for the Web',
         long_description=long_description,
         long_description_content_type='text/markdown',
+        setup_requires=['install_freedesktop'],
         url='https://github.com/somosazucar/Jappy',
         author='SomosAzucar R&D Team',
         author_email='equipo@somosazucar.org',
@@ -54,14 +55,27 @@ try:
         package_data={
             'jappy': files
         },
+        data_files=[
+            ('share/icons//hicolor/512x512/apps', ['webapp/activity/jappy.png']),
+            ('share/icons/hicolor/scalable/apps', ['webapp/activity/jappy.svg']),
+        ],
         exclude_package_data={
             'jappy': ['webapp/node_modules']
         },
+        desktop_entries={
+            'jappy': {
+                'Name': 'Jappy',
+                'GenericName': 'A Python IDE for the Web (with backend)',
+                'Categories': 'Development;IDE;',
+            },
+        },
         entry_points={
             'console_scripts': [
-                'jappy=jappy.webview:main',
                 'jappy-server=jappy.server:start_server',
             ],
+            'gui_scripts': [
+                'jappy=jappy.webview:main',
+            ]
         },
         project_urls={
             'Bug Reports': 'https://github.com/somosazucar/Jappy/issues',
