@@ -27,7 +27,7 @@ body, html {
 	font-style: italic;
 }
 button.icon span.pyj {
-    background-image: url(../activity/activity-icon.svg);
+    background-image: url(../icons/jappy.svg);
 }
 button.icon span.folder {
     background-image: url(../icons/folder.svg);
@@ -45,7 +45,7 @@ button.icon span.html {
     background-image: url(../icons/text-html.svg);
 }
 #main-toolbar #activity-button {
-  background-image: url(../activity/activity-icon.svg);
+  background-image: url(../icons/jappy.svg);
 }
 @font-face {
     font-family: "Noto Emoji";
