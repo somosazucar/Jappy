@@ -302,7 +302,7 @@ var ρσ_modules = {};
 })();
 
 (function(){
-    var Jed, plural_forms_parser, _gettext, _ngettext, has_prop;
+    var Jed, plural_forms_parser, _gettext, _ngettext, has_prop, empty_translation_data;
     Jed = {};
 
   Jed.PF = {};
@@ -863,6 +863,11 @@ return parser;
     });
 
     register_callback.install_callbacks = [];
+    empty_translation_data = (function(){
+        var ρσ_d = {};
+        ρσ_d["entries"] = {};
+        return ρσ_d;
+    }).call(this);
     function Translations() {
         if (this.ρσ_object_id === undefined) Object.defineProperty(this, "ρσ_object_id", {"value":++ρσ_object_counter});
         Translations.prototype.__init__.apply(this, arguments);
@@ -870,8 +875,8 @@ return parser;
     Translations.prototype.__init__ = function __init__(translation_data) {
         var self = this;
         var func;
-        translation_data = translation_data || {};
-        func = _get_plural_forms_function(translation_data["plural_forms"]);
+        translation_data = translation_data || empty_translation_data;
+        func = _get_plural_forms_function(translation_data.plural_forms);
         self.translations = ρσ_list_decorate([ ρσ_list_decorate([ translation_data, func ]) ]);
         self.language = translation_data["language"];
     };
@@ -883,8 +888,8 @@ return parser;
     Translations.prototype.add_fallback = function add_fallback(fallback) {
         var self = this;
         var func;
-        fallback = fallback || {};
-        func = _get_plural_forms_function(fallback["plural_forms"]);
+        fallback = fallback || empty_translation_data;
+        func = _get_plural_forms_function(fallback.plural_forms);
         self.translations.push(ρσ_list_decorate([ fallback, func ]));
     };
     if (!Translations.prototype.add_fallback.__argnames__) Object.defineProperties(Translations.prototype.add_fallback, {
@@ -896,7 +901,7 @@ return parser;
         var ρσ_Iter3 = ρσ_Iterable(self.translations);
         for (var ρσ_Index3 = 0; ρσ_Index3 < ρσ_Iter3.length; ρσ_Index3++) {
             t = ρσ_Iter3[ρσ_Index3];
-            m = t[0]["entries"];
+            m = t[0].entries;
             if (has_prop(m, text)) {
                 return m[(typeof text === "number" && text < 0) ? m.length + text : text][0];
             }
@@ -912,7 +917,7 @@ return parser;
         var ρσ_Iter4 = ρσ_Iterable(self.translations);
         for (var ρσ_Index4 = 0; ρσ_Index4 < ρσ_Iter4.length; ρσ_Index4++) {
             t = ρσ_Iter4[ρσ_Index4];
-            m = t[0]["entries"];
+            m = t[0].entries;
             if (has_prop(m, text)) {
                 idx = t[1](n);
                 return (ρσ_expr_temp = m[(typeof text === "number" && text < 0) ? m.length + text : text])[(typeof idx === "number" && idx < 0) ? ρσ_expr_temp.length + idx : idx] || ((n === 1) ? text : plural);
@@ -932,9 +937,6 @@ return parser;
             return self.ngettext.apply(self, arguments);
         };
     };
-    if (!Translations.prototype.install.__argnames__) Object.defineProperties(Translations.prototype.install, {
-        __argnames__ : {value: []}
-    });
     Translations.prototype.__repr__ = function __repr__ () {
                 return "<" + __name__ + "." + this.constructor.name + " #" + this.ρσ_object_id + ">";
     };
@@ -948,6 +950,7 @@ return parser;
     ρσ_modules.gettext._gettext = _gettext;
     ρσ_modules.gettext._ngettext = _ngettext;
     ρσ_modules.gettext.has_prop = has_prop;
+    ρσ_modules.gettext.empty_translation_data = empty_translation_data;
     ρσ_modules.gettext._get_plural_forms_function = _get_plural_forms_function;
     ρσ_modules.gettext.gettext = gettext;
     ρσ_modules.gettext.ngettext = ngettext;

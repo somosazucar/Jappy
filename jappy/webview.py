@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 import sys
 import threading
+import os
 import gi
 import signal
 gi.require_version('WebKit2', '4.0')
@@ -9,20 +10,22 @@ signal.signal(signal.SIGINT, signal.SIG_DFL)
 from gi.repository import WebKit2
 from gi.repository import Gtk
 from gi.repository import Gio
+from gi.repository import GLib
 
 try:
     from urllib import parse as urlparse
 except ImportError:
     import urlparse
 
-from server import start_server, bye, app
+from jappy.server import start_server, bye, app
 
 if sys.platform=='linux2':
     reload(sys)
     sys.setdefaultencoding('utf-8')
 
 base_uri = 'http://127.0.0.1:54991'
-
+app_root = os.path.abspath(os.path.dirname(__file__))
+web_root = os.path.join(app_root, 'webapp')
 
 def start_webview():
     def title_changed(webview, title):
@@ -65,7 +68,11 @@ def start_webview():
 
     web_view.load_uri(base_uri)
     window.set_title("Jappy")
-    window.set_icon_from_file("activity/app-icon.png")
+    window.set_icon_name("jappy")
+    try:
+        window.set_icon_from_file(os.path.join(web_root, "activity/jappy.png"))
+    except GLib.Error:
+        pass
     window.show_all()
 
     def shutdown(*args):
@@ -79,11 +86,14 @@ def start_backend():
     except Exception as e:
         print ("WARNING: Could not start HTTP service: " + str(e))
 
-if __name__ == "__main__":
+def main():
     t = threading.Thread(target=start_backend)
     t.daemon = True
     t.start()
 
     start_webview()
     Gtk.main()
+
+if __name__ == "__main__":
+    main()
     sys.exit()

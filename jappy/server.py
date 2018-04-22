@@ -15,7 +15,7 @@ import mimetypes
 import pyinotify
 import signal
 import static
-from hooks import register_hooks
+from jappy.hooks import register_hooks
 
 signal.signal(signal.SIGINT, signal.SIG_DFL)
 mimetypes.add_type('image/svg+xml', '.svg')
@@ -23,19 +23,34 @@ mimetypes.add_type('application/x-font-woff', '.woff')
 mimetypes.add_type('application/x-rapyd', '.pyj')
 mimetypes.add_type('application/json', '.json')
 
-app_dir = "."
+app_dir = "../webapp"
 app = Flask(__name__,
             static_url_path='',
             static_folder=app_dir)
+web_app_dir = os.path.abspath(os.path.join(app.root_path, app_dir))
+if not os.path.isdir(web_app_dir):
+    app_dir = "webapp"
+    del app
+    app = Flask(__name__,
+                static_url_path='',
+                static_folder=app_dir)
+    web_app_dir = os.path.abspath(os.path.join(app.root_path, app_dir))
+    if not os.path.isdir(web_app_dir):
+        raise ImportError('Jappy Web Application cannot be found.')
+
 register_hooks(app)
 socketio = SocketIO(app)
+
+workspace_dir = os.path.join(os.path.expanduser("~"), 'Workspace')
+if not os.path.isdir(workspace_dir):
+    os.mkdir(workspace_dir)
 
 jappy_server_version = '1.0'
 
 
 @app.route("/")
 def hello():
-    return send_from_directory(app.root_path, 'index.html',
+    return send_from_directory(web_app_dir, 'index.html',
                                mimetype='text/html')
 
 
@@ -47,25 +62,25 @@ def add_header(response):
 
 @app.route("/%21/<path>")
 def execute(path):
-    return send_from_directory(app.root_path, path + '/.index.html',
+    return send_from_directory(web_app_dir, path + '/.index.html',
                                mimetype='text/html')
 
 
 @app.route('/favicon.ico')
 def favicon():
-    return send_from_directory(app.root_path, 'favicon.ico',
+    return send_from_directory(web_app_dir, 'favicon.ico',
                                mimetype='vnd.microsoft.icon')
 
 
 @app.route('/jappy.json')
 def i18n():
-    return send_from_directory(app.root_path, 'jappy.json',
+    return send_from_directory(web_app_dir, 'jappy.json',
                                mimetype='application/json')
 
 
 @app.route('/manifest.json')
 def manifest():
-    return send_from_directory(app.root_path, 'manifest.json',
+    return send_from_directory(web_app_dir, 'manifest.json',
                                mimetype='application/manifest+json')
 
 
@@ -134,12 +149,12 @@ class DAVFilterMiddleWare(object):
             # Let's redirect to static route
             filename = environ.get(
                 'PATH_INFO')[environ.get('PATH_INFO').find('/') + 1:]
-            if path and os.path.exists('workspace/' + filename):
+            if path and os.path.exists(os.path.join(workspace_dir, filename)):
                 pass
             elif path:
                 if filename[len(path) + 1:] != 'index.html':
                     environ['PATH_INFO'] = '/' + filename[len(path) + 1:]
-                    response = static.Cling(app.root_path)
+                    response = static.Cling(web_app_dir)
                     return response(environ, start_response)
         elif environ.get('PATH_INFO').count('/') < 2 and \
                 environ.get('REQUEST_METHOD') == 'DELETE':
@@ -147,7 +162,7 @@ class DAVFilterMiddleWare(object):
             return Unauthorized()(environ, start_response)
         elif environ.get('PATH_INFO').count('/') < 2 and \
                 environ.get('REQUEST_METHOD') == 'MKCOL':
-            dirname = 'workspace' + environ.get('PATH_INFO')
+            dirname = os.path.join(workspace_dir, environ.get('PATH_INFO'))
             if os.path.exists(dirname):
                 response = Response('Already exists.')
                 return response(environ, start_response)
@@ -156,7 +171,7 @@ class DAVFilterMiddleWare(object):
 
 def start_server():
     launch_file_monitor()
-    provider = FilesystemProvider('workspace')
+    provider = FilesystemProvider(workspace_dir)
     config = DEFAULT_CONFIG.copy()
     config.update({
         "mount_path": "/dav",
@@ -218,7 +233,7 @@ def launch_file_monitor():
         pyinotify.IN_CLOSE_WRITE | pyinotify.IN_MOVED_TO
     wm = pyinotify.WatchManager()
     notifier = pyinotify.ThreadedNotifier(wm, EventHandler())
-    wm.add_watch('workspace', mask, rec=True, auto_add=True)
+    wm.add_watch(workspace_dir, mask, rec=True, auto_add=True)
     notifier.start()
 
 

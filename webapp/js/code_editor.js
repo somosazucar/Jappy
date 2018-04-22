@@ -4,7 +4,7 @@ var ρσ_modules = {};
 ρσ_modules.re = {};
 
 (function(){
-    var Jed, plural_forms_parser, _gettext, _ngettext, has_prop;
+    var Jed, plural_forms_parser, _gettext, _ngettext, has_prop, empty_translation_data;
     Jed = {};
 
   Jed.PF = {};
@@ -565,6 +565,11 @@ return parser;
     });
 
     register_callback.install_callbacks = [];
+    empty_translation_data = (function(){
+        var ρσ_d = {};
+        ρσ_d["entries"] = {};
+        return ρσ_d;
+    }).call(this);
     function Translations() {
         if (this.ρσ_object_id === undefined) Object.defineProperty(this, "ρσ_object_id", {"value":++ρσ_object_counter});
         Translations.prototype.__init__.apply(this, arguments);
@@ -572,8 +577,8 @@ return parser;
     Translations.prototype.__init__ = function __init__(translation_data) {
         var self = this;
         var func;
-        translation_data = translation_data || {};
-        func = _get_plural_forms_function(translation_data["plural_forms"]);
+        translation_data = translation_data || empty_translation_data;
+        func = _get_plural_forms_function(translation_data.plural_forms);
         self.translations = ρσ_list_decorate([ ρσ_list_decorate([ translation_data, func ]) ]);
         self.language = translation_data["language"];
     };
@@ -585,8 +590,8 @@ return parser;
     Translations.prototype.add_fallback = function add_fallback(fallback) {
         var self = this;
         var func;
-        fallback = fallback || {};
-        func = _get_plural_forms_function(fallback["plural_forms"]);
+        fallback = fallback || empty_translation_data;
+        func = _get_plural_forms_function(fallback.plural_forms);
         self.translations.push(ρσ_list_decorate([ fallback, func ]));
     };
     if (!Translations.prototype.add_fallback.__argnames__) Object.defineProperties(Translations.prototype.add_fallback, {
@@ -598,7 +603,7 @@ return parser;
         var ρσ_Iter1 = ρσ_Iterable(self.translations);
         for (var ρσ_Index1 = 0; ρσ_Index1 < ρσ_Iter1.length; ρσ_Index1++) {
             t = ρσ_Iter1[ρσ_Index1];
-            m = t[0]["entries"];
+            m = t[0].entries;
             if (has_prop(m, text)) {
                 return m[(typeof text === "number" && text < 0) ? m.length + text : text][0];
             }
@@ -614,7 +619,7 @@ return parser;
         var ρσ_Iter2 = ρσ_Iterable(self.translations);
         for (var ρσ_Index2 = 0; ρσ_Index2 < ρσ_Iter2.length; ρσ_Index2++) {
             t = ρσ_Iter2[ρσ_Index2];
-            m = t[0]["entries"];
+            m = t[0].entries;
             if (has_prop(m, text)) {
                 idx = t[1](n);
                 return (ρσ_expr_temp = m[(typeof text === "number" && text < 0) ? m.length + text : text])[(typeof idx === "number" && idx < 0) ? ρσ_expr_temp.length + idx : idx] || ((n === 1) ? text : plural);
@@ -634,9 +639,6 @@ return parser;
             return self.ngettext.apply(self, arguments);
         };
     };
-    if (!Translations.prototype.install.__argnames__) Object.defineProperties(Translations.prototype.install, {
-        __argnames__ : {value: []}
-    });
     Translations.prototype.__repr__ = function __repr__ () {
                 return "<" + __name__ + "." + this.constructor.name + " #" + this.ρσ_object_id + ">";
     };
@@ -650,6 +652,7 @@ return parser;
     ρσ_modules.gettext._gettext = _gettext;
     ρσ_modules.gettext._ngettext = _ngettext;
     ρσ_modules.gettext.has_prop = has_prop;
+    ρσ_modules.gettext.empty_translation_data = empty_translation_data;
     ρσ_modules.gettext._get_plural_forms_function = _get_plural_forms_function;
     ρσ_modules.gettext.gettext = gettext;
     ρσ_modules.gettext.ngettext = ngettext;
@@ -1270,9 +1273,12 @@ return parser;
         };
 
         ans = ch = "";
-        while (ch = next()) {
+        while (true) {
+            ch = next();
             if (ch === "\\") {
                 ans += read_escape_sequence();
+            } else if (!ch) {
+                break;
             } else {
                 ans += ch;
             }
@@ -1467,9 +1473,6 @@ return parser;
             }
         }
     };
-    if (!MatchObject.prototype._compute_extents.__argnames__) Object.defineProperties(MatchObject.prototype._compute_extents, {
-        __argnames__ : {value: []}
-    });
     MatchObject.prototype.groups = function groups() {
         var self = this;
         var defval = (arguments[0] === undefined || ( 0 === arguments.length-1 && arguments[arguments.length-1] !== null && typeof arguments[arguments.length-1] === "object" && arguments[arguments.length-1] [ρσ_kwargs_symbol] === true)) ? groups.__defaults__.defval : arguments[0];
@@ -1539,9 +1542,6 @@ return parser;
         }
         return (ans.length === 1) ? ans[0] : ans;
     };
-    if (!MatchObject.prototype.group.__argnames__) Object.defineProperties(MatchObject.prototype.group, {
-        __argnames__ : {value: []}
-    });
     MatchObject.prototype.start = function start(g) {
         var self = this;
         var val;
@@ -1646,9 +1646,6 @@ return parser;
         }
         return ans;
     };
-    if (!MatchObject.prototype.capturesdict.__argnames__) Object.defineProperties(MatchObject.prototype.capturesdict, {
-        __argnames__ : {value: []}
-    });
     MatchObject.prototype.__repr__ = function __repr__ () {
                 return "<" + __name__ + "." + this.constructor.name + " #" + this.ρσ_object_id + ">";
     };
@@ -2130,9 +2127,6 @@ CollaborationBinding.prototype.__init__ = function __init__() {
     var self = this;
     self.currentDoc = null;
 };
-if (!CollaborationBinding.prototype.__init__.__argnames__) Object.defineProperties(CollaborationBinding.prototype.__init__, {
-    __argnames__ : {value: []}
-});
 CollaborationBinding.__argnames__ = CollaborationBinding.prototype.__init__.__argnames__;
 CollaborationBinding.__handles_kwarg_interpolation__ = CollaborationBinding.prototype.__init__.__handles_kwarg_interpolation__;
 CollaborationBinding.prototype.bind = function bind(filename) {
@@ -2188,9 +2182,6 @@ CollaborationBinding.prototype.unbind = function unbind() {
         self.currentDoc = null;
     }
 };
-if (!CollaborationBinding.prototype.unbind.__argnames__) Object.defineProperties(CollaborationBinding.prototype.unbind, {
-    __argnames__ : {value: []}
-});
 CollaborationBinding.prototype.unbindAll = function unbindAll() {
     var self = this;
     if (window.y === undefined) {
@@ -2198,9 +2189,6 @@ CollaborationBinding.prototype.unbindAll = function unbindAll() {
     }
     y.share.files.get(self.currentDoc).unbindCodeMirrorAll();
 };
-if (!CollaborationBinding.prototype.unbindAll.__argnames__) Object.defineProperties(CollaborationBinding.prototype.unbindAll, {
-    __argnames__ : {value: []}
-});
 CollaborationBinding.prototype.deleteDoc = function deleteDoc() {
     var self = this;
     var toDelete;
@@ -2213,9 +2201,6 @@ CollaborationBinding.prototype.deleteDoc = function deleteDoc() {
     self.unbind();
     y.share.files.delete(toDelete);
 };
-if (!CollaborationBinding.prototype.deleteDoc.__argnames__) Object.defineProperties(CollaborationBinding.prototype.deleteDoc, {
-    __argnames__ : {value: []}
-});
 CollaborationBinding.prototype.create = function create() {
     var self = this;
     var filename = ( 0 === arguments.length-1 && arguments[arguments.length-1] !== null && typeof arguments[arguments.length-1] === "object" && arguments[arguments.length-1] [ρσ_kwargs_symbol] === true) ? undefined : arguments[0];
@@ -2454,8 +2439,7 @@ function init() {
                 collab.deleteDoc();
                 collab.create(editbox.value, editor.getValue());
                 collab.bind(editbox.value);
-                if (window.fs) !undefined;
-                {
+                if (window.fs !== undefined) {
                     if (window.server_files !== undefined) {
                         path = location.hash.slice(1);
                         function file_moved(ev) {
@@ -2524,8 +2508,7 @@ function init() {
             }
             if (e !== null) {
                 if (ρσ_equals(len((ρσ_expr_temp = window.files)[ρσ_bound_index(tag.title, ρσ_expr_temp)].getValue()), 0)) {
-                    if (window.fs) !undefined;
-                    {
+                    if (window.fs !== undefined) {
                         path = location.hash.slice(1);
                         function file_removed(ev) {
                         };
@@ -2742,7 +2725,7 @@ function init() {
         } else if (tag.title.toLowerCase().endswith(".md")) {
             render_markdown();
         } else {
-            setTimeout(run_rapydscript, 300);
+            run_rapydscript();
         }
     };
 
