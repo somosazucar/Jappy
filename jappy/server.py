@@ -27,9 +27,24 @@ app_dir = "../webapp"
 app = Flask(__name__,
             static_url_path='',
             static_folder=app_dir)
+web_app_dir = os.path.abspath(os.path.join(app.root_path, app_dir))
+if not os.path.isdir(web_app_dir):
+    app_dir = "webapp"
+    del app
+    app = Flask(__name__,
+                static_url_path='',
+                static_folder=app_dir)
+    web_app_dir = os.path.abspath(os.path.join(app.root_path, app_dir))
+    if not os.path.isdir(web_app_dir):
+        raise ImportError('Jappy Web Application cannot be found.')
+
 register_hooks(app)
 socketio = SocketIO(app)
 web_app_dir = os.path.abspath(os.path.join(app.root_path, '../webapp/'))
+
+workspace_dir = os.path.join(os.path.expanduser("~"), 'Workspace')
+if not os.path.isdir(workspace_dir):
+    os.mkdir(workspace_dir)
 
 workspace_dir = os.path.join(os.path.expanduser("~"), 'Workspace')
 if not os.path.isdir(workspace_dir):

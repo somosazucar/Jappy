@@ -12,7 +12,7 @@
     "orientation": "any",
     "icons": [
       {
-        "src": "activity/app-icon.png",
+        "src": "activity/jappy.png",
         "sizes": "512x512"
       },
       {
