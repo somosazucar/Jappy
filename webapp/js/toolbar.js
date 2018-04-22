@@ -1235,7 +1235,7 @@ function update_workspace_menu() {
         browse_button = ρσ_interpolate_kwargs.call(E, E.button, [ρσ_interpolate_kwargs.call(E, E.span, [ρσ_desugar_kwargs({class_: "folder"})]), _("Browse...")].concat([ρσ_desugar_kwargs({class_: "icon"})]));
         browse_button.onclick = function () {
             tag.workspace_palette.popDown();
-            location.href = "dav://" + location.host + "/dav/" + path;
+            location.href = location.host + "/dav/" + path;
         };
         lastrow = ρσ_interpolate_kwargs.call(E, E.div, [browse_button].concat([ρσ_desugar_kwargs({class_: "menu"})]));
         items.append(lastrow);

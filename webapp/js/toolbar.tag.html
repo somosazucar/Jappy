@@ -267,7 +267,7 @@ def update_workspace_menu():
         browse_button = E.button(class_='icon', E.span(class_='folder'), _('Browse...'))
         browse_button.onclick = def():
             tag.workspace_palette.popDown()
-            location.href = 'dav://' + location.host + '/dav/' + path
+            location.href = location.host + '/dav/' + path
         lastrow = E.div(class_='menu', browse_button)
         items.append(lastrow)
         if tag.workspace_palette:
