@@ -1,4 +1,4 @@
-riot.tag2('code-editor', '<div id="vsplit" ref="vsplit"> <div id="split" ref="split"> <input ref="file_input" id="file-input" type="file" style="display: none;"> <div id="tabs"> <button onclick="{this.newtab}" id="newtab">&nbsp;</button><span class="{selected: name==parent.title}" each="{name in list(files)}"><button class="{selected: name==parent.title, special_file: name==⁗template.html⁗}" onclick="{parent.switchtab}" ondblclick="{parent.renametab}">{str(name)}</button><button if="{name==parent.title && len(files)>1}" id="closetab" onclick="{parent.closetab}">&nbsp;</button></span><button class="pull-right" id="tray-button" ref="traybutton">&nbsp;</button> </div> <textarea id="code-container" ref="code"></textarea> </div> <div ref="vmframe_cont" id="vmframe_cont"> <iframe riot-src="{location.protocol}//{location.host}/{getpath()}template.html" allowfullscreen="true" allowtransparency="false" ref="vmframe" name="_vmframe"></iframe> </div> </div>', 'code-editor { display: flex; flex: 1 1; height: 100%; } code-editor .CodeMirror,[data-is="code-editor"] .CodeMirror{ height: 100%; width: 100%; font-size: 15pt; font-family: "Noto Mono", "DejaVu Sans Mono", monospace, "Noto Emoji"; } code-editor .CodeMirror-scroll,[data-is="code-editor"] .CodeMirror-scroll{ margin-right: -30px; overflow: auto; -webkit-overflow-scrolling: touch; } code-editor .CodeMirror-linenumber,[data-is="code-editor"] .CodeMirror-linenumber{ font-size: 14pt; } code-editor .cm-s-solarized .CodeMirror-cursor,[data-is="code-editor"] .cm-s-solarized .CodeMirror-cursor{ width: 2px; border: 0; background: transparent; background: rgba(0, 200, 0, .6); } code-editor .CodeMirror-overlayscroll-vertical div,[data-is="code-editor"] .CodeMirror-overlayscroll-vertical div,code-editor .CodeMirror-overlayscroll-horizontal div,[data-is="code-editor"] .CodeMirror-overlayscroll-horizontal div{ background: #808080; width: 10px; } code-editor .error-marker,[data-is="code-editor"] .error-marker{ border: 1px solid red; background-color: rgba(255, 0, 0,0.2); border-radius: 3px; } code-editor iframe,[data-is="code-editor"] iframe{ border: 0px; display: none; } code-editor #split,[data-is="code-editor"] #split{ display: flex; width: 100%; flex-direction: column; flex: 1 1; height: 100%; float: left; } code-editor #vsplit,[data-is="code-editor"] #vsplit{ display: flex; flex-direction: row; flex: 1 1; height: 100%; overflow: auto; } code-editor #tabs button,[data-is="code-editor"] #tabs button{ font-size: 13pt; border-radius: 0; padding: 10px 10px; border: 0px; margin: 0px; } code-editor #tabs button.selected,[data-is="code-editor"] #tabs button.selected{ background-color: #282828; } code-editor #tabs span.selected,[data-is="code-editor"] #tabs span.selected{ white-space: nowrap; } code-editor #closetab,[data-is="code-editor"] #closetab{ background-image: url(lib/sugar-web/graphics/icons/actions/entry-cancel-active.svg); background-repeat: no-repeat; background-color: #282828; width: 28px; background-position: center; background-size: 16px 16px; } code-editor #closetab:active,[data-is="code-editor"] #closetab:active{ background-image: url(lib/sugar-web/graphics/icons/actions/entry-cancel.svg); } code-editor .CodeMirror-search-label,[data-is="code-editor"] .CodeMirror-search-label{ background-image: url(icons/entry-search.svg); background-repeat: no-repeat; background-color: #282828; width: 28px; background-position: center; background-size: 15px 15px; } code-editor .CodeMirror-search-hint,[data-is="code-editor"] .CodeMirror-search-hint{ font-family: sans-serif; color: white; } code-editor #newtab,[data-is="code-editor"] #newtab{ background-image: url(icons/tab-add.svg); background-repeat: no-repeat; width: 28px; background-position: center; background-size: 20px 20px; } code-editor #tray-button,[data-is="code-editor"] #tray-button{ background-image: url(icons/tray-show.svg); background-repeat: no-repeat; width: 28px; background-position: center; background-size: 20px 20px; } code-editor #vmframe_cont,[data-is="code-editor"] #vmframe_cont{ -webkit-overflow-scrolling: touch; overflow: auto; flex: 1 1; height: 100%; } code-editor #vmframe_cont iframe,[data-is="code-editor"] #vmframe_cont iframe{ width: 100%; height: 100%; }', '', function(opts) {
+riot.tag2('code-editor', '<div id="vsplit" ref="vsplit"> <div id="split" ref="split"> <input ref="file_input" id="file-input" type="file" style="display: none;"> <div id="tabs"> <button onclick="{this.newtab}" id="newtab">&nbsp;</button><span class="{selected: name==parent.title}" each="{name in list(files)}"><button class="{selected: name==parent.title, special_file: name==⁗template.html⁗}" onclick="{parent.switchtab}" ondblclick="{parent.renametab}">{str(name)}</button><button if="{name==parent.title && len(files)>1}" id="closetab" onclick="{parent.closetab}">&nbsp;</button></span><button class="pull-right" id="tray-button" ref="traybutton">&nbsp;</button> </div> <textarea id="code-container" ref="code"></textarea> </div> <div ref="vmframe_cont" id="vmframe_cont"> <iframe riot-src="{location.protocol}//{location.host}/template.html" allowfullscreen="true" allowtransparency="false" ref="vmframe" name="_vmframe"></iframe> </div> </div>', 'code-editor { display: flex; flex: 1 1; height: 100%; } code-editor .CodeMirror,[data-is="code-editor"] .CodeMirror{ height: 100%; width: 100%; font-size: 15pt; font-family: "Noto Mono", "DejaVu Sans Mono", monospace, "Noto Emoji"; } code-editor .CodeMirror-scroll,[data-is="code-editor"] .CodeMirror-scroll{ margin-right: -30px; overflow: auto; -webkit-overflow-scrolling: touch; } code-editor .CodeMirror-linenumber,[data-is="code-editor"] .CodeMirror-linenumber{ font-size: 14pt; } code-editor .cm-s-solarized .CodeMirror-cursor,[data-is="code-editor"] .cm-s-solarized .CodeMirror-cursor{ width: 2px; border: 0; background: transparent; background: rgba(0, 200, 0, .6); } code-editor .CodeMirror-overlayscroll-vertical div,[data-is="code-editor"] .CodeMirror-overlayscroll-vertical div,code-editor .CodeMirror-overlayscroll-horizontal div,[data-is="code-editor"] .CodeMirror-overlayscroll-horizontal div{ background: #808080; width: 10px; } code-editor .error-marker,[data-is="code-editor"] .error-marker{ border: 1px solid red; background-color: rgba(255, 0, 0,0.2); border-radius: 3px; } code-editor iframe,[data-is="code-editor"] iframe{ border: 0px; display: none; } code-editor #split,[data-is="code-editor"] #split{ display: flex; width: 100%; flex-direction: column; flex: 1 1; height: 100%; float: left; } code-editor #vsplit,[data-is="code-editor"] #vsplit{ display: flex; flex-direction: row; flex: 1 1; height: 100%; overflow: auto; } code-editor #tabs button,[data-is="code-editor"] #tabs button{ font-size: 13pt; border-radius: 0; padding: 10px 10px; border: 0px; margin: 0px; } code-editor #tabs button.selected,[data-is="code-editor"] #tabs button.selected{ background-color: #282828; } code-editor #tabs span.selected,[data-is="code-editor"] #tabs span.selected{ white-space: nowrap; } code-editor #closetab,[data-is="code-editor"] #closetab{ background-image: url(lib/sugar-web/graphics/icons/actions/entry-cancel-active.svg); background-repeat: no-repeat; background-color: #282828; width: 28px; background-position: center; background-size: 16px 16px; } code-editor #closetab:active,[data-is="code-editor"] #closetab:active{ background-image: url(lib/sugar-web/graphics/icons/actions/entry-cancel.svg); } code-editor .CodeMirror-search-label,[data-is="code-editor"] .CodeMirror-search-label{ background-image: url(icons/entry-search.svg); background-repeat: no-repeat; background-color: #282828; width: 28px; background-position: center; background-size: 15px 15px; } code-editor .CodeMirror-search-hint,[data-is="code-editor"] .CodeMirror-search-hint{ font-family: sans-serif; color: white; } code-editor #newtab,[data-is="code-editor"] #newtab{ background-image: url(icons/tab-add.svg); background-repeat: no-repeat; width: 28px; background-position: center; background-size: 20px 20px; } code-editor #tray-button,[data-is="code-editor"] #tray-button{ background-image: url(icons/tray-show.svg); background-repeat: no-repeat; width: 28px; background-position: center; background-size: 20px 20px; } code-editor #vmframe_cont,[data-is="code-editor"] #vmframe_cont{ -webkit-overflow-scrolling: touch; overflow: auto; flex: 1 1; height: 100%; } code-editor #vmframe_cont iframe,[data-is="code-editor"] #vmframe_cont iframe{ width: 100%; height: 100%; }', '', function(opts) {
 var ρσ_modules = {};
 ρσ_modules.gettext = {};
 ρσ_modules.re = {};
@@ -2110,11 +2110,15 @@ tag.lang = (navigator.language || navigator.userLanguage).slice(0, 2);
 this.marker = null;
 tag.cursor_pos = {};
 window.files = {};
-tag.getpath = function () {
+window.getpath = tag.getpath = function () {
     var path;
     if (len(location.hash) > 0) {
         path = location.hash.slice(1);
-        return "dav/" + path + "/";
+        if ((location.protocol === "dat:" || typeof location.protocol === "object" && ρσ_equals(location.protocol, "dat:"))) {
+            return path + "/";
+        } else {
+            return "dav/" + path + "/";
+        }
     } else {
         return "";
     }
@@ -2296,6 +2300,9 @@ function init() {
                 check_load(null, null, savedSession);
             }
             tag.update();
+        } else if ((location.protocol === "dat:" || typeof location.protocol === "object" && ρσ_equals(location.protocol, "dat:"))) {
+            console.log("Can't collaborate yet");
+            event_bus.trigger("restore-last-session");
         } else {
             init_collab();
         }
@@ -2665,10 +2672,13 @@ function init() {
         __argnames__ : {value: ["source", "callback"]}
     });
 
+    function clear_and_run() {
+        clear_output(run);
+    };
+
     function run() {
         var path, target, src;
         window.state = "run";
-        clear_output();
         event_bus.trigger("traybutton-open");
         riot.update();
         if (window.y !== undefined) {
@@ -2693,7 +2703,7 @@ function init() {
         if (tag.title.toLowerCase().endswith(ρσ_list_decorate([ ".html", ".htm" ]))) {
             if (location.hash) {
                 path = location.hash.slice(1);
-                target = "dav/" + path + "/.index.html";
+                target = getpath() + ".index.html";
                 if (ρσ_in("index.html", window.files)) {
                     src = window.files["index.html"].getValue();
                 } else if (len((function() {
@@ -2707,7 +2717,7 @@ function init() {
                     ρσ_Result = ρσ_list_constructor(ρσ_Result);
                     return ρσ_Result;
                 })())) {
-                    target = "dav/" + path + "/index.html";
+                    target = getpath() + path + "/index.html";
                 } else {
                     src = editor.getValue();
                 }
@@ -2729,11 +2739,11 @@ function init() {
         }
     };
 
-    event_bus.on("run-code", run);
+    event_bus.on("run-code", clear_and_run);
     function url_open(url) {
         event_bus.trigger("traybutton-open");
         riot.update();
-        window.open(url, "_vmframe");
+        iframe.contentWindow.location = url;
     };
     if (!url_open.__argnames__) Object.defineProperties(url_open, {
         __argnames__ : {value: ["url"]}
@@ -2763,7 +2773,7 @@ function init() {
         var path, rel_url;
         if (window.fs !== undefined) {
             path = location.hash.slice(1);
-            rel_url = "dav/" + path + "/.index.html";
+            rel_url = getpath() + ".index.html";
             makeToast(_("Running from remote: " + event.filename));
             iframe.contentWindow.location = rel_url;
             if (event.filename !== tag.title) {
@@ -2807,7 +2817,7 @@ function init() {
         script = iframe.contentDocument.createElement("script");
         script.innerHTML = js_output;
         function write_script() {
-            var source, script_place;
+            var source, script_place, idoc, head, base;
             iframe.removeEventListener("load", write_script);
             source = iframe.contentDocument.documentElement.outerHTML;
             if (window.fs !== undefined) {
@@ -2818,6 +2828,15 @@ function init() {
                 publish_script(source);
             }
             iframe.contentWindow.Jappy = iframe.contentWindow.parent;
+            idoc = iframe.contentDocument;
+            head = idoc.getElementsByTagName("head")[0];
+            base = idoc.createElement("base");
+            if (window.DatWorkspace) {
+                base.href = window.DatWorkspace.url + "/" + tag.getpath();
+            } else {
+                base.href = location.protocol + "//" + location.host + "/" + tag.getpath();
+            }
+            head.appendChild(base);
             iframe.contentDocument.body.appendChild(script);
             iframe.contentDocument.close();
         };
@@ -2830,7 +2849,7 @@ function init() {
                 iframe.contentDocument.write(files["template.html"].getValue());
                 iframe.contentDocument.close();
             } else {
-                iframe.contentWindow.location = location.protocol + "//" + location.host + "/dav/" + path + "/template.html";
+                iframe.contentWindow.location = location.protocol + "//" + location.host + "/" + tag.getpath() + "template.html";
             }
         } else {
             if (ρσ_in("template.html", window.files)) {
@@ -2848,7 +2867,7 @@ function init() {
         src = editor.getValue();
         output = marked(src);
         function write_output() {
-            var idoc, head, containerDiv, link, html, place;
+            var idoc, head, containerDiv, link, base, html, place;
             iframe.removeEventListener("load", write_output);
             idoc = iframe.contentDocument;
             head = idoc.getElementsByTagName("head")[0];
@@ -2862,6 +2881,13 @@ function init() {
             link.rel = "stylesheet";
             link.href = "css/markdown-extra.css";
             head.appendChild(link);
+            base = idoc.createElement("base");
+            if (window.DatWorkspace) {
+                base.href = window.DatWorkspace.url + "/" + tag.getpath();
+            } else {
+                base.href = location.protocol + "//" + location.host + "/" + tag.getpath();
+            }
+            head.appendChild(base);
             containerDiv.innerHTML = output;
             html = idoc.documentElement.outerHTML;
             if (window.fs !== undefined) {
@@ -2876,14 +2902,14 @@ function init() {
         };
 
         iframe.addEventListener("load", write_output);
-        if (len(location.hash) > 0) {
+        if (len(location.hash) > 0 && (location.protocol !== "dat:" && (typeof location.protocol !== "object" || ρσ_not_equals(location.protocol, "dat:")))) {
             path = location.hash.slice(1);
             if (ρσ_in("template.html", window.files)) {
                 iframe.contentDocument.open();
                 iframe.contentDocument.write(files["template.html"].getValue());
                 iframe.contentDocument.close();
             } else {
-                iframe.contentWindow.location = location.protocol + "//" + location.host + "/dav/" + path + "/template.html";
+                iframe.contentWindow.location = location.protocol + "//" + location.host + "/" + tag.getpath() + "template.html";
             }
         } else {
             iframe.contentWindow.location = location.protocol + "//" + location.host + "/template.html";
@@ -2929,15 +2955,18 @@ function init() {
     };
 
     event_bus.on("break-code", break_code);
-    function clear_output() {
-        var path;
-        if (len(location.hash) > 0) {
-            path = location.hash.slice(1);
-            iframe.contentWindow.location = location.protocol + "//" + location.host + "/dav/" + path + "/template.html";
-        } else {
-            iframe.contentWindow.location = location.protocol + "//" + location.host + "/template.html";
-        }
+    function clear_output(callback) {
+        function payload() {
+            iframe.removeEventListener("load", payload);
+            callback();
+        };
+
+        iframe.addEventListener("load", payload);
+        iframe.contentWindow.location = location.protocol + "//" + location.host + "/template.html";
     };
+    if (!clear_output.__argnames__) Object.defineProperties(clear_output, {
+        __argnames__ : {value: ["callback"]}
+    });
 
     event_bus.on("clear-output", clear_output);
     function serialize() {
@@ -3395,10 +3424,10 @@ function init() {
             tag.update();
             return;
         }
+        event_bus.trigger("update-workspace-menu");
         protocol = (ρσ_equals(location.protocol.slice(-2, -1), "s")) ? "wss" : "ws";
         address = protocol + "://" + location.host;
         path = location.hash.slice(1);
-        event_bus.trigger("update-workspace-menu");
         Y((function(){
             var ρσ_d = {};
             ρσ_d["db"] = (function(){

@@ -958,7 +958,7 @@ return parser;
     ρσ_modules.gettext.register_callback = register_callback;
     ρσ_modules.gettext.Translations = Translations;
 })();
-var tag, url_base, address, examples, special;
+var tag, examples, special;
 var E = ρσ_modules.elementmaker.E;
 
 var install = ρσ_modules.gettext.install;
@@ -967,10 +967,180 @@ var _ = ρσ_modules.gettext.gettext;
 tag = this;
 tag._ = _;
 tag.lang = (navigator.language || navigator.userLanguage).slice(0, 2);
-url_base = location.protocol;
-address = url_base + "//" + location.host + "/dav";
+function DatFileWrapper() {
+    if (this.ρσ_object_id === undefined) Object.defineProperty(this, "ρσ_object_id", {"value":++ρσ_object_counter});
+    DatFileWrapper.prototype.__init__.apply(this, arguments);
+}
+DatFileWrapper.prototype.__init__ = function __init__(wrapper, path) {
+    var self = this;
+    self.archive = wrapper.archive;
+    self.path = wrapper.subdir + path;
+};
+if (!DatFileWrapper.prototype.__init__.__argnames__) Object.defineProperties(DatFileWrapper.prototype.__init__, {
+    __argnames__ : {value: ["wrapper", "path"]}
+});
+DatFileWrapper.__argnames__ = DatFileWrapper.prototype.__init__.__argnames__;
+DatFileWrapper.__handles_kwarg_interpolation__ = DatFileWrapper.prototype.__init__.__handles_kwarg_interpolation__;
+DatFileWrapper.prototype.read = function read(callback) {
+    var self = this;
+    self.archive.readFile(self.path).then((function() {
+        var ρσ_anonfunc = function (content) {
+            callback(content, 200);
+        };
+        if (!ρσ_anonfunc.__argnames__) Object.defineProperties(ρσ_anonfunc, {
+            __argnames__ : {value: ["content"]}
+        });
+        return ρσ_anonfunc;
+    })()).catch((function() {
+        var ρσ_anonfunc = function (err) {
+            console.log(err);
+            callback("", err);
+        };
+        if (!ρσ_anonfunc.__argnames__) Object.defineProperties(ρσ_anonfunc, {
+            __argnames__ : {value: ["err"]}
+        });
+        return ρσ_anonfunc;
+    })());
+};
+if (!DatFileWrapper.prototype.read.__argnames__) Object.defineProperties(DatFileWrapper.prototype.read, {
+    __argnames__ : {value: ["callback"]}
+});
+DatFileWrapper.prototype.write = function write() {
+    var self = this;
+    console.log("Can't write yet");
+};
+DatFileWrapper.prototype.rm = function rm() {
+    var self = this;
+    console.log("Can't remove yet");
+};
+DatFileWrapper.prototype.__repr__ = function __repr__ () {
+        return "<" + __name__ + "." + this.constructor.name + " #" + this.ρσ_object_id + ">";
+};
+DatFileWrapper.prototype.__str__ = function __str__ () {
+    return this.__repr__();
+};
+Object.defineProperty(DatFileWrapper.prototype, "__bases__", {value: []});
+
+function DatDirWrapper() {
+    if (this.ρσ_object_id === undefined) Object.defineProperty(this, "ρσ_object_id", {"value":++ρσ_object_counter});
+    DatDirWrapper.prototype.__init__.apply(this, arguments);
+}
+DatDirWrapper.prototype.__init__ = function __init__(wrapper, path) {
+    var self = this;
+    self.archive = wrapper.archive;
+    self.path = wrapper.subdir + path;
+};
+if (!DatDirWrapper.prototype.__init__.__argnames__) Object.defineProperties(DatDirWrapper.prototype.__init__, {
+    __argnames__ : {value: ["wrapper", "path"]}
+});
+DatDirWrapper.__argnames__ = DatDirWrapper.prototype.__init__.__argnames__;
+DatDirWrapper.__handles_kwarg_interpolation__ = DatDirWrapper.prototype.__init__.__handles_kwarg_interpolation__;
+DatDirWrapper.prototype.children = function children(callback) {
+    var self = this;
+    ρσ_interpolate_kwargs.call(self.archive, self.archive.readdir, [self.path].concat([ρσ_desugar_kwargs({stat: true})])).then((function() {
+        var ρσ_anonfunc = function (files) {
+            callback((function() {
+                var ρσ_Iter = ρσ_Iterable(files), ρσ_Result = [], obj;
+                for (var ρσ_Index = 0; ρσ_Index < ρσ_Iter.length; ρσ_Index++) {
+                    obj = ρσ_Iter[ρσ_Index];
+                    ρσ_Result.push(Object.assign({}, obj.stat, (function(){
+                        var ρσ_d = {};
+                        ρσ_d["name"] = obj.name;
+                        return ρσ_d;
+                    }).call(this), (function(){
+                        var ρσ_d = {};
+                        ρσ_d["type"] = (obj.stat.isFile()) ? "file" : (obj.stat.isDirectory()) ? "dir" : "";
+                        return ρσ_d;
+                    }).call(this)));
+                }
+                ρσ_Result = ρσ_list_constructor(ρσ_Result);
+                return ρσ_Result;
+            })());
+        };
+        if (!ρσ_anonfunc.__argnames__) Object.defineProperties(ρσ_anonfunc, {
+            __argnames__ : {value: ["files"]}
+        });
+        return ρσ_anonfunc;
+    })()).catch((function() {
+        var ρσ_anonfunc = function (err) {
+            callback(ρσ_list_decorate([]));
+        };
+        if (!ρσ_anonfunc.__argnames__) Object.defineProperties(ρσ_anonfunc, {
+            __argnames__ : {value: ["err"]}
+        });
+        return ρσ_anonfunc;
+    })());
+};
+if (!DatDirWrapper.prototype.children.__argnames__) Object.defineProperties(DatDirWrapper.prototype.children, {
+    __argnames__ : {value: ["callback"]}
+});
+DatDirWrapper.prototype.mkdir = function mkdir(callback) {
+    var self = this;
+    console.log("Can't write here yet");
+};
+if (!DatDirWrapper.prototype.mkdir.__argnames__) Object.defineProperties(DatDirWrapper.prototype.mkdir, {
+    __argnames__ : {value: ["callback"]}
+});
+DatDirWrapper.prototype.__repr__ = function __repr__ () {
+        return "<" + __name__ + "." + this.constructor.name + " #" + this.ρσ_object_id + ">";
+};
+DatDirWrapper.prototype.__str__ = function __str__ () {
+    return this.__repr__();
+};
+Object.defineProperty(DatDirWrapper.prototype, "__bases__", {value: []});
+
+function DatArchiveWrapperFs() {
+    if (this.ρσ_object_id === undefined) Object.defineProperty(this, "ρσ_object_id", {"value":++ρσ_object_counter});
+    DatArchiveWrapperFs.prototype.__init__.apply(this, arguments);
+}
+DatArchiveWrapperFs.prototype.__init__ = function __init__(key, subdir) {
+    var self = this;
+    self.archive = new DatArchive(key);
+    self.subdir = subdir || "";
+};
+if (!DatArchiveWrapperFs.prototype.__init__.__argnames__) Object.defineProperties(DatArchiveWrapperFs.prototype.__init__, {
+    __argnames__ : {value: ["key", "subdir"]}
+});
+DatArchiveWrapperFs.__argnames__ = DatArchiveWrapperFs.prototype.__init__.__argnames__;
+DatArchiveWrapperFs.__handles_kwarg_interpolation__ = DatArchiveWrapperFs.prototype.__init__.__handles_kwarg_interpolation__;
+DatArchiveWrapperFs.prototype.dir = function dir(dir) {
+    var self = this;
+    return new DatDirWrapper(self, dir);
+};
+if (!DatArchiveWrapperFs.prototype.dir.__argnames__) Object.defineProperties(DatArchiveWrapperFs.prototype.dir, {
+    __argnames__ : {value: ["dir"]}
+});
+DatArchiveWrapperFs.prototype.file = function file(file) {
+    var self = this;
+    return new DatFileWrapper(self, file);
+};
+if (!DatArchiveWrapperFs.prototype.file.__argnames__) Object.defineProperties(DatArchiveWrapperFs.prototype.file, {
+    __argnames__ : {value: ["file"]}
+});
+DatArchiveWrapperFs.prototype.__repr__ = function __repr__ () {
+        return "<" + __name__ + "." + this.constructor.name + " #" + this.ρσ_object_id + ">";
+};
+DatArchiveWrapperFs.prototype.__str__ = function __str__ () {
+    return this.__repr__();
+};
+Object.defineProperty(DatArchiveWrapperFs.prototype, "__bases__", {value: []});
+
+function FsWrapper(host, subdir) {
+    var url_base, address;
+    if ((location.protocol === "dat:" || typeof location.protocol === "object" && ρσ_equals(location.protocol, "dat:"))) {
+        return new DatArchiveWrapperFs(host, subdir);
+    } else {
+        url_base = location.protocol;
+        address = url_base + "//" + host + "/dav";
+        return new WebDAV.Fs(address);
+    }
+};
+if (!FsWrapper.__argnames__) Object.defineProperties(FsWrapper, {
+    __argnames__ : {value: ["host", "subdir"]}
+});
+
 if (location.hash) {
-    window.fs = new WebDAV.Fs(address);
+    window.fs = FsWrapper(location.host);
 }
 require(ρσ_list_decorate([ "text!../jappy.json" ]), (function() {
     var ρσ_anonfunc = function (raw_translation_data) {
@@ -1046,16 +1216,14 @@ function collaboration_triggered() {
 
 event_bus.on("collaboration-dialog", collaboration_triggered);
 function prefetch_files() {
-    var url_base, address, path;
+    var path;
     if (tag.fetching_files) {
         return;
     }
     tag.fetching_files = true;
     if (location.hash) {
-        url_base = location.protocol;
-        address = url_base + "//" + location.host + "/dav";
         if (window.fs === undefined) {
-            window.fs = new WebDAV.Fs(address);
+            window.fs = FsWrapper(location.host);
         }
         path = location.hash.slice(1);
         function got_files(files) {
@@ -1067,7 +1235,26 @@ function prefetch_files() {
             __argnames__ : {value: ["files"]}
         });
 
-        fs.dir("/" + path).children(got_files);
+        if ((location.protocol === "dat:" || typeof location.protocol === "object" && ρσ_equals(location.protocol, "dat:"))) {
+            fs.file("workspace/dat.json").read((function() {
+                var ρσ_anonfunc = function (jsonDatWorkspace, status) {
+                    if (status === 200) {
+                        window.DatWorkspace = JSON.parse(jsonDatWorkspace);
+                        window.fs = FsWrapper(window.DatWorkspace.url.slice(5));
+                        fs.dir("/" + path).children(got_files);
+                    } else {
+                        window.fs = FsWrapper(location.host, "workspace");
+                        fs.dir("/" + path).children(got_files);
+                    }
+                };
+                if (!ρσ_anonfunc.__argnames__) Object.defineProperties(ρσ_anonfunc, {
+                    __argnames__ : {value: ["jsonDatWorkspace", "status"]}
+                });
+                return ρσ_anonfunc;
+            })());
+        } else {
+            fs.dir("/" + path).children(got_files);
+        }
     }
 };
 
@@ -1116,7 +1303,7 @@ function load_file() {
     }
     var path, target_file;
     if (window.fs === undefined) {
-        window.fs = new WebDAV.Fs(address);
+        window.fs = FsWrapper(location.host);
     }
     if (tag.workspace_palette) {
         tag.workspace_palette.popDown();
@@ -1207,7 +1394,11 @@ function update_workspace_menu() {
                     var ρσ_anonfunc = function (ev) {
                         var target_file, url;
                         target_file = ev.target.getAttribute("data-uri");
-                        url = location.protocol + "//" + location.host + "/" + "workspace/" + path + "/" + target_file;
+                        if (window.DatWorkspace) {
+                            url = window.DatWorkspace.url + "/" + window.getpath() + "/" + target_file;
+                        } else {
+                            url = location.protocol + "//" + location.host + "/" + window.getpath() + "/" + target_file;
+                        }
                         event_bus.trigger("url-open", url);
                     };
                     if (!ρσ_anonfunc.__argnames__) Object.defineProperties(ρσ_anonfunc, {
@@ -1239,6 +1430,12 @@ function update_workspace_menu() {
                 location.href = "dav://" + location.host + "/dav/" + path;
             } else if ((location.protocol === "https:" || typeof location.protocol === "object" && ρσ_equals(location.protocol, "https:"))) {
                 location.href = "davs://" + location.host + "/dav/" + path;
+            } else if ((location.protocol === "https:" || typeof location.protocol === "object" && ρσ_equals(location.protocol, "https:"))) {
+                location.href = "davs://" + location.host + "/dav/" + path;
+            } else if ((location.protocol === "dat:" || typeof location.protocol === "object" && ρσ_equals(location.protocol, "dat:"))) {
+                if (window.DatWorkspace) {
+                    window.open("beaker://library/" + window.DatWorkspace.url + "/" + window.getpath(), "_new");
+                }
             }
         };
         lastrow = ρσ_interpolate_kwargs.call(E, E.div, [browse_button].concat([ρσ_desugar_kwargs({class_: "menu"})]));

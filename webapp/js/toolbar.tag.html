@@ -69,10 +69,70 @@ from gettext import install, gettext as _
 tag = this
 tag._ = _
 tag.lang = (navigator.language or navigator.userLanguage)[:2]
-url_base = location.protocol
-address = url_base + '//' + location.host + '/dav'
+
+class DatFileWrapper:
+    def __init__(self, wrapper, path):
+        self.archive = wrapper.archive
+        self.path = wrapper.subdir + path
+
+    def read(self, callback):
+        self.archive.readFile(self.path).then(
+            def(content):
+                callback(content, 200)
+            ).catch(def(err):
+                console.log(err)
+                callback('', err)
+            )
+
+    def write(self):
+        console.log("Can't write yet")
+
+    def rm(self):
+        console.log("Can't remove yet")
+
+
+class DatDirWrapper:
+    def __init__(self, wrapper, path):
+        self.archive = wrapper.archive
+        self.path = wrapper.subdir + path
+
+    def children(self, callback):
+        self.archive.readdir(self.path, stat=True).then(
+            def(files):
+                callback([Object.assign({}, obj.stat,
+                                        {'name':obj.name},
+                                        {'type':'file' if obj.stat.isFile() else
+                                                ('dir' if obj.stat.isDirectory() else '')})
+                                                      for obj in files])
+            ).catch(def(err):
+                callback([])
+            )
+
+    def mkdir(self, callback):
+        console.log("Can't write here yet")
+
+
+class DatArchiveWrapperFs:
+    def __init__(self, key, subdir):
+        self.archive = new DatArchive(key)
+        self.subdir = subdir or ''
+
+    def dir(self, dir):
+        return DatDirWrapper(self, dir)
+
+    def file(self, file):
+        return DatFileWrapper(self, file)
+
+def FsWrapper(host, subdir):
+    if location.protocol=='dat:':
+        return DatArchiveWrapperFs(host, subdir)
+    else:
+        url_base = location.protocol
+        address = url_base + '//' + host + '/dav'
+        return new WebDAV.Fs(address)
+
 if location.hash:
-    window.fs = new WebDAV.Fs(address)
+    window.fs = FsWrapper(location.host)
 
 require(["text!../jappy.json"],
         def(raw_translation_data):
@@ -151,10 +211,8 @@ def prefetch_files():
         return
     tag.fetching_files = True
     if location.hash:
-        url_base = location.protocol
-        address = url_base + '//' + location.host + '/dav'
         if window.fs is undefined:
-            window.fs = new WebDAV.Fs(address)
+            window.fs = FsWrapper(location.host)
 
         path = location.hash.slice(1)
         def got_files(files):
@@ -162,7 +220,18 @@ def prefetch_files():
             window.server_files = files
             event_bus.trigger('file-list-update')
 
-        fs.dir('/' + path).children(got_files)
+        if location.protocol=='dat:':
+            fs.file('workspace/dat.json').read(def(jsonDatWorkspace, status):
+                if status is 200: # success
+                    window.DatWorkspace = JSON.parse(jsonDatWorkspace)
+                    window.fs = FsWrapper(window.DatWorkspace.url[5:])
+                    fs.dir('/' + path).children(got_files)
+                else:
+                    window.fs = FsWrapper(location.host, 'workspace')
+                    fs.dir('/' + path).children(got_files)
+            )
+        else:
+            fs.dir('/' + path).children(got_files)
 
 def restore_last_session():
     path = location.hash.slice(1)
@@ -193,7 +262,7 @@ def load_file_ev(ev):
 
 def load_file(url, overwrite=False):
     if window.fs is undefined:
-        window.fs = new WebDAV.Fs(address)
+        window.fs = FsWrapper(location.host)
     if tag.workspace_palette:
         tag.workspace_palette.popDown()
     path = location.hash.slice(1)
@@ -248,8 +317,12 @@ def update_workspace_menu():
                 editor_load = False
                 item.onclick = def(ev):
                     target_file = ev.target.getAttribute('data-uri')
-                    url = location.protocol + '//' + location.host + '/' \
-                                + 'workspace/' + path + '/' + target_file
+                    if window.DatWorkspace:
+                        url = window.DatWorkspace.url + '/' + window.getpath() \
+                            + '/' + target_file
+                    else:
+                        url = location.protocol + '//' + location.host + '/' \
+                                + window.getpath() + '/' + target_file
                     event_bus.trigger('url-open', url)
             else:
                 span.classList.add('document')
@@ -271,6 +344,12 @@ def update_workspace_menu():
                 location.href = 'dav://' + location.host + '/dav/' + path
             elif location.protocol=='https:':
                 location.href = 'davs://' + location.host + '/dav/' + path
+            elif location.protocol=='https:':
+                location.href = 'davs://' + location.host + '/dav/' + path
+            elif location.protocol=='dat:':
+                if window.DatWorkspace:
+                    window.open('beaker://library/' + window.DatWorkspace.url \
+                                + '/' + window.getpath(), '_new')
         lastrow = E.div(class_='menu', browse_button)
         items.append(lastrow)
         if tag.workspace_palette:

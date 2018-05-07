@@ -131,7 +131,7 @@ iframe {
         <textarea id="code-container" ref="code"></textarea>
     </div>
     <div ref="vmframe_cont" id="vmframe_cont">
-        <iframe src="{ location.protocol }//{ location.host }/{ getpath() }template.html"
+        <iframe src="{ location.protocol }//{ location.host }/template.html"
         allowfullscreen="true"
         allowTransparency="false" ref="vmframe" name="_vmframe"></iframe>
     </div>
@@ -149,10 +149,13 @@ window.files = {}
 #loadCSS(['lib/cm/theme/solarized.css',
 #         'lib/cm/addon/scroll/simplescrollbars.css', 'css/activity.css'])
 
-tag.getpath = def():
+window.getpath = tag.getpath = def():
     if len(location.hash) > 0:
         path = location.hash.slice(1)
-        return 'dav/' + path + '/'
+        if location.protocol=='dat:':
+            return path + '/'
+        else:
+            return 'dav/' + path + '/'
     else:
         return ''
 
@@ -273,6 +276,9 @@ def init():
             if savedSession is not None:
                 check_load(None, None, savedSession)
             tag.update()
+        elif location.protocol=='dat:':
+            console.log("Can't collaborate yet")
+            event_bus.trigger("restore-last-session")
         else:
             init_collab()
     event_bus.on("activity-not-ready", load_localstore)
@@ -503,10 +509,11 @@ def init():
                 callback()
         fs.file(filepath).write(source, "text/plain; charset=UTF-8",
                                                     file_written)
+    def clear_and_run():
+        clear_output(run)
 
     def run():
         window.state = 'run'
-        clear_output()
         event_bus.trigger('traybutton-open')
         riot.update()
         if window.y is not undefined: # collaboration
@@ -523,12 +530,12 @@ def init():
         if tag.title.toLowerCase().endswith(['.html', '.htm']):
             if location.hash:
                 path = location.hash.slice(1)
-                target = 'dav/' + path + '/.index.html'
+                target = getpath() + '.index.html'
                 if 'index.html' in window.files:
                     src = window.files['index.html'].getValue()
                 elif len([fil for fil in parent.server_files \
                                       if fil.name=='index.html']):
-                    target =  'dav/' + path + '/index.html'
+                    target =  getpath() + path + '/index.html'
                 else:
                     src = editor.getValue()
                 publish_script(src, def():
@@ -546,12 +553,12 @@ def init():
         else:
             # This is what we're about after all
             run_rapydscript()
-    event_bus.on("run-code", run)
+    event_bus.on("run-code", clear_and_run)
 
     def url_open(url):
         event_bus.trigger("traybutton-open")
         riot.update()
-        window.open(url, '_vmframe')
+        iframe.contentWindow.location = url
     event_bus.on('url-open', url_open)
 
     def trigger_on_next_run(callback):
@@ -566,7 +573,7 @@ def init():
     def run_remotely(event):
         if window.fs is not undefined:
             path = location.hash.slice(1)
-            rel_url = 'dav/' + path + '/.index.html'
+            rel_url = getpath() + '.index.html'
             makeToast(_('Running from remote: ' + event.filename))
             iframe.contentWindow.location = rel_url
             if event.filename is not tag.title:
@@ -602,6 +609,14 @@ def init():
                                                 + '\n' + source[script_place:]
                 publish_script(source)
             iframe.contentWindow.Jappy = iframe.contentWindow.parent
+            idoc = iframe.contentDocument
+            head = idoc.getElementsByTagName('head')[0]
+            base = idoc.createElement('base')
+            if window.DatWorkspace:
+                base.href = window.DatWorkspace.url + '/' + tag.getpath()
+            else:
+                base.href = location.protocol + '//' + location.host + '/' + tag.getpath()
+            head.appendChild(base)
             iframe.contentDocument.body.appendChild(script)
             iframe.contentDocument.close()
         iframe.addEventListener('load', write_script)
@@ -613,8 +628,8 @@ def init():
                 iframe.contentDocument.close()
             else:
                 iframe.contentWindow.location = location.protocol + '//' + \
-                                                location.host + '/dav/' + \
-                                                path + '/template.html'
+                                                location.host + '/' + tag.getpath() + \
+                                                'template.html'
         else:
             if 'template.html' in window.files:
                 iframe.contentDocument.open()
@@ -641,6 +656,12 @@ def init():
             link.rel = 'stylesheet'
             link.href = 'css/markdown-extra.css'
             head.appendChild(link)
+            base = idoc.createElement('base')
+            if window.DatWorkspace:
+                base.href = window.DatWorkspace.url + '/' + tag.getpath()
+            else:
+                base.href = location.protocol + '//' + location.host + '/' + tag.getpath()
+            head.appendChild(base)
             containerDiv.innerHTML = output
             html = idoc.documentElement.outerHTML
             if window.fs is not undefined:
@@ -652,7 +673,7 @@ def init():
             idoc.body.appendChild(containerDiv)
             idoc.close()
         iframe.addEventListener('load', write_output)
-        if len(location.hash) > 0:
+        if len(location.hash) > 0 and location.protocol!='dat:':
             path = location.hash.slice(1)
             if 'template.html' in window.files:
                 iframe.contentDocument.open()
@@ -660,8 +681,8 @@ def init():
                 iframe.contentDocument.close()
             else:
                 iframe.contentWindow.location = location.protocol + '//' + \
-                                                location.host + '/dav/' + \
-                                                path + '/template.html'
+                                                location.host + '/' + tag.getpath() + \
+                                                'template.html'
         else:
             iframe.contentWindow.location = location.protocol + '//' + \
                                             location.host + '/template.html'
@@ -690,15 +711,13 @@ def init():
         , True)
     event_bus.on("break-code", break_code)
 
-    def clear_output():
-        if len(location.hash) > 0:
-            path = location.hash.slice(1)
-            iframe.contentWindow.location = location.protocol + '//' + \
-                                            location.host + '/dav/' + \
-                                            path + '/template.html'
-        else:
-            iframe.contentWindow.location = location.protocol + '//' + \
-                                            location.host + '/template.html'
+    def clear_output(callback):
+        def payload():
+            iframe.removeEventListener('load', payload)
+            callback()
+        iframe.addEventListener('load', payload)
+        iframe.contentWindow.location = location.protocol + '//' + \
+                                        location.host + '/template.html'
     event_bus.on("clear-output", clear_output)
 
     def serialize():
@@ -980,10 +999,11 @@ def init():
             console.log('Add a hash id to synchronize.')
             tag.update()
             return
+        event_bus.trigger('update-workspace-menu')
+
         protocol = 'wss' if location.protocol[-2:-1]=='s' else 'ws'
         address = protocol + '://' + location.host
         path = location.hash.slice(1)
-        event_bus.trigger('update-workspace-menu')
 
         Y({'db'       : { 'name': 'memory'},
            'connector': { 'name': 'websockets-client',
