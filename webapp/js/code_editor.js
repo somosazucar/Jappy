@@ -2112,6 +2112,9 @@ tag.cursor_pos = {};
 window.files = {};
 window.getpath = tag.getpath = function () {
     var path;
+    if (window.DatItem) {
+        return "";
+    }
     if (len(location.hash) > 0) {
         path = location.hash.slice(1);
         if ((location.protocol === "dat:" || typeof location.protocol === "object" && ρσ_equals(location.protocol, "dat:"))) {
@@ -2301,7 +2304,7 @@ function init() {
             }
             tag.update();
         } else if ((location.protocol === "dat:" || typeof location.protocol === "object" && ρσ_equals(location.protocol, "dat:"))) {
-            console.log("Can't collaborate yet");
+            console.log("Can't collaborate over DAT yet.");
             event_bus.trigger("restore-last-session");
         } else {
             init_collab();
@@ -2700,7 +2703,7 @@ function init() {
             }).call(this), path);
         }
         event_bus.trigger("activity-save");
-        if (tag.title.toLowerCase().endswith(ρσ_list_decorate([ ".html", ".htm" ]))) {
+        if (tag.title.toLowerCase().endswith(ρσ_list_decorate([ ".html", ".htm", ".svg" ]))) {
             if (location.hash) {
                 path = location.hash.slice(1);
                 target = getpath() + ".index.html";
@@ -2831,7 +2834,9 @@ function init() {
             idoc = iframe.contentDocument;
             head = idoc.getElementsByTagName("head")[0];
             base = idoc.createElement("base");
-            if (window.DatWorkspace) {
+            if (window.DatItem) {
+                base.href = window.DatItem.url + "/" + tag.getpath();
+            } else if (window.DatWorkspace) {
                 base.href = window.DatWorkspace.url + "/" + tag.getpath();
             } else {
                 base.href = location.protocol + "//" + location.host + "/" + tag.getpath();
@@ -2882,7 +2887,9 @@ function init() {
             link.href = "css/markdown-extra.css";
             head.appendChild(link);
             base = idoc.createElement("base");
-            if (window.DatWorkspace) {
+            if (window.DatItem) {
+                base.href = window.DatItem.url + "/" + tag.getpath();
+            } else if (window.DatWorkspace) {
                 base.href = window.DatWorkspace.url + "/" + tag.getpath();
             } else {
                 base.href = location.protocol + "//" + location.host + "/" + tag.getpath();
@@ -2958,7 +2965,9 @@ function init() {
     function clear_output(callback) {
         function payload() {
             iframe.removeEventListener("load", payload);
-            callback();
+            if (callback) {
+                callback();
+            }
         };
 
         iframe.addEventListener("load", payload);
@@ -3424,7 +3433,6 @@ function init() {
             tag.update();
             return;
         }
-        event_bus.trigger("update-workspace-menu");
         protocol = (ρσ_equals(location.protocol.slice(-2, -1), "s")) ? "wss" : "ws";
         address = protocol + "://" + location.host;
         path = location.hash.slice(1);

@@ -150,6 +150,8 @@ window.files = {}
 #         'lib/cm/addon/scroll/simplescrollbars.css', 'css/activity.css'])
 
 window.getpath = tag.getpath = def():
+    if window.DatItem:
+        return ''
     if len(location.hash) > 0:
         path = location.hash.slice(1)
         if location.protocol=='dat:':
@@ -277,7 +279,7 @@ def init():
                 check_load(None, None, savedSession)
             tag.update()
         elif location.protocol=='dat:':
-            console.log("Can't collaborate yet")
+            console.log("Can't collaborate over DAT yet.")
             event_bus.trigger("restore-last-session")
         else:
             init_collab()
@@ -527,7 +529,7 @@ def init():
                                      'data': { 'filename': target }},
                                     path)
         event_bus.trigger("activity-save")
-        if tag.title.toLowerCase().endswith(['.html', '.htm']):
+        if tag.title.toLowerCase().endswith(['.html', '.htm', '.svg']):
             if location.hash:
                 path = location.hash.slice(1)
                 target = getpath() + '.index.html'
@@ -612,7 +614,9 @@ def init():
             idoc = iframe.contentDocument
             head = idoc.getElementsByTagName('head')[0]
             base = idoc.createElement('base')
-            if window.DatWorkspace:
+            if window.DatItem:
+                base.href = window.DatItem.url + '/' + tag.getpath()
+            elif window.DatWorkspace:
                 base.href = window.DatWorkspace.url + '/' + tag.getpath()
             else:
                 base.href = location.protocol + '//' + location.host + '/' + tag.getpath()
@@ -657,7 +661,9 @@ def init():
             link.href = 'css/markdown-extra.css'
             head.appendChild(link)
             base = idoc.createElement('base')
-            if window.DatWorkspace:
+            if window.DatItem:
+                base.href = window.DatItem.url + '/' + tag.getpath()
+            elif window.DatWorkspace:
                 base.href = window.DatWorkspace.url + '/' + tag.getpath()
             else:
                 base.href = location.protocol + '//' + location.host + '/' + tag.getpath()
@@ -714,7 +720,8 @@ def init():
     def clear_output(callback):
         def payload():
             iframe.removeEventListener('load', payload)
-            callback()
+            if callback:
+                callback()
         iframe.addEventListener('load', payload)
         iframe.contentWindow.location = location.protocol + '//' + \
                                         location.host + '/template.html'
@@ -999,7 +1006,6 @@ def init():
             console.log('Add a hash id to synchronize.')
             tag.update()
             return
-        event_bus.trigger('update-workspace-menu')
 
         protocol = 'wss' if location.protocol[-2:-1]=='s' else 'ws'
         address = protocol + '://' + location.host

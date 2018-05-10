@@ -76,11 +76,12 @@ class DatFileWrapper:
         self.path = wrapper.subdir + path
 
     def read(self, callback):
+        console.log('FILE ' + self.archive.url + '\n' + self.path)
         self.archive.readFile(self.path).then(
             def(content):
                 callback(content, 200)
             ).catch(def(err):
-                console.log(err)
+                console.error(err)
                 callback('', err)
             )
 
@@ -97,6 +98,7 @@ class DatDirWrapper:
         self.path = wrapper.subdir + path
 
     def children(self, callback):
+        console.warn('CHILDREN: ' + self.archive.url + '\n' + self.path)
         self.archive.readdir(self.path, stat=True).then(
             def(files):
                 callback([Object.assign({}, obj.stat,
@@ -180,7 +182,7 @@ def filter_latest(files):
             prev = result[0]
             if item.name[0]=='.':
                 return result
-            elif not item.name.endswith(['.pyj', '.md', '.html', \
+            elif not item.name.endswith(['.pyj', '.md', '.html', '.txt', '.json',\
                                             '.css', '.js', '.svg', '.htm']):
                 return result
             elif item.type is not 'file':
@@ -225,10 +227,20 @@ def prefetch_files():
                 if status is 200: # success
                     window.DatWorkspace = JSON.parse(jsonDatWorkspace)
                     window.fs = FsWrapper(window.DatWorkspace.url[5:])
-                    fs.dir('/' + path).children(got_files)
+                    fs.file('/' + path + '/dat.json').read(def(jsonDat, status):
+                        if status is 200: # success
+                            window.DatItem = JSON.parse(jsonDat)
+                            window.fs = FsWrapper(window.DatItem.url[5:])
+                            fs.dir('/').children(got_files)
+                        else:
+                            fs.dir('/' + path).children(got_files)
+                    )
                 else:
                     window.fs = FsWrapper(location.host, 'workspace')
-                    fs.dir('/' + path).children(got_files)
+                    if window.DatItem!=undefined:
+                        fs.dir('/').children(got_files)
+                    else:
+                        fs.dir('/' + path).children(got_files)
             )
         else:
             fs.dir('/' + path).children(got_files)
@@ -240,15 +252,22 @@ def restore_last_session():
         path = location.hash.slice(1)
         if len(recent_files) > 0:
             makeToast('<b>#' + path + '</b><br><br>' + \
-                _('Restoring saved session from file system.') + '<br><i>' + \
+                _('Restoring saved session from virtual filesystem.') + '<br><i>' + \
                         str(len(recent_files)) + _(' files.') + '</i>')
+        elif len(window.server_files) > 0:
+            event_bus.trigger('new-from-data', '')
+            makeToast('<b>#' + path + '</b><br><br><i>' + \
+                _('Welcome') + '</i> ' + _('returning project!'))
         else:
             event_bus.trigger('new-from-data', '')
             makeToast('<b>#' + path + '</b><br><br><i>' + \
                 _('Welcome') + '</i> ' + _('new project!'))
 
         for item in reversed(recent_files):
-            load_file('/' + path + '/' + item.name, False)
+            if window.DatItem==undefined:
+                load_file('/' + path + '/' + item.name, False)
+            else:
+                load_file('/' + item.name, False)
     else:
         event_bus.one('file-list-update', restore_last_session)
         prefetch_files()
@@ -258,7 +277,10 @@ def load_file_ev(ev):
     tag.workspace_palette.popDown()
     target_file = ev.target.getAttribute('data-uri')
     path = location.hash.slice(1)
-    load_file('/' + path + '/' + target_file, True)
+    if window.DatItem:
+        load_file('/' + target_file, True)
+    else:
+        load_file('/' + path + '/' + target_file, True)
 
 def load_file(url, overwrite=False):
     if window.fs is undefined:
@@ -306,8 +328,20 @@ def update_workspace_menu():
                 editor_load = False
                 item.onclick = def(ev):
                     target_file = ev.target.getAttribute('data-uri')
-                    location.href =  'dav://' + location.host \
-                                      + '/dav/' + path + '/' + target_file
+                    if location.protocol=='http:':
+                        location.href = 'dav://' + location.host \
+                                          + '/dav/' + path + '/' + target_file
+                    elif location.protocol=='https:':
+                        location.href = 'davs://' + location.host \
+                                          + '/dav/' + path + '/' + target_file
+                    elif location.protocol=='dat:':
+                        if window.DatItem:
+                            window.open('beaker://library/' + window.DatItem.url \
+                                        + target_file + '/', '_new')
+                        elif window.DatWorkspace:
+                            window.open('beaker://library/' + window.DatWorkspace.url \
+                                + window.getpath() + '/' + target_file + '/', '_new')
+
             elif file.name.endswith('.pyj'):
                 span.classList.add('pyj')
             elif file.name.endswith('.html'):
@@ -317,7 +351,9 @@ def update_workspace_menu():
                 editor_load = False
                 item.onclick = def(ev):
                     target_file = ev.target.getAttribute('data-uri')
-                    if window.DatWorkspace:
+                    if window.DatItem:
+                        url = window.DatItem.url + '/' + target_file
+                    elif window.DatWorkspace:
                         url = window.DatWorkspace.url + '/' + window.getpath() \
                             + '/' + target_file
                     else:
@@ -344,25 +380,33 @@ def update_workspace_menu():
                 location.href = 'dav://' + location.host + '/dav/' + path
             elif location.protocol=='https:':
                 location.href = 'davs://' + location.host + '/dav/' + path
-            elif location.protocol=='https:':
-                location.href = 'davs://' + location.host + '/dav/' + path
             elif location.protocol=='dat:':
-                if window.DatWorkspace:
+                if window.DatItem:
+                    window.open('beaker://library/' + window.DatItem.url \
+                                + '/', '_new')
+                elif window.DatWorkspace:
                     window.open('beaker://library/' + window.DatWorkspace.url \
                                 + '/' + window.getpath(), '_new')
         lastrow = E.div(class_='menu', browse_button)
         items.append(lastrow)
         if tag.workspace_palette:
             tag.workspace_palette.setContent(items)
-    def try_make_dir(body, existed_previously):
+
+    def try_make_dir(body, status):
+        if int(status)==0:  # lost connectivity
+            alert("Workspace server is not available.")
+            location.hash = ''
+            return
         fs.dir('/' + path).children(list_files)
-    if window.server_files is undefined:
-        prefetch_files()
+
     if tag.dir_created is not path:
         tag.dir_created = path
         fs.dir('/' + path).mkdir(try_make_dir)
     else:
-        fs.dir('/' + path).children(list_files)
+        if window.DatItem!=undefined:
+            fs.dir('/').children(list_files)
+        else:
+            fs.dir('/' + path).children(list_files)
 tag.update_workspace_menu = update_workspace_menu
 event_bus.on("file-list-update", update_workspace_menu)
 event_bus.on("update-workspace-menu", update_workspace_menu)

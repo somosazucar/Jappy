@@ -983,6 +983,7 @@ DatFileWrapper.__argnames__ = DatFileWrapper.prototype.__init__.__argnames__;
 DatFileWrapper.__handles_kwarg_interpolation__ = DatFileWrapper.prototype.__init__.__handles_kwarg_interpolation__;
 DatFileWrapper.prototype.read = function read(callback) {
     var self = this;
+    console.log("FILE " + self.archive.url + "\n" + self.path);
     self.archive.readFile(self.path).then((function() {
         var ρσ_anonfunc = function (content) {
             callback(content, 200);
@@ -993,7 +994,7 @@ DatFileWrapper.prototype.read = function read(callback) {
         return ρσ_anonfunc;
     })()).catch((function() {
         var ρσ_anonfunc = function (err) {
-            console.log(err);
+            console.error(err);
             callback("", err);
         };
         if (!ρσ_anonfunc.__argnames__) Object.defineProperties(ρσ_anonfunc, {
@@ -1037,6 +1038,7 @@ DatDirWrapper.__argnames__ = DatDirWrapper.prototype.__init__.__argnames__;
 DatDirWrapper.__handles_kwarg_interpolation__ = DatDirWrapper.prototype.__init__.__handles_kwarg_interpolation__;
 DatDirWrapper.prototype.children = function children(callback) {
     var self = this;
+    console.warn("CHILDREN: " + self.archive.url + "\n" + self.path);
     ρσ_interpolate_kwargs.call(self.archive, self.archive.readdir, [self.path].concat([ρσ_desugar_kwargs({stat: true})])).then((function() {
         var ρσ_anonfunc = function (files) {
             callback((function() {
@@ -1182,7 +1184,7 @@ function filter_latest(files) {
             prev = result[0];
             if ((item.name[0] === "." || typeof item.name[0] === "object" && ρσ_equals(item.name[0], "."))) {
                 return result;
-            } else if (!item.name.endswith(ρσ_list_decorate([ ".pyj", ".md", ".html", ".css", ".js", ".svg", ".htm" ]))) {
+            } else if (!item.name.endswith(ρσ_list_decorate([ ".pyj", ".md", ".html", ".txt", ".json", ".css", ".js", ".svg", ".htm" ]))) {
                 return result;
             } else if (item.type !== "file") {
                 return result;
@@ -1241,10 +1243,28 @@ function prefetch_files() {
                     if (status === 200) {
                         window.DatWorkspace = JSON.parse(jsonDatWorkspace);
                         window.fs = FsWrapper(window.DatWorkspace.url.slice(5));
-                        fs.dir("/" + path).children(got_files);
+                        fs.file("/" + path + "/dat.json").read((function() {
+                            var ρσ_anonfunc = function (jsonDat, status) {
+                                if (status === 200) {
+                                    window.DatItem = JSON.parse(jsonDat);
+                                    window.fs = FsWrapper(window.DatItem.url.slice(5));
+                                    fs.dir("/").children(got_files);
+                                } else {
+                                    fs.dir("/" + path).children(got_files);
+                                }
+                            };
+                            if (!ρσ_anonfunc.__argnames__) Object.defineProperties(ρσ_anonfunc, {
+                                __argnames__ : {value: ["jsonDat", "status"]}
+                            });
+                            return ρσ_anonfunc;
+                        })());
                     } else {
                         window.fs = FsWrapper(location.host, "workspace");
-                        fs.dir("/" + path).children(got_files);
+                        if ((window.DatItem !== undefined && (typeof window.DatItem !== "object" || ρσ_not_equals(window.DatItem, undefined)))) {
+                            fs.dir("/").children(got_files);
+                        } else {
+                            fs.dir("/" + path).children(got_files);
+                        }
                     }
                 };
                 if (!ρσ_anonfunc.__argnames__) Object.defineProperties(ρσ_anonfunc, {
@@ -1265,7 +1285,10 @@ function restore_last_session() {
         recent_files = filter_latest(window.server_files);
         path = location.hash.slice(1);
         if (len(recent_files) > 0) {
-            makeToast("<b>#" + path + "</b><br><br>" + _("Restoring saved session from file system.") + "<br><i>" + str(len(recent_files)) + _(" files.") + "</i>");
+            makeToast("<b>#" + path + "</b><br><br>" + _("Restoring saved session from virtual filesystem.") + "<br><i>" + str(len(recent_files)) + _(" files.") + "</i>");
+        } else if (len(window.server_files) > 0) {
+            event_bus.trigger("new-from-data", "");
+            makeToast("<b>#" + path + "</b><br><br><i>" + _("Welcome") + "</i> " + _("returning project!"));
         } else {
             event_bus.trigger("new-from-data", "");
             makeToast("<b>#" + path + "</b><br><br><i>" + _("Welcome") + "</i> " + _("new project!"));
@@ -1273,7 +1296,11 @@ function restore_last_session() {
         var ρσ_Iter5 = ρσ_Iterable(reversed(recent_files));
         for (var ρσ_Index5 = 0; ρσ_Index5 < ρσ_Iter5.length; ρσ_Index5++) {
             item = ρσ_Iter5[ρσ_Index5];
-            load_file("/" + path + "/" + item.name, false);
+            if ((window.DatItem === undefined || typeof window.DatItem === "object" && ρσ_equals(window.DatItem, undefined))) {
+                load_file("/" + path + "/" + item.name, false);
+            } else {
+                load_file("/" + item.name, false);
+            }
         }
     } else {
         event_bus.one("file-list-update", restore_last_session);
@@ -1287,7 +1314,11 @@ function load_file_ev(ev) {
     tag.workspace_palette.popDown();
     target_file = ev.target.getAttribute("data-uri");
     path = location.hash.slice(1);
-    load_file("/" + path + "/" + target_file, true);
+    if (window.DatItem) {
+        load_file("/" + target_file, true);
+    } else {
+        load_file("/" + path + "/" + target_file, true);
+    }
 };
 if (!load_file_ev.__argnames__) Object.defineProperties(load_file_ev, {
     __argnames__ : {value: ["ev"]}
@@ -1376,7 +1407,17 @@ function update_workspace_menu() {
                     var ρσ_anonfunc = function (ev) {
                         var target_file;
                         target_file = ev.target.getAttribute("data-uri");
-                        location.href = "dav://" + location.host + "/dav/" + path + "/" + target_file;
+                        if ((location.protocol === "http:" || typeof location.protocol === "object" && ρσ_equals(location.protocol, "http:"))) {
+                            location.href = "dav://" + location.host + "/dav/" + path + "/" + target_file;
+                        } else if ((location.protocol === "https:" || typeof location.protocol === "object" && ρσ_equals(location.protocol, "https:"))) {
+                            location.href = "davs://" + location.host + "/dav/" + path + "/" + target_file;
+                        } else if ((location.protocol === "dat:" || typeof location.protocol === "object" && ρσ_equals(location.protocol, "dat:"))) {
+                            if (window.DatItem) {
+                                window.open("beaker://library/" + window.DatItem.url + target_file + "/", "_new");
+                            } else if (window.DatWorkspace) {
+                                window.open("beaker://library/" + window.DatWorkspace.url + window.getpath() + "/" + target_file + "/", "_new");
+                            }
+                        }
                     };
                     if (!ρσ_anonfunc.__argnames__) Object.defineProperties(ρσ_anonfunc, {
                         __argnames__ : {value: ["ev"]}
@@ -1394,7 +1435,9 @@ function update_workspace_menu() {
                     var ρσ_anonfunc = function (ev) {
                         var target_file, url;
                         target_file = ev.target.getAttribute("data-uri");
-                        if (window.DatWorkspace) {
+                        if (window.DatItem) {
+                            url = window.DatItem.url + "/" + target_file;
+                        } else if (window.DatWorkspace) {
                             url = window.DatWorkspace.url + "/" + window.getpath() + "/" + target_file;
                         } else {
                             url = location.protocol + "//" + location.host + "/" + window.getpath() + "/" + target_file;
@@ -1430,10 +1473,10 @@ function update_workspace_menu() {
                 location.href = "dav://" + location.host + "/dav/" + path;
             } else if ((location.protocol === "https:" || typeof location.protocol === "object" && ρσ_equals(location.protocol, "https:"))) {
                 location.href = "davs://" + location.host + "/dav/" + path;
-            } else if ((location.protocol === "https:" || typeof location.protocol === "object" && ρσ_equals(location.protocol, "https:"))) {
-                location.href = "davs://" + location.host + "/dav/" + path;
             } else if ((location.protocol === "dat:" || typeof location.protocol === "object" && ρσ_equals(location.protocol, "dat:"))) {
-                if (window.DatWorkspace) {
+                if (window.DatItem) {
+                    window.open("beaker://library/" + window.DatItem.url + "/", "_new");
+                } else if (window.DatWorkspace) {
                     window.open("beaker://library/" + window.DatWorkspace.url + "/" + window.getpath(), "_new");
                 }
             }
@@ -1448,21 +1491,27 @@ function update_workspace_menu() {
         __argnames__ : {value: ["found_files"]}
     });
 
-    function try_make_dir(body, existed_previously) {
+    function try_make_dir(body, status) {
+        if (ρσ_equals(int(status), 0)) {
+            alert("Workspace server is not available.");
+            location.hash = "";
+            return;
+        }
         fs.dir("/" + path).children(list_files);
     };
     if (!try_make_dir.__argnames__) Object.defineProperties(try_make_dir, {
-        __argnames__ : {value: ["body", "existed_previously"]}
+        __argnames__ : {value: ["body", "status"]}
     });
 
-    if (window.server_files === undefined) {
-        prefetch_files();
-    }
     if (tag.dir_created !== path) {
         tag.dir_created = path;
         fs.dir("/" + path).mkdir(try_make_dir);
     } else {
-        fs.dir("/" + path).children(list_files);
+        if ((window.DatItem !== undefined && (typeof window.DatItem !== "object" || ρσ_not_equals(window.DatItem, undefined)))) {
+            fs.dir("/").children(list_files);
+        } else {
+            fs.dir("/" + path).children(list_files);
+        }
     }
 };
 
