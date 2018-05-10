@@ -137,7 +137,6 @@ class DAVFilterMiddleWare(object):
         else:
             path = ''
         if environ.get('REQUEST_METHOD') == 'PROPFIND':
-            print(environ.get('PATH_INFO'))
             if environ.get('PATH_INFO') in ['', '/']:
                 # Let's not allow listing of projects
                 return Unauthorized()(environ, start_response)
@@ -148,6 +147,9 @@ class DAVFilterMiddleWare(object):
             # Let's redirect to static route
             filename = environ.get(
                 'PATH_INFO')[environ.get('PATH_INFO').find('/') + 1:]
+            if  '/.dat' in environ.get('PATH_INFO'):
+                # Let's not leak private dat keys
+                return Unauthorized()(environ, start_response)
             if path and os.path.exists(os.path.join(workspace_dir, filename)):
                 pass
             elif path:
