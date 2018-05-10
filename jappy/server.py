@@ -46,10 +46,6 @@ workspace_dir = os.path.join(os.path.expanduser("~"), 'Workspace')
 if not os.path.isdir(workspace_dir):
     os.mkdir(workspace_dir)
 
-workspace_dir = os.path.join(os.path.expanduser("~"), 'Workspace')
-if not os.path.isdir(workspace_dir):
-    os.mkdir(workspace_dir)
-
 jappy_server_version = '1.0'
 
 
@@ -63,12 +59,6 @@ def hello():
 def add_header(response):
     response.set_cookie('Jappy-Server-Version', jappy_server_version)
     return response
-
-
-@app.route("/%21/<path>")
-def execute(path):
-    return send_from_directory(web_app_dir, path + '/.index.html',
-                               mimetype='text/html')
 
 
 @app.route('/favicon.ico')
@@ -146,10 +136,14 @@ class DAVFilterMiddleWare(object):
                 'PATH_INFO')[1:environ.get('PATH_INFO')[1:].index('/') + 1]
         else:
             path = ''
-        if environ.get('PATH_INFO') in ['', '/'] and \
-                environ.get('REQUEST_METHOD') == 'PROPFIND':
-            # Let's not allow listing of projects
-            return Unauthorized()(environ, start_response)
+        if environ.get('REQUEST_METHOD') == 'PROPFIND':
+            print(environ.get('PATH_INFO'))
+            if environ.get('PATH_INFO') in ['', '/']:
+                # Let's not allow listing of projects
+                return Unauthorized()(environ, start_response)
+            elif  '/.dat' in environ.get('PATH_INFO'):
+                # Let's not leak private dat keys
+                return Unauthorized()(environ, start_response)
         elif environ.get('REQUEST_METHOD') == 'GET':
             # Let's redirect to static route
             filename = environ.get(
