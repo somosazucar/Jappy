@@ -16,7 +16,7 @@ self.addEventListener('install', function(event) {
 self.addEventListener('fetch', function(event) {
   var updateCache = function(request){
     return caches.open('jappy-offline').then(function (cache) {
-      return fetch(request).then(function (response) {
+      return fetch(request.clone()).then(function (response) {
         console.log('[PWA] add page to offline '+response.url);
 		if (request.method=="GET") {
 			return cache.put(request, response);
