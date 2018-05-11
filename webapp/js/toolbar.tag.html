@@ -223,7 +223,7 @@ def prefetch_files():
             event_bus.trigger('file-list-update')
 
         if location.protocol=='dat:':
-            fs.file('workspace/dat.json').read(def(jsonDatWorkspace, status):
+            fs.file('workspace.dat.json').read(def(jsonDatWorkspace, status):
                 if status is 200: # success
                     window.DatWorkspace = JSON.parse(jsonDatWorkspace)
                     window.fs = FsWrapper(window.DatWorkspace.url[5:])

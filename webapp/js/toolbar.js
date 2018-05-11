@@ -1238,7 +1238,7 @@ function prefetch_files() {
         });
 
         if ((location.protocol === "dat:" || typeof location.protocol === "object" && ρσ_equals(location.protocol, "dat:"))) {
-            fs.file("workspace/dat.json").read((function() {
+            fs.file("workspace.dat.json").read((function() {
                 var ρσ_anonfunc = function (jsonDatWorkspace, status) {
                     if (status === 200) {
                         window.DatWorkspace = JSON.parse(jsonDatWorkspace);
