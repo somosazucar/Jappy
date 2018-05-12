@@ -2377,7 +2377,7 @@ function init() {
             editor.setSize(window.innerWidth / 2, target_size);
         }
         if (len(window.files) > 0) {
-            window.document.title = "Jappy : " + tag.title + " @ " + location.host + ((location.hash) ? " # " + location.hash.slice(1) : "");
+            window.document.title = ((location.hash) ? location.hash + _(" at ") : "") + location.host + " - Jappy";
             guess_mode();
         }
     };

@@ -333,8 +333,7 @@ def init():
         else:
             editor.setSize(window.innerWidth/2, target_size)
         if len(window.files) > 0:
-            window.document.title = 'Jappy : ' + tag.title + ' @ ' + \
-                location.host + ((' # ' + location.hash[1:]) if location.hash else '')
+            window.document.title = (location.hash + _(' at ') if location.hash else '') + location.host + ' - Jappy'
             guess_mode()
     this.on('update', update_tabs)
     window.addEventListener("resize", deferred_update_tabs)
