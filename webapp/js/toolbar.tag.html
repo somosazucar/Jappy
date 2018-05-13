@@ -159,7 +159,9 @@ require(["text!../jappy.json"],
 #			  "screen and (max-width: 420px)" )
 
 
-examples = ['welcome.pyj', 'memorize.pyj', 'mandala.pyj', 'input.pyj', 'repl.pyj', 'unicode.pyj', 'lunita.pyj']
+examples = ['welcome.pyj', 'lunita.pyj', 'memorize.pyj', 'mandala.pyj',
+            ['emojis.pyj', 'unicode.pyj'], ['colors.pyj', 'color_names.pyj'],
+            'input.pyj', 'repl.pyj']
 special = ['template.html']
 window.state = 'clean'
 tag.fetching_files = False
@@ -454,20 +456,31 @@ def init():
             tag.example_palette = new palette.Palette(tag.refs.examplebutton, _('Load an example'))
             items = []
             for i in examples:
+                    
                 row = document.createElement('div')
                 row.classList.add('menu')
                 item = document.createElement('button')
                 item.classList.add('icon')
-                span = document.createElement('span')
-                span.classList.add('pyj')
-                text = document.createTextNode(i)
-                item.appendChild(span)
-                item.appendChild(text)
-                def trigger_load(el):
+                def trigger_load(example):
                     return def():
                         tag.example_palette.popDown()
-                        event_bus.trigger('example-load', el)
+                        if Array.isArray(example):
+                            for item in example[1:]:
+                                event_bus.trigger('example-load', item, False)
+                            setTimeout(def():
+                                event_bus.trigger('example-load', example[0])
+                            , 500)
+                        else:
+                            event_bus.trigger('example-load', example)
                 item.onclick = trigger_load(i)
+                span = document.createElement('span')
+                span.classList.add('pyj')
+                if Array.isArray(i):
+                    text = document.createTextNode(i[0])
+                else:
+                    text = document.createTextNode(i)
+                item.appendChild(span)
+                item.appendChild(text)
                 row.appendChild(item)
                 items.append(row)
 

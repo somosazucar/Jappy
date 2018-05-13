@@ -1,0 +1,49 @@
+from color_names import names
+
+document.body.style.display = 'flex'
+document.body.style.alignItems = 'center'
+document.body.style.flexDirection = 'column'
+document.documentElement.style.height = "100%"
+document.body.style.height = "100%"
+document.body.style.margin = '0px'
+
+def filter(value):
+    for item in all.children:
+        if value.lower() in item.dataset.Name.lower():
+            item.style.display = ''
+        else:
+            item.style.display = 'none'
+    return False
+
+def switchtitle(event):
+    name = event.target.dataset.Name
+    title.textContent = '💙' + name
+    title.style.color = name.replace(/\s/g, '')
+
+title = print ('💙 Colores', tag='h1')
+search = inputAsync(filter)
+search.placeholder = '💙'
+search.style.borderRadius = '9px'
+search.style.fontFamily = 'Noto Emoji, Noto Mono'
+search.style.padding = '3px'
+search.style.marginBottom = '15px'
+search.onkeyup = def(event):
+    filter(event.target.value)
+showcase = print ()
+showcase.style.overflowY = 'auto'
+showcase.style.textAlign = 'center'
+showcase.style.width = '100%'
+showcase.style.fontSize = '40pt'
+showcase.style.wordBreak = 'break-all'
+
+all = document.createElement('span')
+for item in names:
+    palette = document.createElement('span')
+    palette.textContent = '💙'
+    palette.dataset.Name = item
+    palette.style.padding = '7px'
+    palette.style.color = item
+    palette.onclick = switchtitle
+    all.append(palette)
+
+showcase.append(all)

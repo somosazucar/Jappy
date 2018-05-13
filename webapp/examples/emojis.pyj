@@ -1,0 +1,52 @@
+from unicode import emojis
+
+document.body.style.display = 'flex'
+document.body.style.alignItems = 'center'
+document.body.style.flexDirection = 'column'
+document.body.style.justifyContent = 'space-around'
+document.documentElement.style.height = "100%"
+document.body.style.height = "100%"
+document.body.style.margin = '0px'
+
+def filter(value):
+    for item in all.children:
+        if value.lower() in item.dataset.Name:
+            item.style.display = ''
+        else:
+            item.style.display = 'none'
+    return False
+
+def switchtitle(event):
+    nicename = event.target.dataset.Name.split('_').join(' ')
+    title.innerHTML = event.target.innerHTML + \
+        ' ' + nicename
+
+title = print ("🔎 <b>Emojis</b>", tag='h1')
+title.style.fontWeight = 'normal'
+search = inputAsync(filter)
+search.placeholder = '🔎'
+search.style.borderRadius = '88px'
+search.style.fontFamily = 'Noto Emoji, Noto Mono'
+search.style.padding = '3px'
+search.style.marginBottom = '15px'
+search.onkeyup = def(event):
+    filter(event.target.value)
+showcase = print ()
+showcase.style.overflowY = 'scroll'
+showcase.style.textAlign = 'center'
+showcase.style.width = '100%'
+showcase.style.fontSize = '40pt'
+showcase.style.wordBreak = 'break-all'
+
+all = document.createElement('span')
+for item in emojis:
+    emoji = document.createElement('button')
+    emoji.textContent = emojis[item]
+    emoji.dataset.Name = item
+    emoji.style.width = emoji.style.height = '99px'
+    emoji.style.fontSize = '50pt'
+    emoji.style.fontFamily = 'Noto Emoji, Noto Mono'
+    emoji.onclick = switchtitle
+    all.append(emoji)
+
+showcase.append(all)

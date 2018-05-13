@@ -1158,7 +1158,7 @@ require(ρσ_list_decorate([ "text!../jappy.json" ]), (function() {
     });
     return ρσ_anonfunc;
 })());
-examples = ρσ_list_decorate([ "welcome.pyj", "memorize.pyj", "mandala.pyj", "input.pyj", "repl.pyj", "unicode.pyj", "lunita.pyj" ]);
+examples = ρσ_list_decorate([ "welcome.pyj", "lunita.pyj", "memorize.pyj", "mandala.pyj", ρσ_list_decorate([ "emojis.pyj", "unicode.pyj" ]), ρσ_list_decorate([ "colors.pyj", "color_names.pyj" ]), "input.pyj", "repl.pyj" ]);
 special = ρσ_list_decorate([ "template.html" ]);
 window.state = "clean";
 tag.fetching_files = false;
@@ -1580,29 +1580,45 @@ function init() {
                 row.classList.add("menu");
                 item = document.createElement("button");
                 item.classList.add("icon");
-                span = document.createElement("span");
-                span.classList.add("pyj");
-                text = document.createTextNode(i);
-                item.appendChild(span);
-                item.appendChild(text);
-                function trigger_load(el) {
+                function trigger_load(example) {
                     return function () {
+                        var item;
                         tag.example_palette.popDown();
-                        event_bus.trigger("example-load", el);
+                        if (Array.isArray(example)) {
+                            var ρσ_Iter8 = ρσ_Iterable(example.slice(1));
+                            for (var ρσ_Index8 = 0; ρσ_Index8 < ρσ_Iter8.length; ρσ_Index8++) {
+                                item = ρσ_Iter8[ρσ_Index8];
+                                event_bus.trigger("example-load", item, false);
+                            }
+                            setTimeout(function () {
+                                event_bus.trigger("example-load", example[0]);
+                            }, 500);
+                        } else {
+                            event_bus.trigger("example-load", example);
+                        }
                     };
                 };
                 if (!trigger_load.__argnames__) Object.defineProperties(trigger_load, {
-                    __argnames__ : {value: ["el"]}
+                    __argnames__ : {value: ["example"]}
                 });
 
                 item.onclick = trigger_load(i);
+                span = document.createElement("span");
+                span.classList.add("pyj");
+                if (Array.isArray(i)) {
+                    text = document.createTextNode(i[0]);
+                } else {
+                    text = document.createTextNode(i);
+                }
+                item.appendChild(span);
+                item.appendChild(text);
                 row.appendChild(item);
                 items.append(row);
             }
             items.append(ρσ_interpolate_kwargs.call(E, E.hr, [ρσ_desugar_kwargs({class_: "header-separator"})]));
-            var ρσ_Iter8 = ρσ_Iterable(special);
-            for (var ρσ_Index8 = 0; ρσ_Index8 < ρσ_Iter8.length; ρσ_Index8++) {
-                i = ρσ_Iter8[ρσ_Index8];
+            var ρσ_Iter9 = ρσ_Iterable(special);
+            for (var ρσ_Index9 = 0; ρσ_Index9 < ρσ_Iter9.length; ρσ_Index9++) {
+                i = ρσ_Iter9[ρσ_Index9];
                 row = document.createElement("div");
                 row.classList.add("menu");
                 item = document.createElement("button");
@@ -1698,9 +1714,9 @@ function init() {
             shared_folder.prototype.trigger = "collaboration-dialog";
 
             items = ρσ_list_decorate([]);
-            var ρσ_Iter9 = ρσ_Iterable(ρσ_list_decorate([ new as_zip, new import_file, new shared_folder ]));
-            for (var ρσ_Index9 = 0; ρσ_Index9 < ρσ_Iter9.length; ρσ_Index9++) {
-                i = ρσ_Iter9[ρσ_Index9];
+            var ρσ_Iter10 = ρσ_Iterable(ρσ_list_decorate([ new as_zip, new import_file, new shared_folder ]));
+            for (var ρσ_Index10 = 0; ρσ_Index10 < ρσ_Iter10.length; ρσ_Index10++) {
+                i = ρσ_Iter10[ρσ_Index10];
                 if (i) {
                     row = document.createElement("div");
                     row.classList.add("menu");
