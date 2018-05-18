@@ -6,8 +6,7 @@ define(["sugar-web/env", "sugar-web/activity/activity"], function (env, activity
         // One event bus for all
         event_bus = riot.observable()
 
-        // Mount web components
-        riot.compile(function() {
+        function mountTags() {
 
             // here tags are compiled and riot.mount works synchronously
             window.tags = riot.mount('*')
@@ -22,7 +21,23 @@ define(["sugar-web/env", "sugar-web/activity/activity"], function (env, activity
               // No datastore
               event_bus.trigger('activity-not-ready', err)
             }
-        })
+        }
+
+        // Mount web components
+        if (riot.compile !== undefined) {
+			// Initialize the python environment.
+			compiler = RapydScript.create_embedded_compiler()
+
+			// Setup custom script parser
+			riot.parsers.js.Rapyd = function(js, options) {
+			  return (compiler.compile(js))
+			}
+
+			riot.compile(mountTags)
+        }
+        else {
+            mountTags()
+        }
 
     });
 });

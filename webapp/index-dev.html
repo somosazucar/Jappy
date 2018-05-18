@@ -22,6 +22,7 @@
     <link rel="stylesheet" type="text/css" href="lib/cm/addon/dialog/dialog.css">
     <link rel="stylesheet" type="text/css" href="lib/cm/addon/scroll/simplescrollbars.css">
     <link rel="stylesheet" type="text/css" href="css/activity.css">
+	<script src="lib/rapydscript.js"></script>
 </head>
 <body>
     <tool-bar></tool-bar>
@@ -33,8 +34,8 @@
     <!--script src="lib/browser-polyfill.min.js"></script-->
     <!-- ^^ This is only necessary for very old browser ^^ (such as Webkit1) -->
 
-	<script src="lib/riot.min.js"></script>
-	<!-- script src="lib/riot+compiler.min.js"></script -->
+	<!-- script src="lib/riot.min.js"></script -->
+	<script src="lib/riot+compiler.min.js"></script>
     <script src="lib/baselib.js"></script>
     <script src="lib/webdav.js"></script>
 
@@ -66,12 +67,12 @@
     <script src="lib/manup.min.js"></script>
 
     <!-- Precompiled riot tags (either activate these or the next group) -->
-    <script src="js/toolbar.js"></script>
-    <script src="js/code_editor.js"></script>
+    <!-- script src="js/toolbar.js"></script>
+    <script src="js/code_editor.js"></script-->
 
     <!-- Embedded compiler (needs riot+compiler) -->
-    <!--script type="riot/tag" data-src="code_editor.tag.html"></script>
-    <script type="riot/tag" data-src="toolbar.tag.html"></script-->
+    <script type="riot/tag" data-src="js/code_editor.tag.html"></script>
+    <script type="riot/tag" data-src="js/toolbar.tag.html"></script>
 
     <script data-main="js/loader" src="lib/require.js"></script>
 </body>

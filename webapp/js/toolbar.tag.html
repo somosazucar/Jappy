@@ -30,6 +30,9 @@
   #main-toolbar #full-button {
       background-image: url(icons/view-fullscreen.svg);
   }
+  #main-toolbar #help-button {
+      background-image: url(icons/toolbar-help.svg);
+  }
   #main-toolbar #export-button {
       background-image: url(icons/export-or-publish.svg);
   }
@@ -59,7 +62,10 @@
 
   <button class="toolbutton" id="export-button" title={ _('Export or publish') } ref="exportbutton"></button>
 
+  <button class="toolbutton" id="help-button" title={ _('Help') } ref="helpbutton"></button>
+
   <button class="toolbutton pull-right" id="stop-button" title={ _('Stop') } ref="stopbutton"></button>
+
 </div>
 
 <script type="text/Rapyd">
@@ -438,6 +444,13 @@ def init():
         event_bus.trigger("traybutton-close", False)
         tag.update()
         event_bus.trigger("clear-output")
+    this.refs.helpbutton.onclick = def():
+        event_bus.trigger("clear-output")
+        window.state = 'clean'
+        url = location.protocol + '//' + location.host + '/' \
+                + "dav/tiddly/wiki.html"
+        event_bus.trigger('url-open', url)
+        tag.update()
 
     def activity_ready(activity):
         tag.refs.stopbutton.onclick = def():
