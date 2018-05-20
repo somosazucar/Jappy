@@ -271,19 +271,20 @@ def init():
     collab = CollaborationBinding()
     iframe = this.refs.vmframe
 
-    def load_localstore():
+    def load_store():
         # No datastore probably means we need to handle stuff ourselves
         if not location.hash:
-            savedSession = localStorage.getItem('jappySession')
-            if savedSession is not None:
-                check_load(None, None, savedSession)
-            tag.update()
+            ## savedSession = localStorage.getItem('jappySession')
+            ## if savedSession is not None:
+            ##    check_load(None, None, savedSession)
+            ## tag.update()
+            pass
         elif location.protocol=='dat:':
             console.log("Can't collaborate over DAT yet.")
             event_bus.trigger("restore-last-session")
         else:
             init_collab()
-    event_bus.on("activity-not-ready", load_localstore)
+    event_bus.on("activity-not-ready", load_store)
 
 
     def check_load(error, metadata, data):
@@ -308,10 +309,11 @@ def init():
             datastore.loadAsText(check_load)
         else:
             # No datastore probably means we need to handle stuff ourselves
-            event_bus.trigger("enable-standalone")
-            savedSession = localStorage.getItem('jappySession')
-            if savedSession is not None:
-                check_load(None, None, savedSession)
+            # event_bus.trigger("enable-standalone")
+            # savedSession = localStorage.getItem('jappySession')
+            # if savedSession is not None:
+            #    check_load(None, None, savedSession)
+            pass
         tag.update()
         window.activity = activity
     event_bus.on("activity-ready", load_datastore)
@@ -909,6 +911,10 @@ def init():
             event_bus.trigger('traybutton-close')
             riot.update()
 
+    def fullscreen():
+        run_fullscreen(False)
+    window.fullscreen = fullscreen
+
     def run_fullscreen(execute=True):
         code_editor = tag.refs.split
         code_editor.style.display = 'none'
@@ -917,6 +923,7 @@ def init():
         canvas = document.getElementById('canvas')
         canvas.style.top = '0'
         iframe.style.width='100%'
+
         if execute:
             run()
 
@@ -982,6 +989,15 @@ def init():
             )
         )
     event_bus.on("save-as-zip", save_zip)
+
+    def key_handler(ev):
+        if ev.key=='Enter' and ev.altKey==True:
+            fullscreen()
+        if ev.key=='Escape':
+            restore_button = document.getElementById('restore-button')
+            if restore_button:
+                restore_button.click()
+    document.onkeyup = key_handler
 
     def reset_collab(ev):
         # This is by far the simplest and most clear to the user ;-)

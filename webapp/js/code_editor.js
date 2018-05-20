@@ -2295,14 +2295,8 @@ function init() {
     CodeMirror.commands.replaceAll = undefined;
     collab = new CollaborationBinding;
     iframe = this.refs.vmframe;
-    function load_localstore() {
-        var savedSession;
+    function load_store() {
         if (!location.hash) {
-            savedSession = localStorage.getItem("jappySession");
-            if (savedSession !== null) {
-                check_load(null, null, savedSession);
-            }
-            tag.update();
         } else if ((location.protocol === "dat:" || typeof location.protocol === "object" && ρσ_equals(location.protocol, "dat:"))) {
             console.log("Can't collaborate over DAT yet.");
             event_bus.trigger("restore-last-session");
@@ -2311,7 +2305,7 @@ function init() {
         }
     };
 
-    event_bus.on("activity-not-ready", load_localstore);
+    event_bus.on("activity-not-ready", load_store);
     function check_load(error, metadata, data) {
         var parsed_data, new_session, file;
         if (data) {
@@ -2340,16 +2334,11 @@ function init() {
     });
 
     function load_datastore(activity) {
-        var datastore, savedSession;
+        var datastore;
         datastore = activity.getDatastoreObject();
         if (datastore.objectId !== undefined) {
             datastore.loadAsText(check_load);
         } else {
-            event_bus.trigger("enable-standalone");
-            savedSession = localStorage.getItem("jappySession");
-            if (savedSession !== null) {
-                check_load(null, null, savedSession);
-            }
         }
         tag.update();
         window.activity = activity;
@@ -3284,6 +3273,11 @@ function init() {
         __argnames__ : {value: ["e"]}
     });
 
+    function fullscreen() {
+        run_fullscreen(false);
+    };
+
+    window.fullscreen = fullscreen;
     function run_fullscreen() {
         var execute = (arguments[0] === undefined || ( 0 === arguments.length-1 && arguments[arguments.length-1] !== null && typeof arguments[arguments.length-1] === "object" && arguments[arguments.length-1] [ρσ_kwargs_symbol] === true)) ? run_fullscreen.__defaults__.execute : arguments[0];
         var ρσ_kwargs_obj = arguments[arguments.length-1];
@@ -3397,6 +3391,23 @@ function init() {
     };
 
     event_bus.on("save-as-zip", save_zip);
+    function key_handler(ev) {
+        var restore_button;
+        if ((ev.key === "Enter" || typeof ev.key === "object" && ρσ_equals(ev.key, "Enter")) && (ev.altKey === true || typeof ev.altKey === "object" && ρσ_equals(ev.altKey, true))) {
+            fullscreen();
+        }
+        if ((ev.key === "Escape" || typeof ev.key === "object" && ρσ_equals(ev.key, "Escape"))) {
+            restore_button = document.getElementById("restore-button");
+            if (restore_button) {
+                restore_button.click();
+            }
+        }
+    };
+    if (!key_handler.__argnames__) Object.defineProperties(key_handler, {
+        __argnames__ : {value: ["ev"]}
+    });
+
+    document.onkeyup = key_handler;
     function reset_collab(ev) {
         window.files = ρσ_list_decorate([]);
         location.reload();
