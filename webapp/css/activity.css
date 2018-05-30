@@ -5,6 +5,27 @@ body, html {
     left: 0px;
     right: 0px;
 }
+@keyframes fadeInOut {
+  0% {
+    opacity: 0.2;
+  }
+  50% {
+    opacity: 1;
+  }
+  100% {
+    opacity: 0.2;
+  }
+}
+#splash {
+    animation: 1.5s ease 0s infinite fadeInOut;
+	position: absolute;
+	text-align: center;
+	width: 100%;
+	top: 30%;
+}
+#splash img {
+	height: 40vh;
+}
 .canvas {
     display: flex;
     flex-direction: column;

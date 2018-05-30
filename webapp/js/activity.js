@@ -10,6 +10,8 @@ define(["sugar-web/env", "sugar-web/activity/activity"], function (env, activity
 
             // here tags are compiled and riot.mount works synchronously
             window.tags = riot.mount('*')
+			var splash = document.getElementById('splash');
+			document.body.removeChild(splash);
 
             try {
               activity.setup()
