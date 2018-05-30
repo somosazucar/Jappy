@@ -36,6 +36,9 @@
   #main-toolbar #export-button {
       background-image: url(icons/export-or-publish.svg);
   }
+  #main-toolbar #stop-button {
+      display: none;
+  }
   .hidden {
       display: none !important;
   }
@@ -50,19 +53,19 @@
   <button show={ location.hash } class="toolbutton" id="workspace-button" title={ _('Workspace') } ref="workspacebutton"></button>
   <hr />
 
-  <button class="toolbutton { hidden: window.state=='run' } { colored: window.state!='run' }" id="run-button" title={ _('Execute') } ref="runbutton"></button>
+  <button class="toolbutton { colored: window.state!='run' }" id="run-button" title={ _('Execute') } ref="runbutton"></button>
 
-  <button class="toolbutton { hidden: window.state!='run' } { colored: window.state=='run' }" id="break-button" title={ _('Break execution') } ref="breakbutton"></button>
+  <button class="toolbutton { colored: window.state=='run' }" id="break-button" title={ _('Break execution') } ref="breakbutton"></button>
 
   <button class="toolbutton { colored: window.state!='clean' }" id="erase-button" title={ _('Clear the canvas') } ref="erasebutton"></button>
 
-  <button class="toolbutton { hidden: window.state=='run' }" id="start-button" title={ _('Start fullscreen') } ref="startbutton"></button>
-
-  <button class="toolbutton { hidden: window.state=='stopped' } { hidden: window.state=='clean' }" id="full-button" title={ _('View fullscreen') } ref="fullbutton"></button>
-
   <button class="toolbutton" id="export-button" title={ _('Export or publish') } ref="exportbutton"></button>
 
-  <button class="toolbutton pull-right" id="stop-button" title={ _('Stop') } ref="stopbutton"></button>
+  <button class="toolbutton pull-right" id="stop-button" title={ _('Stop') } id="stop-button" ref="stopbutton"></button>
+
+  <button class="toolbutton pull-right { hidden: window.state=='run' }" id="start-button" title={ _('Start fullscreen') } ref="startbutton"></button>
+
+  <button class="toolbutton pull-right { hidden: window.state=='stopped' } { hidden: window.state=='clean' }" id="full-button" title={ _('View fullscreen') } ref="fullbutton"></button>
 
   <button class="toolbutton pull-right" id="help-button" title={ _('Learn') } ref="helpbutton"></button>
 
@@ -453,6 +456,7 @@ def init():
         tag.update()
 
     def activity_ready(activity):
+        tag.refs.stopbutton.style.display = 'block'
         tag.refs.stopbutton.onclick = def():
             event_bus.trigger("activity-save", activity)
     event_bus.on("activity-ready", activity_ready)
