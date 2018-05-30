@@ -1,0 +1,12 @@
+<html>
+    <body>
+    <script>
+        document.write(location.pathname)
+        if (location.pathname.slice(0, 4)=='/dav') {
+            if (parent.DatWorkspace!=undefined) {
+                location.href = parent.DatWorkspace.url + location.pathname.slice(4)
+            }
+        }
+    </script>
+    </body>
+</html>
