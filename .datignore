@@ -1,4 +1,8 @@
 .git/
 node_modules/
 workspace/
-__pycache__
+__pycache__/
+flatpak/
+.direnv/
+.pytest_cache/
+dist/
