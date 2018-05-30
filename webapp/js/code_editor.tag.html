@@ -139,6 +139,7 @@ iframe {
 
 <script type="text/Rapyd">
 
+window.jappy_editor_version = '0.5'
 from gettext import install, gettext as _
 import re
 tag = this
@@ -611,7 +612,6 @@ def init():
                     source = source[:script_place] + '\n' + script.outerHTML \
                                                 + '\n' + source[script_place:]
                 publish_script(source)
-            iframe.contentWindow.Jappy = iframe.contentWindow.parent
             idoc = iframe.contentDocument
             head = idoc.getElementsByTagName('head')[0]
             base = idoc.createElement('base')
@@ -709,7 +709,7 @@ def init():
         for i in range(0, highestAnimationId):
             iwindow.cancelAnimationFrame(i)
         iwindow.stop()
-        iwindow.document.body.style.opacity = '0.5'
+        iwindow.document.body.style.opacity = '0.9'
         inputs = iwindow.document.getElementsByTagName('input')
         for i in inputs:
             i.disabled = True
@@ -1083,6 +1083,7 @@ def init():
                             if msg:
                                 event = msg.event
                                 data = msg.data
+                                console.warn(event)
                                 event_bus.trigger(event, data)
                         )
         )

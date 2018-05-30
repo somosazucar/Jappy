@@ -1,3 +1,6 @@
+#  Distributed under BSD License
+#    Copyright 2018 (c) Sebastian Silva <sebastian@fuentelibre.org> 
+
 from pythonize import strings
 
 strings()
@@ -10,11 +13,10 @@ def clearScreen(color=None):
         document.body.style.backgroundColor = color
     document.body.innerHTML = ''
 
-def onKeyUp(e):
-    if e.keyCode == 13:
-        e.target.dispatchEvent(new Event('submit'))
-
 def inputAsync(cb=None):
+    def onKeyUp(e):
+        if e.keyCode == 13:
+            e.target.dispatchEvent(new Event('submit'))
     el = document.createElement('input')
     el.className = '__terminal__'
     el.onsubmit = def(e):
@@ -55,6 +57,7 @@ def ρσ_print(*args, **kwargs):
     return el
 
 window.onerror = def(e):
+    console.error(e)
     print(e)
 
 def loadCSS(url_list):
@@ -75,3 +78,6 @@ def loadCSSAsync(url, media):
     setTimeout(def():
                     head.appendChild(link)
                 )
+
+if (parent.jappy_editor_version):
+    window.Jappy = parent

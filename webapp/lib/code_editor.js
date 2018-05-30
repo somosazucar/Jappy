@@ -2100,6 +2100,7 @@ return parser;
     ρσ_modules.re.purge = purge;
 })();
 var tag;
+window.jappy_editor_version = "0.5";
 var install = ρσ_modules.gettext.install;
 var _ = ρσ_modules.gettext.gettext;
 
@@ -2819,7 +2820,6 @@ function init() {
                 }
                 publish_script(source);
             }
-            iframe.contentWindow.Jappy = iframe.contentWindow.parent;
             idoc = iframe.contentDocument;
             head = idoc.getElementsByTagName("head")[0];
             base = idoc.createElement("base");
@@ -2932,7 +2932,7 @@ function init() {
             iwindow.cancelAnimationFrame(i);
         }
         iwindow.stop();
-        iwindow.document.body.style.opacity = "0.5";
+        iwindow.document.body.style.opacity = "0.9";
         inputs = iwindow.document.getElementsByTagName("input");
         var ρσ_Iter7 = ρσ_Iterable(inputs);
         for (var ρσ_Index7 = 0; ρσ_Index7 < ρσ_Iter7.length; ρσ_Index7++) {
@@ -3546,6 +3546,7 @@ function init() {
                         if (msg) {
                             event = msg.event;
                             data = msg.data;
+                            console.warn(event);
                             event_bus.trigger(event, data);
                         }
                     };

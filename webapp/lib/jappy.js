@@ -3774,15 +3774,6 @@ if (!clearScreen.__defaults__) Object.defineProperties(clearScreen, {
     __argnames__ : {value: ["color"]}
 });
 
-function onKeyUp(e) {
-    if ((e.keyCode === 13 || typeof e.keyCode === "object" && ρσ_equals(e.keyCode, 13))) {
-        e.target.dispatchEvent(new Event("submit"));
-    }
-};
-if (!onKeyUp.__argnames__) Object.defineProperties(onKeyUp, {
-    __argnames__ : {value: ["e"]}
-});
-
 function inputAsync() {
     var cb = (arguments[0] === undefined || ( 0 === arguments.length-1 && arguments[arguments.length-1] !== null && typeof arguments[arguments.length-1] === "object" && arguments[arguments.length-1] [ρσ_kwargs_symbol] === true)) ? inputAsync.__defaults__.cb : arguments[0];
     var ρσ_kwargs_obj = arguments[arguments.length-1];
@@ -3791,6 +3782,15 @@ function inputAsync() {
         cb = ρσ_kwargs_obj.cb;
     }
     var el;
+    function onKeyUp(e) {
+        if ((e.keyCode === 13 || typeof e.keyCode === "object" && ρσ_equals(e.keyCode, 13))) {
+            e.target.dispatchEvent(new Event("submit"));
+        }
+    };
+    if (!onKeyUp.__argnames__) Object.defineProperties(onKeyUp, {
+        __argnames__ : {value: ["e"]}
+    });
+
     el = document.createElement("input");
     el.className = "__terminal__";
     el.onsubmit = (function() {
@@ -3861,6 +3861,7 @@ if (!ρσ_print.__handles_kwarg_interpolation__) Object.defineProperties(ρσ_pr
 
 window.onerror = (function() {
     var ρσ_anonfunc = function (e) {
+        console.error(e);
         print(e);
     };
     if (!ρσ_anonfunc.__argnames__) Object.defineProperties(ρσ_anonfunc, {
@@ -3870,9 +3871,9 @@ window.onerror = (function() {
 })();
 function loadCSS(url_list) {
     var urlmedia;
-    var ρσ_Iter1 = ρσ_Iterable(url_list);
-    for (var ρσ_Index1 = 0; ρσ_Index1 < ρσ_Iter1.length; ρσ_Index1++) {
-        urlmedia = ρσ_Iter1[ρσ_Index1];
+    var ρσ_Iter0 = ρσ_Iterable(url_list);
+    for (var ρσ_Index0 = 0; ρσ_Index0 < ρσ_Iter0.length; ρσ_Index0++) {
+        urlmedia = ρσ_Iter0[ρσ_Index0];
         loadCSSAsync(urlmedia);
     }
 };
@@ -3906,3 +3907,6 @@ if (!loadCSSAsync.__argnames__) Object.defineProperties(loadCSSAsync, {
     __argnames__ : {value: ["url", "media"]}
 });
 
+if (parent.jappy_editor_version) {
+    window.Jappy = parent;
+}

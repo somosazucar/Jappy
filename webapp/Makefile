@@ -1,8 +1,8 @@
 compile:
-	rapydscript compile -b lib/jappy.pyj > lib/baselib.js
-	riot --config js/riot.config.js --ext tag.html js/
+	rapydscript compile -b js/jappy.pyj > lib/jappy.js
+	riot --config js/riot.config.js --ext tag.html js/ lib/
 watch:
-	riot --colors --watch --config js/riot.config.js --ext tag.html js/
+	riot --colors --watch --config js/riot.config.js --ext tag.html js/ lib/
 dist_xo:
 	python setup.py dist_xo
 genpot:
