@@ -71,7 +71,7 @@ def start_webview():
     window.set_title("Jappy")
     window.set_icon_name("jappy")
     try:
-        window.set_icon_from_file(os.path.join(web_root, "activity/jappy.png"))
+        window.set_icon_from_file(os.path.join(web_root, "activity/jappy.svg"))
     except GLib.Error:
         pass
     window.show_all()
