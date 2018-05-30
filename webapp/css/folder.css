@@ -1,0 +1,21 @@
+table :first-child {
+    display: none;
+}
+tr :first-child {
+    font-size: 18pt;
+    display: block;
+}
+tr :nth-child(2) {
+    display: none;
+}
+td.right {
+    padding-left: 80px;
+    font-style: bold;
+    color: #282828;
+    font-size: 9pt;
+    font-family: Noto Sans;
+}
+body {
+    background-color: #c0c0c0;
+    font-family: Noto Mono;
+}

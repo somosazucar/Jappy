@@ -27,27 +27,28 @@ app_dir = "../webapp"
 app = Flask(__name__,
             static_url_path='',
             static_folder=app_dir)
-web_app_dir = os.path.abspath(os.path.join(app.root_path, app_dir))
+web_app_dir = os.path.realpath(os.path.join(app.root_path, app_dir))
 if not os.path.isdir(web_app_dir):
     app_dir = "webapp"
     del app
     app = Flask(__name__,
                 static_url_path='',
                 static_folder=app_dir)
-    web_app_dir = os.path.abspath(os.path.join(app.root_path, app_dir))
+    web_app_dir = os.path.realpath(os.path.join(app.root_path, app_dir))
     if not os.path.isdir(web_app_dir):
         raise ImportError('Jappy Web Application cannot be found.')
 
 register_hooks(app)
 socketio = SocketIO(app)
-web_app_dir = os.path.abspath(os.path.join(app.root_path, '../webapp/'))
+web_app_dir = os.path.realpath(os.path.join(app.root_path, '../webapp/'))
 
-workspace_dir = os.path.join(os.path.expanduser("~"), 'Workspace')
+workspace_dir = os.path.realpath(os.path.join(os.path.expanduser("~"), 'Workspace'))
 if not os.path.isdir(workspace_dir):
     os.mkdir(workspace_dir)
 
-jappy_server_version = '1.0'
-
+jappy_server_version = '0.5'
+response_trailer = '<link rel="stylesheet" href="../../css/folder.css" />' + \
+                        'Jappy Server ' + jappy_server_version
 
 @app.route("/")
 def hello():
@@ -177,8 +178,10 @@ def start_server():
     config.update({
         "mount_path": "/dav",
         "provider_mapping": {"/": provider},
+        "dir_browser": {"enable": True,
+                        "response_trailer": response_trailer},
         "user_mapping": {},
-        "verbose": 1,
+        "verbose": 2,
     })
     dav_app = WsgiDAVApp(config)
     cors_dav_app = CORS(dav_app, headers="*",
@@ -194,32 +197,32 @@ def start_server():
     })
     socketio.run(app, host='0.0.0.0', port=54991)
 
-
+pathSize = len(workspace_dir) + 1
 class EventHandler(pyinotify.ProcessEvent):
 
     def process_IN_CREATE(self, event):  # simplify with a default handler, DRY
-        room = event.path[10:]
+        room = event.path[pathSize:]
         socketio.emit('jappyEvent', {'event': 'file-create',
                                      'data': {
                                          'filename': event.name}
                                      }, room=room, broadcast=True)
 
     def process_IN_DELETE(self, event):
-        room = event.path[10:]
+        room = event.path[pathSize:]
         socketio.emit('jappyEvent', {'event': 'file-delete',
                                      'data': {
                                          'filename': event.name}
                                      }, room=room, broadcast=True)
 
     def process_IN_CLOSE_WRITE(self, event):
-        room = event.path[10:]
+        room = event.path[pathSize:]
         socketio.emit('jappyEvent', {'event': 'file-update',
                                      'data': {
                                          'filename': event.name}
                                      }, room=room, broadcast=True)
 
     def process_IN_MOVED_TO(self, event):
-        room = event.path[10:]
+        room = event.path[pathSize:]
         socketio.emit('jappyEvent', {'event': 'file-rename',
                                      'data': {
                                          # 'src_file':event.src_pathname
