@@ -1,6 +1,6 @@
 //This is the "Offline copy of pages" service worker
 
-//Install stage sets up the index page (home page) in the cahche and opens a new cache
+//Install stage sets up the index page (home page) in the cache and opens a new cache
 self.addEventListener('install', function(event) {
   var indexPage = new Request('index.html');
   event.waitUntil(
@@ -17,10 +17,13 @@ self.addEventListener('fetch', function(event) {
   var updateCache = function(request){
     return caches.open('jappy-offline').then(function (cache) {
       return fetch(request).then(function (response) {
-        console.log('[PWA] add page to offline '+response.url);
-		if (request.method=="GET") {
-			return cache.put(request, response);
-		};
+        var offset = location.protocol.length + location.host.length + 2;
+        var path = request.url.slice(offset);
+        if (request.method=="GET" &&
+                    !(path.startsWith('/dav/'))) {
+            console.info('[PWA] add page to offline '+response.url);
+            return cache.put(request, response);
+        };
       });
     });
   };
@@ -29,7 +32,7 @@ self.addEventListener('fetch', function(event) {
 
   event.respondWith(
     fetch(event.request).catch(function(error) {
-      console.log( '[PWA] Network request Failed. Serving content from cache: ' + error );
+      console.info( '[PWA] Network request Failed. Serving content from cache: ' + error );
 
       //Check to see if you have it in the cache
       //Return response
