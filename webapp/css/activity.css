@@ -68,6 +68,10 @@ button.icon span.html {
 #main-toolbar #activity-button {
   background-image: url(../activity/activity-icon.svg);
 }
+.toolbar hr {
+	vertical-align: -moz-middle-with-baseline;
+	margin-bottom: 2.5px;
+}
 @font-face {
     font-family: "Noto Emoji";
     src: url("../fonts/NotoEmoji.woff") format('woff');
