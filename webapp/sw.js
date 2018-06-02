@@ -20,7 +20,8 @@ self.addEventListener('fetch', function(event) {
         var offset = location.protocol.length + location.host.length + 2;
         var path = request.url.slice(offset);
         if (request.method=="GET" &&
-                    !(path.startsWith('/dav/'))) {
+                response.url &&
+                !(path.startsWith('/dav/'))) {
             console.info('[PWA] add page to offline '+response.url);
             return cache.put(request, response);
         };
