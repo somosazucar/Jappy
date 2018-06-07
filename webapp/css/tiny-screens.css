@@ -7,3 +7,6 @@
 #main-toolbar #export-button {
     display: none;
 }
+#main-toolbar #start-button {
+    background-image: url(../icons/run_color.svg) !important;
+}
