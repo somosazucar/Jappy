@@ -1,5 +1,5 @@
 {
-  "title": "Jappy IDE",
+  "title": "Jappy Creator",
   "description": "Python IDE for the Web",
   "fallback_page": "fallback.html",
   "web_root": "/webapp/"
