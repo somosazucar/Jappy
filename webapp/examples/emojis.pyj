@@ -40,7 +40,7 @@ showcase.style.wordBreak = 'break-all'
 
 all = document.createElement('span')
 for item in emojis:
-    emoji = document.createElement('button')
+    emoji = document.createElement('span')
     emoji.textContent = emojis[item]
     emoji.dataset.Name = item
     emoji.style.width = emoji.style.height = '99px'
