@@ -1158,7 +1158,7 @@ require(ρσ_list_decorate([ "text!../jappy.json" ]), (function() {
     });
     return ρσ_anonfunc;
 })());
-examples = ρσ_list_decorate([ "welcome.pyj", "lunita.pyj", "memorize.pyj", "mandala.pyj", ρσ_list_decorate([ "emojis.pyj", "unicode.pyj" ]), ρσ_list_decorate([ "colors.pyj", "color_names.pyj" ]), "input.pyj", "repl.pyj" ]);
+examples = ρσ_list_decorate([ "welcome.pyj", "lunita.pyj", "memorize.pyj", "mandala.pyj", ρσ_list_decorate([ "emojis.pyj", "unicode.pyj" ]), ρσ_list_decorate([ "colors.pyj", "color_names.pyj" ]), "input.pyj", "timeout.pyj" ]);
 special = ρσ_list_decorate([ "template.html" ]);
 window.state = "clean";
 tag.fetching_files = false;

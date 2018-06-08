@@ -1,0 +1,38 @@
+from random import choice
+
+# Use flexbox
+document.body.style.display = 'flex'
+document.body.style.alignItems = 'center'
+document.body.style.flexDirection = 'column'
+document.body.style.justifyContent = 'space-around'
+document.documentElement.style.height = "100%"
+document.body.style.height = "100%"
+document.body.style.margin = '0px'
+
+emojis = ('👼','🙉','🐁','🙊','🔥','❁','🙈')
+
+clearScreen('Pink')
+centerpiece = print(choice(emojis))
+centerpiece.style.fontSize = '300pt'
+
+años = input('¿Cuantos años tiene el infractor?')
+intervalo = 100
+milisegundos = años * 60 * 1000
+etiqueta = print(milisegundos)
+etiqueta.style.color = 'Blue'
+etiqueta.style.fontSize = '80pt'
+
+def descontar():
+    global milisegundos
+    milisegundos = milisegundos - intervalo
+    minutos = int(milisegundos / 1000 / 60)
+    segundos = (milisegundos - (minutos * 60000)) / 1000
+    mincero = '0' if minutos < 10 else ''
+    segcero = '0' if segundos < 10 else ''
+    final = mincero + int(minutos) +\
+            ':' + segcero + segundos.toFixed(2)
+    etiqueta.innerHTML = final
+    if milisegundos <= 0:
+        clearInterval(tick)
+
+tick = setInterval(descontar, intervalo)
