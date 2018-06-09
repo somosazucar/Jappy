@@ -1,4 +1,4 @@
-riot.tag2('code-editor', '<div id="vsplit" ref="vsplit"> <div id="split" ref="split"> <input ref="file_input" id="file-input" type="file" style="display: none;"> <div id="tabs"> <button onclick="{this.newtab}" id="newtab">&nbsp;</button><span class="{selected: name==parent.title}" each="{name in list(files)}"><button class="{selected: name==parent.title, special_file: name==⁗template.html⁗}" onclick="{parent.switchtab}" ondblclick="{parent.renametab}">{str(name)}</button><button if="{name==parent.title && len(files)>1}" id="closetab" onclick="{parent.closetab}">&nbsp;</button></span><button class="pull-right" id="tray-button" ref="traybutton">&nbsp;</button> </div> <textarea id="code-container" ref="code"></textarea> </div> <div ref="vmframe_cont" id="vmframe_cont"> <iframe riot-src="{location.protocol}//{location.host}/template.html" allowfullscreen="true" allowtransparency="false" ref="vmframe" name="_vmframe"></iframe> </div> </div>', 'code-editor { display: flex; flex: 1 1; height: 100%; } code-editor .CodeMirror,[data-is="code-editor"] .CodeMirror{ height: 100%; width: 100%; font-size: 15pt; font-family: "Noto Mono", "DejaVu Sans Mono", monospace, "Noto Emoji"; } code-editor .CodeMirror-scroll,[data-is="code-editor"] .CodeMirror-scroll{ margin-right: -30px; overflow: auto; -webkit-overflow-scrolling: touch; } code-editor .CodeMirror-linenumber,[data-is="code-editor"] .CodeMirror-linenumber{ font-size: 14pt; } code-editor .cm-s-solarized .CodeMirror-cursor,[data-is="code-editor"] .cm-s-solarized .CodeMirror-cursor{ width: 2px; border: 0; background: transparent; background: rgba(0, 200, 0, .6); } code-editor .CodeMirror-overlayscroll-vertical div,[data-is="code-editor"] .CodeMirror-overlayscroll-vertical div,code-editor .CodeMirror-overlayscroll-horizontal div,[data-is="code-editor"] .CodeMirror-overlayscroll-horizontal div{ background: #808080; width: 10px; } code-editor .error-marker,[data-is="code-editor"] .error-marker{ border: 1px solid red; background-color: rgba(255, 0, 0,0.2); border-radius: 3px; } code-editor iframe,[data-is="code-editor"] iframe{ border: 0px; display: none; } code-editor #split,[data-is="code-editor"] #split{ display: flex; width: 100%; flex-direction: column; flex: 1 1; height: 100%; float: left; } code-editor #vsplit,[data-is="code-editor"] #vsplit{ display: flex; flex-direction: row; flex: 1 1; height: 100%; overflow: auto; } code-editor #tabs button,[data-is="code-editor"] #tabs button{ font-size: 13pt; border-radius: 0; padding: 10px 10px; border: 0px; margin: 0px; } code-editor #tabs button.selected,[data-is="code-editor"] #tabs button.selected{ background-color: #282828; } code-editor #tabs span.selected,[data-is="code-editor"] #tabs span.selected{ white-space: nowrap; } code-editor #closetab,[data-is="code-editor"] #closetab{ background-image: url(lib/sugar-web/graphics/icons/actions/entry-cancel-active.svg); background-repeat: no-repeat; background-color: #282828; width: 28px; background-position: center; background-size: 16px 16px; } code-editor #closetab:active,[data-is="code-editor"] #closetab:active{ background-image: url(lib/sugar-web/graphics/icons/actions/entry-cancel.svg); } code-editor .CodeMirror-search-label,[data-is="code-editor"] .CodeMirror-search-label{ background-image: url(icons/entry-search.svg); background-repeat: no-repeat; background-color: #282828; width: 28px; background-position: center; background-size: 15px 15px; } code-editor .CodeMirror-search-hint,[data-is="code-editor"] .CodeMirror-search-hint{ font-family: sans-serif; color: white; } code-editor #newtab,[data-is="code-editor"] #newtab{ background-image: url(icons/tab-add.svg); background-repeat: no-repeat; width: 28px; background-position: center; background-size: 20px 20px; } code-editor #tray-button,[data-is="code-editor"] #tray-button{ background-image: url(icons/tray-show.svg); background-repeat: no-repeat; width: 28px; background-position: center; background-size: 20px 20px; } code-editor #vmframe_cont,[data-is="code-editor"] #vmframe_cont{ -webkit-overflow-scrolling: touch; overflow: auto; flex: 1 1; height: 100%; } code-editor #vmframe_cont iframe,[data-is="code-editor"] #vmframe_cont iframe{ width: 100%; height: 100%; }', '', function(opts) {
+riot.tag2('code-editor', '<div id="vsplit" ref="vsplit"> <div id="split" ref="split"> <input ref="file_input" id="file-input" type="file" style="display: none;"> <div id="tabs"> <button onclick="{this.newtab}" id="newtab">&nbsp;</button><span class="{selected: name==parent.title}" each="{name in list(files)}"><button class="{selected: name==parent.title, special_file: name==⁗template.html⁗}" onclick="{parent.switchtab}" ondblclick="{parent.renametab}">{str(name)}</button><button if="{name==parent.title && len(files)>1}" id="closetab" onclick="{parent.closetab}">&nbsp;</button></span><button class="pull-right" id="tray-button" ref="traybutton">&nbsp;</button> </div> <textarea id="code-container" ref="code"></textarea> </div> <div ref="vmframe_cont" id="vmframe_cont"> <iframe riot-src="{location.protocol}//{location.host}/template.html" allowfullscreen="true" allowtransparency="false" ref="vmframe"></iframe> <iframe riot-src="{location.protocol}//{location.host}/docs/" allowfullscreen="true" allowtransparency="true" ref="docframe" id="_docframe"></iframe> </div> </div>', 'code-editor { display: flex; flex: 1 1; height: 100%; } code-editor .CodeMirror,[data-is="code-editor"] .CodeMirror{ height: 100%; width: 100%; font-size: 15pt; font-family: "Noto Mono", "DejaVu Sans Mono", monospace, "Noto Emoji"; } code-editor .CodeMirror-scroll,[data-is="code-editor"] .CodeMirror-scroll{ margin-right: -30px; overflow: auto; -webkit-overflow-scrolling: touch; } code-editor .CodeMirror-linenumber,[data-is="code-editor"] .CodeMirror-linenumber{ font-size: 14pt; } code-editor .cm-s-solarized .CodeMirror-cursor,[data-is="code-editor"] .cm-s-solarized .CodeMirror-cursor{ width: 2px; border: 0; background: transparent; background: rgba(0, 200, 0, .6); } code-editor .CodeMirror-overlayscroll-vertical div,[data-is="code-editor"] .CodeMirror-overlayscroll-vertical div,code-editor .CodeMirror-overlayscroll-horizontal div,[data-is="code-editor"] .CodeMirror-overlayscroll-horizontal div{ background: #808080; width: 10px; } code-editor .error-marker,[data-is="code-editor"] .error-marker{ border: 1px solid red; background-color: rgba(255, 0, 0,0.2); border-radius: 3px; } code-editor iframe,[data-is="code-editor"] iframe{ border: 0px; display: none; } code-editor #split,[data-is="code-editor"] #split{ display: flex; width: 100%; flex-direction: column; flex: 1 1; height: 100%; float: left; } code-editor #vsplit,[data-is="code-editor"] #vsplit{ display: flex; flex-direction: row; flex: 1 1; height: 100%; overflow: auto; } code-editor #tabs button,[data-is="code-editor"] #tabs button{ font-size: 13pt; border-radius: 0; padding: 10px 10px; border: 0px; margin: 0px; } code-editor #tabs button.selected,[data-is="code-editor"] #tabs button.selected{ background-color: #282828; } code-editor #tabs span.selected,[data-is="code-editor"] #tabs span.selected{ white-space: nowrap; } code-editor #closetab,[data-is="code-editor"] #closetab{ background-image: url(lib/sugar-web/graphics/icons/actions/entry-cancel-active.svg); background-repeat: no-repeat; background-color: #282828; width: 28px; background-position: center; background-size: 16px 16px; } code-editor #closetab:active,[data-is="code-editor"] #closetab:active{ background-image: url(lib/sugar-web/graphics/icons/actions/entry-cancel.svg); } code-editor .CodeMirror-search-label,[data-is="code-editor"] .CodeMirror-search-label{ background-image: url(icons/entry-search.svg); background-repeat: no-repeat; background-color: #282828; width: 28px; background-position: center; background-size: 15px 15px; } code-editor .CodeMirror-search-hint,[data-is="code-editor"] .CodeMirror-search-hint{ font-family: sans-serif; color: white; } code-editor #newtab,[data-is="code-editor"] #newtab{ background-image: url(icons/tab-add.svg); background-repeat: no-repeat; width: 28px; background-position: center; background-size: 20px 20px; } code-editor #tray-button,[data-is="code-editor"] #tray-button{ background-image: url(icons/tray-show.svg); background-repeat: no-repeat; width: 28px; background-position: center; background-size: 20px 20px; } code-editor #vmframe_cont,[data-is="code-editor"] #vmframe_cont{ -webkit-overflow-scrolling: touch; overflow: auto; flex: 1 1; height: 100%; position: relative; } code-editor #vmframe_cont iframe,[data-is="code-editor"] #vmframe_cont iframe{ width: 100%; height: 100%; } code-editor #_docframe,[data-is="code-editor"] #_docframe{ position: absolute; display: none; left: 0; top: 0; }', '', function(opts) {
 var ρσ_modules = {};
 ρσ_modules.gettext = {};
 ρσ_modules.re = {};
@@ -2269,6 +2269,8 @@ function init() {
         ρσ_d["Ctrl-Enter"] = run;
         ρσ_d["Alt-R"] = run;
         ρσ_d["F9"] = toggle_tray;
+        ρσ_d["Shift-F1"] = get_help;
+        ρσ_d["F1"] = get_context_help;
         ρσ_d["Tab"] = function () {
             if (editor.somethingSelected()) {
                 editor.indentSelection("add");
@@ -2957,6 +2959,7 @@ function init() {
 
     event_bus.on("break-code", break_code);
     function clear_output(callback) {
+        hide_help();
         function payload() {
             iframe.removeEventListener("load", payload);
             if (callback) {
@@ -3452,6 +3455,48 @@ function init() {
     };
 
     event_bus.on("activity-not-ready", fresh_start);
+    function get_context_help() {
+        var term;
+        term = editor.getTokenAt(editor.getCursor());
+        console.warn(term);
+        event_bus.trigger("get-help", term.string);
+    };
+
+    function get_help() {
+        event_bus.trigger("get-help");
+    };
+
+    function hide_help() {
+        tag.refs.docframe.style.display = "none";
+    };
+
+    function show_help() {
+        var term = (arguments[0] === undefined || ( 0 === arguments.length-1 && arguments[arguments.length-1] !== null && typeof arguments[arguments.length-1] === "object" && arguments[arguments.length-1] [ρσ_kwargs_symbol] === true)) ? show_help.__defaults__.term : arguments[0];
+        var ρσ_kwargs_obj = arguments[arguments.length-1];
+        if (ρσ_kwargs_obj === null || typeof ρσ_kwargs_obj !== "object" || ρσ_kwargs_obj [ρσ_kwargs_symbol] !== true) ρσ_kwargs_obj = {};
+        if (Object.prototype.hasOwnProperty.call(ρσ_kwargs_obj, "term")){
+            term = ρσ_kwargs_obj.term;
+        }
+        var url;
+        clear_output();
+        tag.refs.docframe.style.display = "block";
+        window.state = "run";
+        riot.update();
+        url = location.protocol + "//" + location.host + "/" + "docs/#" + term;
+        tag.refs.docframe.contentWindow.location = url;
+        event_bus.trigger("traybutton-open");
+        if (window.innerWidth < 720) {
+            run_fullscreen(false);
+        }
+        tag.update();
+    };
+    if (!show_help.__defaults__) Object.defineProperties(show_help, {
+        __defaults__ : {value: {term:""}},
+        __handles_kwarg_interpolation__ : {value: true},
+        __argnames__ : {value: ["term"]}
+    });
+
+    event_bus.on("get-help", show_help);
     function init_collab() {
         var protocol, address, path;
         if (!location.hash) {

@@ -109,10 +109,17 @@ iframe {
     overflow: auto;
     flex: 1 1;
     height: 100%;
+    position: relative;
 }
 #vmframe_cont iframe {
     width: 100%;
     height: 100%;
+}
+#_docframe {
+    position: absolute;
+    display: none;
+    left: 0;
+    top: 0;
 }
 </style>
 
@@ -133,7 +140,10 @@ iframe {
     <div ref="vmframe_cont" id="vmframe_cont">
         <iframe src="{ location.protocol }//{ location.host }/template.html"
         allowfullscreen="true"
-        allowTransparency="false" ref="vmframe" name="_vmframe"></iframe>
+        allowTransparency="false" ref="vmframe"></iframe>
+        <iframe src="{ location.protocol }//{ location.host }/docs/"
+        allowfullscreen="true"
+        allowTransparency="true" ref="docframe" id="_docframe"></iframe>
     </div>
 </div>
 
@@ -248,6 +258,8 @@ def init():
       'Ctrl-Enter': run,
       'Alt-R': run,
       'F9': toggle_tray,
+      'Shift-F1': get_help,
+      'F1': get_context_help,
       'Tab': def():
                 if editor.somethingSelected():
                     editor.indentSelection("add")
@@ -723,6 +735,7 @@ def init():
     event_bus.on("break-code", break_code)
 
     def clear_output(callback):
+        hide_help()
         def payload():
             iframe.removeEventListener('load', payload)
             if callback:
@@ -1028,6 +1041,33 @@ def init():
                     newtab()
                 )
     event_bus.on("activity-not-ready", fresh_start)
+
+    def get_context_help():
+        #word = editor.findWordAt(editor.getCursor())
+        #term = editor.getRange(word.anchor, word.head)
+        term = editor.getTokenAt(editor.getCursor())
+        console.warn(term)
+        event_bus.trigger("get-help", term.string)
+
+    def get_help():
+        event_bus.trigger("get-help")
+
+    def hide_help():
+        tag.refs.docframe.style.display = 'none'
+
+    def show_help(term=''):
+        clear_output()
+        tag.refs.docframe.style.display = 'block'
+        window.state = 'run'
+        riot.update()
+        url = location.protocol + '//' + location.host + '/' \
+                + "docs/#" + term
+        tag.refs.docframe.contentWindow.location = url
+        event_bus.trigger("traybutton-open")
+        if window.innerWidth < 720:
+            run_fullscreen(False)
+        tag.update()
+    event_bus.on('get-help', show_help)
 
     def init_collab():
         if not location.hash:

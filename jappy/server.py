@@ -13,6 +13,7 @@ import os
 import sys
 import mimetypes
 import pyinotify
+import requests
 import signal
 import static
 from jappy.hooks import register_hooks
@@ -22,6 +23,10 @@ mimetypes.add_type('image/svg+xml', '.svg')
 mimetypes.add_type('application/x-font-woff', '.woff')
 mimetypes.add_type('application/x-rapyd', '.pyj')
 mimetypes.add_type('application/json', '.json')
+
+WRITING_DOCS = (os.environ.get('JAPPY_TIDDLY_BRIDGE')=='1')
+if WRITING_DOCS:
+    print ("Briding to local Tiddlyserver on port 8080.")
 
 app_dir = "../webapp"
 app = Flask(__name__,
@@ -48,7 +53,8 @@ if not os.path.isdir(workspace_dir):
 
 jappy_server_version = '0.5'
 response_trailer = '<link rel="stylesheet" href="../../css/folder.css" />' + \
-                        'Jappy Server ' + jappy_server_version
+    'Jappy Server ' + jappy_server_version
+
 
 @app.route("/")
 def hello():
@@ -72,6 +78,36 @@ def favicon():
 def i18n():
     return send_from_directory(web_app_dir, 'jappy.json',
                                mimetype='application/json')
+
+
+@app.route('/docs/', defaults={'path': ''}, methods=['GET', 'PUT', 'HEAD', 'DELETE'])
+@app.route('/docs/<path:path>', methods=['GET', 'PUT', 'HEAD', 'DELETE'])
+def docs(path):
+    if WRITING_DOCS:
+        url = 'http://localhost:8080/{}'.format(path)
+        if request.method == 'GET':
+            req = requests.get(url, stream=True)
+            return Response(stream_with_context(req.raw.stream(decode_content=False)),
+                            content_type=req.headers.get('content-type'))
+        elif request.method == 'PUT':
+            req = requests.put(url, request.data)
+            resp = Response(req.text)
+            for header in req.headers:
+                resp.headers[header] = req.headers[header]
+            return resp
+        elif request.method == 'DELETE':
+            req = requests.delete(url)
+            resp = Response(req.text)
+            for header in req.headers:
+                resp.headers[header] = req.headers[header]
+            return resp
+        else:
+            resp = Response('')
+            resp.headers['ETag'] = None
+            return resp
+    else:
+        return send_from_directory(os.path.join(web_app_dir, 'docs'), 'wiki.html',
+                                   mimetype='text/html')
 
 
 @app.route('/manifest.json')
@@ -141,14 +177,14 @@ class DAVFilterMiddleWare(object):
             if environ.get('PATH_INFO') in ['', '/']:
                 # Let's not allow listing of projects
                 return Unauthorized()(environ, start_response)
-            elif  '/.dat' in environ.get('PATH_INFO'):
+            elif '/.dat' in environ.get('PATH_INFO'):
                 # Let's not leak private dat keys
                 return Unauthorized()(environ, start_response)
         elif environ.get('REQUEST_METHOD') == 'GET':
             # Let's redirect to static route
             filename = environ.get(
                 'PATH_INFO')[environ.get('PATH_INFO').find('/') + 1:]
-            if  '/.dat' in environ.get('PATH_INFO'):
+            if '/.dat' in environ.get('PATH_INFO'):
                 # Let's not leak private dat keys
                 return Unauthorized()(environ, start_response)
             if path and os.path.exists(os.path.join(workspace_dir, filename)):
@@ -197,7 +233,10 @@ def start_server():
     })
     socketio.run(app, host='0.0.0.0', port=54991)
 
+
 pathSize = len(workspace_dir) + 1
+
+
 class EventHandler(pyinotify.ProcessEvent):
 
     def process_IN_CREATE(self, event):  # simplify with a default handler, DRY
