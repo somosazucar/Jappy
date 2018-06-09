@@ -2739,6 +2739,9 @@ function init() {
         event_bus.trigger("traybutton-open");
         riot.update();
         iframe.contentWindow.location = url;
+        if (window.innerWidth < 720) {
+            run_fullscreen(false);
+        }
     };
     if (!url_open.__argnames__) Object.defineProperties(url_open, {
         __argnames__ : {value: ["url"]}

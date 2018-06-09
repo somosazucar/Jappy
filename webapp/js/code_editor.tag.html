@@ -565,6 +565,8 @@ def init():
         event_bus.trigger("traybutton-open")
         riot.update()
         iframe.contentWindow.location = url
+        if window.innerWidth < 720:
+            run_fullscreen(False)
     event_bus.on('url-open', url_open)
 
     def trigger_on_next_run(callback):
