@@ -6,3 +6,4 @@ wsgigzip
 wsgicors
 gevent-websocket
 pyinotify
+requests
