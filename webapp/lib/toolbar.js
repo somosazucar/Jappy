@@ -1549,12 +1549,7 @@ function init() {
         event_bus.trigger("clear-output");
     };
     this.refs.helpbutton.onclick = function () {
-        var url;
-        event_bus.trigger("clear-output");
-        window.state = "run";
-        url = location.protocol + "//" + location.host + "/" + "dav/tiddly/wiki.html";
-        event_bus.trigger("url-open", url);
-        tag.update();
+        event_bus.trigger("get-help");
     };
     function activity_ready(activity) {
         tag.refs.stopbutton.style.display = "block";

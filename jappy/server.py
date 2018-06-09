@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 from flask import Flask
 from flask_socketio import SocketIO, emit, join_room, leave_room
-from flask import request, send_from_directory
+from flask import request, send_from_directory, stream_with_context
 from wsgidav.wsgidav_app import DEFAULT_CONFIG, WsgiDAVApp
 from wsgidav.fs_dav_provider import FilesystemProvider
 from werkzeug.wsgi import DispatcherMiddleware
@@ -24,9 +24,9 @@ mimetypes.add_type('application/x-font-woff', '.woff')
 mimetypes.add_type('application/x-rapyd', '.pyj')
 mimetypes.add_type('application/json', '.json')
 
-WRITING_DOCS = (os.environ.get('JAPPY_TIDDLY_BRIDGE')=='1')
+WRITING_DOCS = (os.environ.get('JAPPY_TIDDLY_BRIDGE') == '1')
 if WRITING_DOCS:
-    print ("Briding to local Tiddlyserver on port 8080.")
+    print("Briding to local Tiddlyserver on port 8080.")
 
 app_dir = "../webapp"
 app = Flask(__name__,
