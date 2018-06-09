@@ -296,6 +296,7 @@ def init():
                 if parsed_data[file]:
                     new_session = CodeMirror.Doc(parsed_data[file])
                     window.files[file] = new_session
+                    window.files[file].markClean()
         if len(window.files) > 0:
             tag.title = list(parsed_data)[0]
             if window.files[tag.title]!=undefined:
@@ -464,6 +465,7 @@ def init():
         tag.title = file
         tag.update()
         collab.bind(tag.title)
+        window.files[tag.title].markClean()
         editor.focus()
     tag.newtab = newtab
 
@@ -737,14 +739,15 @@ def init():
     def save_without_datastore():
         localStorage.jappySession = serialize()
 
+        def file_written(item):
+            return def():
+                window.files[item].markClean()
+
         if location.hash:
             url_base = location.protocol
             address = url_base + '//' + location.host + '/dav'
             if window.fs is undefined:
                 window.fs = new WebDAV.Fs(address)
-
-            def file_written():
-                pass # TODO: Notify user.
 
             path = location.hash.slice(1)
             if 'index.html' in window.files:
@@ -752,20 +755,25 @@ def init():
             else:
                 target = tag.title
             for item in window.files:
-                if item is not target: # Will be written last
+                # Current file will be written last
+                if item is not target \
+                        and not window.files[item].isClean():
                     data = window.files[item].getValue() 
                     if data:
                         filepath = '/' + path + '/' + item
                         console.debug('Wrote: ' + filepath)
-                        fs.file(filepath).write(data, "text/plain; charset=UTF-8",
-                                                                file_written)
+                        fs.file(filepath).write(data,
+                            "text/plain; charset=UTF-8",
+                            file_written(item))
             # Target is treated special to be the last to save (Hack!)
             data = window.files[target].getValue() 
-            if data:
+            if data and not window.files[target].isClean():
                 filepath = '/' + path + '/' + target
                 setTimeout( def():
+                                console.debug('Wrote: ' + filepath)
                                 fs.file(filepath).write( data, 
-                                        "text/plain; charset=UTF-8", file_written)
+                                        "text/plain; charset=UTF-8",
+                                        file_written(target))
                           , 250)
 
     def save(activity=window.activity):
@@ -808,6 +816,7 @@ def init():
             tag.title = file
             tag.update()
             collab.bind(tag.title)
+            window.files[file].markClean()
             editor.focus()
             if execute:
                 if window.innerWidth > 720:
@@ -845,6 +854,7 @@ def init():
         tag.title = filename
         tag.update()
         collab.bind(tag.title)
+        window.files[tag.title].markClean()
         editor.focus()
     event_bus.on("new-from-data", new_from_data)
 
@@ -864,6 +874,7 @@ def init():
                                     window.files[basepath] = new_session
                                 else:
                                     window.files[basepath].setValue(str(data))
+                                window.files[basepath].markClean()
                                 if window.y is not undefined: # collaboration
                                     if basepath not in y.share.files.keys():
                                         y.share.files.set(basepath, Y.Text)
@@ -1099,6 +1110,7 @@ def init():
     editor.focus()
 
 def makeToast(msg):
+    console.info('Jappy: '+ msg)
     toast = document.createElement('div')
     toast.innerHTML = msg
     toast.classList.add('toast')

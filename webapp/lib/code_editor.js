@@ -2318,6 +2318,7 @@ function init() {
                 if (parsed_data[(typeof file === "number" && file < 0) ? parsed_data.length + file : file]) {
                     new_session = CodeMirror.Doc(parsed_data[(typeof file === "number" && file < 0) ? parsed_data.length + file : file]);
                     (ρσ_expr_temp = window.files)[(typeof file === "number" && file < 0) ? ρσ_expr_temp.length + file : file] = new_session;
+                    (ρσ_expr_temp = window.files)[(typeof file === "number" && file < 0) ? ρσ_expr_temp.length + file : file].markClean();
                 }
             }
         }
@@ -2587,6 +2588,7 @@ function init() {
         tag.title = file;
         tag.update();
         collab.bind(tag.title);
+        (ρσ_expr_temp = window.files)[ρσ_bound_index(tag.title, ρσ_expr_temp)].markClean();
         editor.focus();
     };
     if (!newtab.__argnames__) Object.defineProperties(newtab, {
@@ -2981,15 +2983,21 @@ function init() {
     function save_without_datastore() {
         var url_base, address, path, target, data, filepath, item;
         localStorage.jappySession = serialize();
+        function file_written(item) {
+            return function () {
+                (ρσ_expr_temp = window.files)[(typeof item === "number" && item < 0) ? ρσ_expr_temp.length + item : item].markClean();
+            };
+        };
+        if (!file_written.__argnames__) Object.defineProperties(file_written, {
+            __argnames__ : {value: ["item"]}
+        });
+
         if (location.hash) {
             url_base = location.protocol;
             address = url_base + "//" + location.host + "/dav";
             if (window.fs === undefined) {
                 window.fs = new WebDAV.Fs(address);
             }
-            function file_written() {
-            };
-
             path = location.hash.slice(1);
             if (ρσ_in("index.html", window.files)) {
                 target = "index.html";
@@ -2999,20 +3007,21 @@ function init() {
             var ρσ_Iter9 = ρσ_Iterable(window.files);
             for (var ρσ_Index9 = 0; ρσ_Index9 < ρσ_Iter9.length; ρσ_Index9++) {
                 item = ρσ_Iter9[ρσ_Index9];
-                if (item !== target) {
+                if (item !== target && !(ρσ_expr_temp = window.files)[(typeof item === "number" && item < 0) ? ρσ_expr_temp.length + item : item].isClean()) {
                     data = (ρσ_expr_temp = window.files)[(typeof item === "number" && item < 0) ? ρσ_expr_temp.length + item : item].getValue();
                     if (data) {
                         filepath = "/" + path + "/" + item;
                         console.debug("Wrote: " + filepath);
-                        fs.file(filepath).write(data, "text/plain; charset=UTF-8", file_written);
+                        fs.file(filepath).write(data, "text/plain; charset=UTF-8", file_written(item));
                     }
                 }
             }
             data = (ρσ_expr_temp = window.files)[(typeof target === "number" && target < 0) ? ρσ_expr_temp.length + target : target].getValue();
-            if (data) {
+            if (data && !(ρσ_expr_temp = window.files)[(typeof target === "number" && target < 0) ? ρσ_expr_temp.length + target : target].isClean()) {
                 filepath = "/" + path + "/" + target;
                 setTimeout(function () {
-                    fs.file(filepath).write(data, "text/plain; charset=UTF-8", file_written);
+                    console.debug("Wrote: " + filepath);
+                    fs.file(filepath).write(data, "text/plain; charset=UTF-8", file_written(target));
                 }, 250);
             }
         }
@@ -3091,6 +3100,7 @@ function init() {
                 tag.title = file;
                 tag.update();
                 collab.bind(tag.title);
+                (ρσ_expr_temp = window.files)[(typeof file === "number" && file < 0) ? ρσ_expr_temp.length + file : file].markClean();
                 editor.focus();
                 if (execute) {
                     if (window.innerWidth > 720) {
@@ -3159,6 +3169,7 @@ function init() {
         tag.title = filename;
         tag.update();
         collab.bind(tag.title);
+        (ρσ_expr_temp = window.files)[ρσ_bound_index(tag.title, ρσ_expr_temp)].markClean();
         editor.focus();
     };
     if (!new_from_data.__defaults__) Object.defineProperties(new_from_data, {
@@ -3190,6 +3201,7 @@ function init() {
                                             } else {
                                                 (ρσ_expr_temp = window.files)[(typeof basepath === "number" && basepath < 0) ? ρσ_expr_temp.length + basepath : basepath].setValue(str(data));
                                             }
+                                            (ρσ_expr_temp = window.files)[(typeof basepath === "number" && basepath < 0) ? ρσ_expr_temp.length + basepath : basepath].markClean();
                                             if (window.y !== undefined) {
                                                 if (!(ρσ_in(basepath, y.share.files.keys()))) {
                                                     y.share.files.set(basepath, Y.Text);
@@ -3573,6 +3585,7 @@ function init() {
 
 function makeToast(msg) {
     var toast;
+    console.info("Jappy: " + msg);
     toast = document.createElement("div");
     toast.innerHTML = msg;
     toast.classList.add("toast");
