@@ -2675,6 +2675,7 @@ function init() {
 
     function run() {
         var path, target, src;
+        hide_help();
         window.state = "run";
         event_bus.trigger("traybutton-open");
         riot.update();
@@ -2959,7 +2960,6 @@ function init() {
 
     event_bus.on("break-code", break_code);
     function clear_output(callback) {
-        hide_help();
         function payload() {
             iframe.removeEventListener("load", payload);
             if (callback) {

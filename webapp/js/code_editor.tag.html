@@ -531,6 +531,7 @@ def init():
         clear_output(run)
 
     def run():
+        hide_help()
         window.state = 'run'
         event_bus.trigger('traybutton-open')
         riot.update()
@@ -735,7 +736,6 @@ def init():
     event_bus.on("break-code", break_code)
 
     def clear_output(callback):
-        hide_help()
         def payload():
             iframe.removeEventListener('load', payload)
             if callback:
