@@ -138,7 +138,7 @@ iframe {
         <textarea id="code-container" ref="code"></textarea>
     </div>
     <div ref="vmframe_cont" id="vmframe_cont">
-        <iframe src="{ location.protocol }//{ location.host }/template.html"
+        <iframe src="{ location.protocol }//{ location.host }/{ this.getpath() }template.html"
         allowfullscreen="true"
         allowTransparency="false" ref="vmframe"></iframe>
         <iframe src="{ location.protocol }//{ location.host }/docs/"
@@ -527,8 +527,30 @@ def init():
                 callback()
         fs.file(filepath).write(source, "text/plain; charset=UTF-8",
                                                     file_written)
+
     def clear_and_run():
         clear_output(run)
+
+    def clear_output(callback):
+        def payload():
+            iframe.removeEventListener('load', payload)
+            if callback:
+                callback()
+        iframe.addEventListener('load', payload)
+        if window.y is not undefined: # collaboration
+            path = location.hash.slice(1)
+            if 'template.html' in window.files:
+                iframe.contentDocument.open()
+                iframe.contentDocument.write(files['template.html'].getValue())
+                iframe.contentDocument.close()
+            else:
+                iframe.contentWindow.location = location.protocol + '//' + \
+                                                location.host + '/' + tag.getpath() + \
+                                                'template.html'
+        else:
+            iframe.contentWindow.location = location.protocol + '//' + \
+                                            location.host + '/template.html'
+    event_bus.on("clear-output", clear_output)
 
     def run():
         hide_help()
@@ -643,15 +665,9 @@ def init():
             iframe.contentDocument.close()
         iframe.addEventListener('load', write_script)
         if window.y is not undefined: # collaboration
-            path = location.hash.slice(1)
-            if 'template.html' in window.files:
-                iframe.contentDocument.open()
-                iframe.contentDocument.write(files['template.html'].getValue())
-                iframe.contentDocument.close()
-            else:
-                iframe.contentWindow.location = location.protocol + '//' + \
-                                                location.host + '/' + tag.getpath() + \
-                                                'template.html'
+            iframe.contentWindow.location = location.protocol + '//' + \
+                                            location.host + '/' + tag.getpath() + \
+                                            'template.html'
         else:
             if 'template.html' in window.files:
                 iframe.contentDocument.open()
@@ -734,16 +750,6 @@ def init():
             ev.stopPropagation()
         , True)
     event_bus.on("break-code", break_code)
-
-    def clear_output(callback):
-        def payload():
-            iframe.removeEventListener('load', payload)
-            if callback:
-                callback()
-        iframe.addEventListener('load', payload)
-        iframe.contentWindow.location = location.protocol + '//' + \
-                                        location.host + '/template.html'
-    event_bus.on("clear-output", clear_output)
 
     def serialize():
         result = {}
