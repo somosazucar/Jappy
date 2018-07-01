@@ -70,7 +70,6 @@ button.icon span.html {
 }
 .toolbar hr {
 	vertical-align: -moz-middle-with-baseline;
-	vertical-align: -webkit-baseline-middle;
 	margin-bottom: 2.5px;
 }
 @font-face {
