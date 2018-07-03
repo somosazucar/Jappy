@@ -195,6 +195,8 @@ Error message and password prompt
 
 <li>$:/config/PageControlButtons/Visibility/$:/core/ui/Buttons/timestamp</li>
 
+<li>$:/config/PageControlButtons/Visibility/$:/plugins/tongerner/tiddlersbar/button</li>
+
 <li>$:/config/PageControlButtons/Visibility/$:/plugins/tongerner/toolbar/buttons/toggle-tagging</li>
 
 <li>$:/config/peek-stylesheets/mode/-947092625</li>
@@ -260,6 +262,8 @@ Error message and password prompt
 <li>$:/config/TopLeftBarButtons/Visibility/$:/plugins/tongerner/toolbar/buttons/refresh</li>
 
 <li>$:/config/TopLeftBarButtons/Visibility/$:/plugins/tongerner/toolbar/buttons/rename-tags</li>
+
+<li>$:/config/TopLeftBarButtons/Visibility/$:/plugins/tongerner/toolbar/buttons/save-wiki</li>
 
 <li>$:/config/TopLeftBarButtons/Visibility/$:/plugins/tongerner/toolbar/buttons/search-delete-tiddlers</li>
 
@@ -457,13 +461,17 @@ Error message and password prompt
 
 <li>El elemento _iframe_</li>
 
+<li>from</li>
+
 <li>Guía de Instalación de Jappy</li>
 
 <li>Historia de Jappy</li>
 
+<li>import</li>
+
 <li>Indice HTML</li>
 
-<li>Jappy IDE</li>
+<li>Jappy Creator</li>
 
 <li>Jappy-TiddlyWiki</li>
 
@@ -492,6 +500,8 @@ Error message and password prompt
 <li>random.random</li>
 
 <li>setInterval</li>
+
+<li>shuffle</li>
 
 <li>Tabla de Guías</li>
 
@@ -618,6 +628,9 @@ También se puede publicar desde el repositorio árbol de fuentes de TW.</pre>
 <div created="20180511173546359" modified="20180511173546359" title="$:/config/PageControlButtons/Visibility/$:/core/ui/Buttons/timestamp" type="text/vnd.tiddlywiki" revision="0" bag="default">
 <pre>hide</pre>
 </div>
+<div created="20180703070334370" modified="20180703070336171" title="$:/config/PageControlButtons/Visibility/$:/plugins/tongerner/tiddlersbar/button" type="text/vnd.tiddlywiki" revision="0" bag="default">
+<pre>hide</pre>
+</div>
 <div created="20180702061857055" modified="20180702061858164" title="$:/config/PageControlButtons/Visibility/$:/plugins/tongerner/toolbar/buttons/toggle-tagging" type="text/vnd.tiddlywiki" revision="0" bag="default">
 <pre>hide</pre>
 </div>
@@ -663,8 +676,8 @@ También se puede publicar desde el repositorio árbol de fuentes de TW.</pre>
 <div created="20180702055410787" modified="20180702055411878" title="$:/config/TopLeftBarButtons/Visibility/$:/plugins/tongerner/toolbar/buttons/calendar" type="text/vnd.tiddlywiki" revision="0" bag="default">
 <pre>hide</pre>
 </div>
-<div created="20180702055325938" modified="20180702055328055" title="$:/config/TopLeftBarButtons/Visibility/$:/plugins/tongerner/toolbar/buttons/controlpanel" type="text/vnd.tiddlywiki" revision="0" bag="default">
-<pre>show</pre>
+<div created="20180702055325938" modified="20180703063032852" title="$:/config/TopLeftBarButtons/Visibility/$:/plugins/tongerner/toolbar/buttons/controlpanel" type="text/vnd.tiddlywiki" revision="0" bag="default">
+<pre>hide</pre>
 </div>
 <div created="20180702055407136" modified="20180702055408290" title="$:/config/TopLeftBarButtons/Visibility/$:/plugins/tongerner/toolbar/buttons/corrupt-tiddler" type="text/vnd.tiddlywiki" revision="0" bag="default">
 <pre>hide</pre>
@@ -715,6 +728,9 @@ También se puede publicar desde el repositorio árbol de fuentes de TW.</pre>
 <pre>hide</pre>
 </div>
 <div created="20180702055405052" modified="20180702055406144" title="$:/config/TopLeftBarButtons/Visibility/$:/plugins/tongerner/toolbar/buttons/rename-tags" type="text/vnd.tiddlywiki" revision="0" bag="default">
+<pre>hide</pre>
+</div>
+<div created="20180703063040196" modified="20180703063041310" title="$:/config/TopLeftBarButtons/Visibility/$:/plugins/tongerner/toolbar/buttons/save-wiki" type="text/vnd.tiddlywiki" revision="0" bag="default">
 <pre>hide</pre>
 </div>
 <div created="20180702055409332" modified="20180702055410438" title="$:/config/TopLeftBarButtons/Visibility/$:/plugins/tongerner/toolbar/buttons/search-delete-tiddlers" type="text/vnd.tiddlywiki" revision="0" bag="default">
@@ -12350,7 +12366,7 @@ $:/config/PageControlButtons/Visibility/$(listItem)$
 <div created="20180426050458800" creator="icarito" modified="20180703044637549" modifier="icarito" title="$:/palette" type="text/vnd.tiddlywiki" revision="0" bag="default">
 <pre>$:/palettes/SolarFlare 2</pre>
 </div>
-<div created="20180511173546731" description="Warm, relaxing earth colours" modified="20180703045100651" name="Solar Flare" tags="$:/tags/Palette" title="$:/palettes/SolarFlare 2" type="application/x-tiddler-dictionary" revision="0" bag="default">
+<div created="20180511173546731" description="Warm, relaxing earth colours" modified="20180703064151701" name="Solar Flare" tags="$:/tags/Palette" title="$:/palettes/SolarFlare 2" type="application/x-tiddler-dictionary" revision="0" bag="default">
 <pre>base03: #002b36
 base02: #073642
 base01: #586e75
@@ -12407,13 +12423,13 @@ sidebar-muted-foreground: #f1eeee
 tiddler-title-foreground: &lt;&lt;colour muted-foreground&gt;&gt;
 site-title-foreground: #469562
 modal-footer-background: &lt;&lt;colour base2&gt;&gt;
-page-background: #c0c0c0
+page-background: #808080
 modal-backdrop: &lt;&lt;colour page-background&gt;&gt;
 notification-background: &lt;&lt;colour page-background&gt;&gt;
 code-background: #eee8d5
 code-border: &lt;&lt;colour code-background&gt;&gt;
-pre-background: &lt;&lt;colour page-background&gt;&gt;
-pre-border: &lt;&lt;colour pre-background&gt;&gt;
+pre-background: #f1eeee
+pre-border: #f1eeee
 sidebar-tab-background-selected: &lt;&lt;colour page-background&gt;&gt;
 table-header-background: &lt;&lt;colour base2&gt;&gt;
 tag-background: &lt;&lt;colour base2&gt;&gt;
@@ -13747,7 +13763,7 @@ table.tablestyle td {
     }
 }</pre>
 </div>
-<div created="20170325123352694" creator="TonGerner" left-tiddlersbar="0px" list-after="$:/plugins/tongerner/tiddlersbar/style-no-tiddlersbar" modified="20180703052732881" modifier="TonGerner" tags="$:/tags/Stylesheet" tiddlersbar-border-radius="0px" tiddlersbar-color="#808080" tiddlersbar-font-size="1em" tiddlersbar-selected-color="#282828" tiddlersbar-selected-text-color="#fff" tiddlersbar-text-color="#fff" title="$:/plugins/tongerner/tiddlersbar/styles" top-tiddlersbar="55px" type="text/vnd.tiddlywiki" revision="0" bag="default">
+<div created="20170325123352694" creator="TonGerner" left-tiddlersbar="0px" list-after="$:/plugins/tongerner/tiddlersbar/style-no-tiddlersbar" modified="20180703070317689" modifier="TonGerner" tags="$:/tags/Stylesheet" tiddlersbar-border-radius="0px" tiddlersbar-color="#808080" tiddlersbar-font-size="1em" tiddlersbar-selected-color="#282828" tiddlersbar-selected-text-color="#fff" tiddlersbar-text-color="#fff" title="$:/plugins/tongerner/tiddlersbar/styles" top-tiddlersbar="55px" type="text/vnd.tiddlywiki" revision="0" bag="default">
 <pre>&lt;pre&gt;/* BREADCRUMBS TOP MENU */
 .tgc-tiddlersbar {
      display: block;
@@ -14879,7 +14895,7 @@ $:/plugins/tongerner/tabstory/button
     }
 }</pre>
 </div>
-<div created="20180524053445433" modified="20180703034525905" title="$:/theme" type="text/vnd.tiddlywiki" revision="0" bag="default">
+<div created="20180524053445433" modified="20180703062833452" title="$:/theme" type="text/vnd.tiddlywiki" revision="0" bag="default">
 <pre>$:/themes/tiddlywiki/vanilla</pre>
 </div>
 <div created="20180503071415542" modified="20180511173546685" module-type="codemirror-theme" name="Solarized" tags="$:/tags/Stylesheet" title="$:/themes/codemirror/solarized" type="text/vnd.tiddlywiki" revision="0" bag="default">
@@ -15157,7 +15173,7 @@ http://ethanschoonover.com/solarized/img/solarized-palette.png
     }
 }</pre>
 </div>
-<div created="20180702063224985" modified="20180703055548357" tags="$:/tags/Stylesheet" title="$:/themes/tiddlywiki/vanilla/base" type="text/vnd.tiddlywiki" revision="0" bag="default">
+<div created="20180702063224985" modified="20180703071757952" tags="$:/tags/Stylesheet" title="$:/themes/tiddlywiki/vanilla/base" type="text/vnd.tiddlywiki" revision="0" bag="default">
 <pre>\define custom-background-datauri()
 &lt;$set name=&quot;background&quot; value={{$:/themes/tiddlywiki/vanilla/settings/backgroundimage}}&gt;
 &lt;$list filter=&quot;[&lt;background&gt;is[image]]&quot;&gt;
@@ -15845,6 +15861,10 @@ button.tc-untagged-label {
 .tc-sidebar-header {
 	color: &lt;&lt;colour sidebar-foreground&gt;&gt;;
 	fill: &lt;&lt;colour sidebar-foreground&gt;&gt;;
+    background-color: #c0c0c0;
+    text-align: center;
+    border-bottom: 1px solid black;
+    padding-bottom: 0px;
 }
 
 .tc-sidebar-header .tc-title a.tc-tiddlylink-resolves {
@@ -15918,8 +15938,8 @@ button.tc-untagged-label {
 @media (max-width: {{$:/themes/tiddlywiki/vanilla/metrics/sidebarbreakpoint}}) {
 
 	.tc-sidebar-header {
-		padding: 14px;
-		min-height: 32px;
+		padding: 10px;
+		min-height: 26px;
 		margin-top: {{$:/themes/tiddlywiki/vanilla/metrics/storytop}};
 	}
 
@@ -17870,6 +17890,9 @@ Produce el siguiente resultado:
 		height='400px'
 		src='http://es.wikipedia.org/'&gt;&lt;/iframe&gt;</pre>
 </div>
+<div created="20180703071841152" modified="20180703071855645" title="from" type="text/x-markdown" revision="0" bag="default">
+<pre>Véase [import](#import).</pre>
+</div>
 <div created="20180503072201621" modified="20180524042743549" title="Guía de Instalación de Jappy" type="text/x-markdown" revision="0" bag="default">
 <pre>Jappy se puede instalar en una computadora de escritorio o en un dispositivo móvil.
 
@@ -17883,10 +17906,40 @@ Los navegadores modernos basados en Chromium (e.g. Chrome) tienen la posibilidad
 <div created="20180524042743539" modified="20180524042743539" title="Historia de Jappy" type="application/x-tiddler" revision="0" bag="default">
 <pre></pre>
 </div>
+<div created="20180703063425200" modified="20180703065955794" title="import" type="text/x-markdown" revision="0" bag="default">
+<pre>`import` permite utilizar objetos (funciones, variables) desde otros archivos.
+
+## Importando un módulo pyj
+
+Con `import nombre` se importa el módulo completo en su propio *espacio de nombres*, por ejemplo:
+
+    import random
+    print(random.choice(lista))    # item al azar
+
+De este modo todas las funciones del módulo `random` estarán disponibles para ser usadas bajo el nombre `random`.
+
+### Con un alias
+
+Se puede importar cambiando de nombre al módulo, por ej: `import random as rand` crearía las funciones dentro del nombre `rand`.
+
+## Importando solo algunas funciones
+
+Se puede importar solamente algunas funciones directamente en el *espacio de nombre* global:
+
+    from random import shuffle
+    shuffle(lista)  # Mezcla la lista
+
+En este caso no es necesario anteoponer `random.` al momento de invocar la función `shuffle`.
+
+También se puede cambiar de nombre a la función con la siguiente sintaxis:
+
+    from random import shuffle as mezclar
+    mezclar(lista)</pre>
+</div>
 <div created="20180524042743529" modified="20180524042743529" title="Indice HTML" type="application/x-tiddler" revision="0" bag="default">
 <pre></pre>
 </div>
-<div created="20180503083201381" modified="20180524042743893" tags="" title="Jappy IDE" type="text/x-markdown" revision="0" bag="default">
+<div created="20180503083201381" modified="20180703072218396" tags="" title="Jappy Creator" type="text/x-markdown" revision="0" bag="default">
 <pre>&lt;iframe onload=&quot;this.height=window.innerHeight - 300&quot; src=&quot;/&quot; height=&quot;100%&quot; width=&quot;100%&quot;&gt;&lt;/iframe&gt;
 &lt;a href=&quot;/&quot; target=&quot;_new&quot;&gt;Abrir en pestaña externa&lt;/a&gt;</pre>
 </div>
@@ -18277,7 +18330,7 @@ Arrojar un número entre 10 y 20:
     import random
     print (random.randint(10, 20))</pre>
 </div>
-<div created="20180616133912443" modified="20180616134150205" title="random" type="text/x-markdown" revision="0" bag="default">
+<div created="20180616133912443" modified="20180703065946461" title="random" type="text/x-markdown" revision="0" bag="default">
 <pre>`random` es un módulo para acceder a el generador de números aleatorios es decir, al azar.
 
 Para tener acceso a los métodos de `random` es necesario hacer un `import random` al principio del programa.
@@ -18288,7 +18341,9 @@ Algunos métodos de `random`:
 
 [random.randint](#randint)
 
-[random.random](#random.random)</pre>
+[random.random](#random.random)
+
+[random.shuffle](#shuffle)</pre>
 </div>
 <div created="20180616134250369" modified="20180616134432366" title="random.random" type="text/x-markdown" revision="0" bag="default">
 <pre>`random.random` genera un número al azar entre el 0 y el 1.
@@ -18324,6 +18379,11 @@ Se puede hacer un rudimentario reloj:
 
 [clearInterval](#clearInterval)</pre>
 </div>
+<div created="20180703065826966" modified="20180703065909042" title="shuffle" type="text/x-markdown" revision="0" bag="default">
+<pre>Del módulo [random](#random).
+
+Mezcla los ítemes de una lista.</pre>
+</div>
 <div created="20180513031927322" modified="20180524042743638" title="Tabla de Guías" type="text/x-markdown" revision="0" bag="default">
 <pre>## Primera etapa: *&quot;**Input - Output**&quot;*
 
@@ -18352,7 +18412,7 @@ z = x + x    # 'abcabc'
 nombre = input('¡Adivina un número!')
 ```</pre>
 </div>
-<div created="20180503075642566" modified="20180603070408385" tags="" title="Tabla de Temas" type="text/x-markdown" revision="0" bag="default">
+<div created="20180503075642566" modified="20180703070232466" tags="" title="Tabla de Temas" type="text/x-markdown" revision="0" bag="default">
 <pre>Otras formas de navegar: [Tabla de Guías](#Tabla de Guías)
 
 # Markdown
@@ -18390,11 +18450,12 @@ nombre = input('¡Adivina un número!')
 | [variables](#Variables en Python) | Cómo asignar valores |
 | [expresiones](#Expresiones en Python) | Operaciones básicas |
 | [colecciones](#Colecciones en Python) | Listas y objetos |
-| [print](#La función `print`) | Creando elementos |
-| [if](#Condicionalidad con `if`) | Ejecución condicionada |
-| [for](#Repetición con `for`) | Repetición de una sección |
-| [def](#Definición de funciones con `def`) | Cómo definir un procedimiento |
-| [class](#Declaración de clases y prototipos) | Cómo definir una clase de objeto |
+| [print](#print) | Creando elementos |
+| [if](#if) | Ejecución condicionada |
+| [for](#for) | Repetición de una sección |
+| [def](#def) | Cómo definir un procedimiento |
+| [import](#import) | Usar objetos desde otros archivos |
+| [class](#class) | Cómo definir una clase de objeto |
 
 &lt;style&gt;
   table {
