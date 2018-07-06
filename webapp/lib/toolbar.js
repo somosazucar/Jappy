@@ -1192,6 +1192,8 @@ function filter_latest(files) {
                 return result.concat(item);
             } else if (Math.abs(item.mtime.getTime() - prev.mtime.getTime()) < 500) {
                 return result.concat(item);
+            } else if (item.name.upper() === "README.MD") {
+                return result.concat(item);
             } else {
                 " We filter out those that don't have the same mtime\n                as the first entry.";
                 return result;
@@ -1279,7 +1281,7 @@ function prefetch_files() {
 };
 
 function restore_last_session() {
-    var path, recent_files, item;
+    var path, recent_files, render, item;
     path = location.hash.slice(1);
     if (window.server_files !== undefined) {
         recent_files = filter_latest(window.server_files);
@@ -1296,10 +1298,11 @@ function restore_last_session() {
         var ρσ_Iter5 = ρσ_Iterable(reversed(recent_files));
         for (var ρσ_Index5 = 0; ρσ_Index5 < ρσ_Iter5.length; ρσ_Index5++) {
             item = ρσ_Iter5[ρσ_Index5];
+            render = bool(item.name.upper() === "README.MD");
             if ((window.DatItem === undefined || typeof window.DatItem === "object" && ρσ_equals(window.DatItem, undefined))) {
-                load_file("/" + path + "/" + item.name, false);
+                load_file("/" + path + "/" + item.name, false, render);
             } else {
-                load_file("/" + item.name, false);
+                load_file("/" + item.name, false, render);
             }
         }
     } else {
@@ -1327,10 +1330,14 @@ if (!load_file_ev.__argnames__) Object.defineProperties(load_file_ev, {
 function load_file() {
     var url = ( 0 === arguments.length-1 && arguments[arguments.length-1] !== null && typeof arguments[arguments.length-1] === "object" && arguments[arguments.length-1] [ρσ_kwargs_symbol] === true) ? undefined : arguments[0];
     var overwrite = (arguments[1] === undefined || ( 1 === arguments.length-1 && arguments[arguments.length-1] !== null && typeof arguments[arguments.length-1] === "object" && arguments[arguments.length-1] [ρσ_kwargs_symbol] === true)) ? load_file.__defaults__.overwrite : arguments[1];
+    var render = (arguments[2] === undefined || ( 2 === arguments.length-1 && arguments[arguments.length-1] !== null && typeof arguments[arguments.length-1] === "object" && arguments[arguments.length-1] [ρσ_kwargs_symbol] === true)) ? load_file.__defaults__.render : arguments[2];
     var ρσ_kwargs_obj = arguments[arguments.length-1];
     if (ρσ_kwargs_obj === null || typeof ρσ_kwargs_obj !== "object" || ρσ_kwargs_obj [ρσ_kwargs_symbol] !== true) ρσ_kwargs_obj = {};
     if (Object.prototype.hasOwnProperty.call(ρσ_kwargs_obj, "overwrite")){
         overwrite = ρσ_kwargs_obj.overwrite;
+    }
+    if (Object.prototype.hasOwnProperty.call(ρσ_kwargs_obj, "render")){
+        render = ρσ_kwargs_obj.render;
     }
     var path, target_file;
     if (window.fs === undefined) {
@@ -1344,7 +1351,7 @@ function load_file() {
     fs.file(url).read((function() {
         var ρσ_anonfunc = function (data, status) {
             if (status === 200) {
-                event_bus.trigger("new-from-data", data, target_file, overwrite);
+                event_bus.trigger("new-from-data", data, target_file, overwrite, render);
             } else {
             }
         };
@@ -1355,9 +1362,9 @@ function load_file() {
     })());
 };
 if (!load_file.__defaults__) Object.defineProperties(load_file, {
-    __defaults__ : {value: {overwrite:false}},
+    __defaults__ : {value: {overwrite:false, render:false}},
     __handles_kwarg_interpolation__ : {value: true},
-    __argnames__ : {value: ["url", "overwrite"]}
+    __argnames__ : {value: ["url", "overwrite", "render"]}
 });
 
 function update_workspace_menu() {

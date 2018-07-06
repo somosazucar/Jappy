@@ -54,6 +54,9 @@ iframe {
     height: 100%;
     overflow: auto;
 }
+#tabs {
+    height: 42px;
+}
 #tabs button {
     font-size: 13pt;
     border-radius: 0;
@@ -287,11 +290,10 @@ def init():
     def load_store():
         # No datastore probably means we need to handle stuff ourselves
         if not location.hash:
-            ## savedSession = localStorage.getItem('jappySession')
-            ## if savedSession is not None:
-            ##    check_load(None, None, savedSession)
-            ## tag.update()
-            pass
+            savedSession = localStorage.getItem('jappySession')
+            if savedSession is not None:
+               check_load(None, None, savedSession)
+            tag.update()
         elif location.protocol=='dat:':
             console.log("Can't collaborate over DAT yet.")
             event_bus.trigger("restore-last-session")
@@ -677,8 +679,9 @@ def init():
                 iframe.contentWindow.location = location.protocol + '//' + \
                                                 location.host + '/template.html'
 
-    def render_markdown():
-        src = editor.getValue()
+    def render_markdown(src=None):
+        if not src:
+            src = editor.getValue()
         output = marked(src)
         def write_output():
             iframe.removeEventListener('load', write_output)
@@ -726,6 +729,7 @@ def init():
         else:
             iframe.contentWindow.location = location.protocol + '//' + \
                                             location.host + '/template.html'
+    event_bus.on("render-markdown", render_markdown)
 
     def break_code():
         iwindow = iframe.contentWindow
@@ -754,7 +758,9 @@ def init():
     def serialize():
         result = {}
         for file in window.files:
-            result[file] = window.files[file].getValue()
+            text = window.files[file].getValue()
+            if len(text)>0:
+                result[file] = text
         return JSON.stringify(result)
 
     def save_without_datastore():
@@ -847,7 +853,7 @@ def init():
         )
     event_bus.on("example-load", example_load)
 
-    def new_from_data(data, filename=None, overwrite=False):
+    def new_from_data(data, filename=None, overwrite=False, render=False):
         console.debug('Read: ' + filename)
         if filename in window.files:
             tag.title = filename
@@ -877,6 +883,9 @@ def init():
         collab.bind(tag.title)
         window.files[tag.title].markClean()
         editor.focus()
+        if render:
+            render_markdown(data)
+            event_bus.trigger("traybutton-open")
     event_bus.on("new-from-data", new_from_data)
 
     def process_file():
@@ -1039,12 +1048,17 @@ def init():
 
     def fresh_start():
         if not location.hash and not len(window.files):
-            require(["text!../jappy.json"],
-                def(raw_translation_data):
+            require(["text!../jappy.json", "text!../README.md"],
+                def(raw_translation_data, readme):
                     translation_data = JSON.parse(raw_translation_data)
                     if translation_data['language']==tag.lang:
                         install(translation_data)
                     newtab()
+                    new_from_data(readme, 'README.md')
+                    setTimeout(def():
+                               render_markdown()
+                               event_bus.trigger("traybutton-open")
+                              ,50)
                 )
     event_bus.on("activity-not-ready", fresh_start)
 
@@ -1078,7 +1092,6 @@ def init():
     def init_collab():
         if not location.hash:
             console.log('Add a hash id to synchronize.')
-            tag.update()
             return
 
         protocol = 'wss' if location.protocol[-2:-1]=='s' else 'ws'

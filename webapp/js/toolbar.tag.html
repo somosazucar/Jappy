@@ -203,6 +203,8 @@ def filter_latest(files):
             elif Math.abs(item.mtime.getTime() - prev.mtime.getTime()) < 500:
                 # Files written within 0,5 seconds of last are "one session"
                 return result.concat(item)
+            elif item.name.upper() is 'README.MD':
+                return result.concat(item)
             else:
                 ''' We filter out those that don't have the same mtime
                 as the first entry.'''
@@ -275,10 +277,11 @@ def restore_last_session():
                 _('Welcome') + '</i> ' + _('new project!'))
 
         for item in reversed(recent_files):
+            render = bool(item.name.upper() is 'README.MD')
             if window.DatItem==undefined:
-                load_file('/' + path + '/' + item.name, False)
+                load_file('/' + path + '/' + item.name, False, render)
             else:
-                load_file('/' + item.name, False)
+                load_file('/' + item.name, False, render)
     else:
         event_bus.one('file-list-update', restore_last_session)
         prefetch_files()
@@ -293,7 +296,7 @@ def load_file_ev(ev):
     else:
         load_file('/' + path + '/' + target_file, True)
 
-def load_file(url, overwrite=False):
+def load_file(url, overwrite=False, render=False):
     if window.fs is undefined:
         window.fs = FsWrapper(location.host)
     if tag.workspace_palette:
@@ -302,7 +305,7 @@ def load_file(url, overwrite=False):
     target_file = url.split('/')[-1]
     fs.file(url).read(def(data, status):
         if status is 200: # success
-            event_bus.trigger('new-from-data', data, target_file, overwrite)
+            event_bus.trigger('new-from-data', data, target_file, overwrite, render)
         else:
             pass
             # TODO: Notify user

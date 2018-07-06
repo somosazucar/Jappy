@@ -1,4 +1,4 @@
-riot.tag2('code-editor', '<div id="vsplit" ref="vsplit"> <div id="split" ref="split"> <input ref="file_input" id="file-input" type="file" style="display: none;"> <div id="tabs"> <button onclick="{this.newtab}" id="newtab">&nbsp;</button><span class="{selected: name==parent.title}" each="{name in list(files)}"><button class="{selected: name==parent.title, special_file: name==⁗template.html⁗}" onclick="{parent.switchtab}" ondblclick="{parent.renametab}">{str(name)}</button><button if="{name==parent.title && len(files)>1}" id="closetab" onclick="{parent.closetab}">&nbsp;</button></span><button class="pull-right" id="tray-button" ref="traybutton">&nbsp;</button> </div> <textarea id="code-container" ref="code"></textarea> </div> <div ref="vmframe_cont" id="vmframe_cont"> <iframe riot-src="{location.protocol}//{location.host}/{this.getpath()}template.html" allowfullscreen="true" allowtransparency="false" ref="vmframe"></iframe> <iframe riot-src="{location.protocol}//{location.host}/docs/" allowfullscreen="true" allowtransparency="true" ref="docframe" id="_docframe"></iframe> </div> </div>', 'code-editor { display: flex; flex: 1 1; height: 100%; } code-editor .CodeMirror,[data-is="code-editor"] .CodeMirror{ height: 100%; width: 100%; font-size: 15pt; font-family: "Noto Mono", "DejaVu Sans Mono", monospace, "Noto Emoji"; } code-editor .CodeMirror-scroll,[data-is="code-editor"] .CodeMirror-scroll{ margin-right: -30px; overflow: auto; -webkit-overflow-scrolling: touch; } code-editor .CodeMirror-linenumber,[data-is="code-editor"] .CodeMirror-linenumber{ font-size: 14pt; } code-editor .cm-s-solarized .CodeMirror-cursor,[data-is="code-editor"] .cm-s-solarized .CodeMirror-cursor{ width: 2px; border: 0; background: transparent; background: rgba(0, 200, 0, .6); } code-editor .CodeMirror-overlayscroll-vertical div,[data-is="code-editor"] .CodeMirror-overlayscroll-vertical div,code-editor .CodeMirror-overlayscroll-horizontal div,[data-is="code-editor"] .CodeMirror-overlayscroll-horizontal div{ background: #808080; width: 10px; } code-editor .error-marker,[data-is="code-editor"] .error-marker{ border: 1px solid red; background-color: rgba(255, 0, 0,0.2); border-radius: 3px; } code-editor iframe,[data-is="code-editor"] iframe{ border: 0px; display: none; } code-editor #split,[data-is="code-editor"] #split{ display: flex; width: 100%; flex-direction: column; flex: 1 1; height: 100%; float: left; } code-editor #vsplit,[data-is="code-editor"] #vsplit{ display: flex; flex-direction: row; flex: 1 1; height: 100%; overflow: auto; } code-editor #tabs button,[data-is="code-editor"] #tabs button{ font-size: 13pt; border-radius: 0; padding: 10px 10px; border: 0px; margin: 0px; } code-editor #tabs button.selected,[data-is="code-editor"] #tabs button.selected{ background-color: #282828; } code-editor #tabs span.selected,[data-is="code-editor"] #tabs span.selected{ white-space: nowrap; } code-editor #closetab,[data-is="code-editor"] #closetab{ background-image: url(lib/sugar-web/graphics/icons/actions/entry-cancel-active.svg); background-repeat: no-repeat; background-color: #282828; width: 28px; background-position: center; background-size: 16px 16px; } code-editor #closetab:active,[data-is="code-editor"] #closetab:active{ background-image: url(lib/sugar-web/graphics/icons/actions/entry-cancel.svg); } code-editor .CodeMirror-search-label,[data-is="code-editor"] .CodeMirror-search-label{ background-image: url(icons/entry-search.svg); background-repeat: no-repeat; background-color: #282828; width: 28px; background-position: center; background-size: 15px 15px; } code-editor .CodeMirror-search-hint,[data-is="code-editor"] .CodeMirror-search-hint{ font-family: sans-serif; color: white; } code-editor #newtab,[data-is="code-editor"] #newtab{ background-image: url(icons/tab-add.svg); background-repeat: no-repeat; width: 28px; background-position: center; background-size: 20px 20px; } code-editor #tray-button,[data-is="code-editor"] #tray-button{ background-image: url(icons/tray-show.svg); background-repeat: no-repeat; width: 28px; background-position: center; background-size: 20px 20px; } code-editor #vmframe_cont,[data-is="code-editor"] #vmframe_cont{ -webkit-overflow-scrolling: touch; overflow: auto; flex: 1 1; height: 100%; position: relative; } code-editor #vmframe_cont iframe,[data-is="code-editor"] #vmframe_cont iframe{ width: 100%; height: 100%; } code-editor #_docframe,[data-is="code-editor"] #_docframe{ position: absolute; display: none; left: 0; top: 0; }', '', function(opts) {
+riot.tag2('code-editor', '<div id="vsplit" ref="vsplit"> <div id="split" ref="split"> <input ref="file_input" id="file-input" type="file" style="display: none;"> <div id="tabs"> <button onclick="{this.newtab}" id="newtab">&nbsp;</button><span class="{selected: name==parent.title}" each="{name in list(files)}"><button class="{selected: name==parent.title, special_file: name==⁗template.html⁗}" onclick="{parent.switchtab}" ondblclick="{parent.renametab}">{str(name)}</button><button if="{name==parent.title && len(files)>1}" id="closetab" onclick="{parent.closetab}">&nbsp;</button></span><button class="pull-right" id="tray-button" ref="traybutton">&nbsp;</button> </div> <textarea id="code-container" ref="code"></textarea> </div> <div ref="vmframe_cont" id="vmframe_cont"> <iframe riot-src="{location.protocol}//{location.host}/{this.getpath()}template.html" allowfullscreen="true" allowtransparency="false" ref="vmframe"></iframe> <iframe riot-src="{location.protocol}//{location.host}/docs/" allowfullscreen="true" allowtransparency="true" ref="docframe" id="_docframe"></iframe> </div> </div>', 'code-editor { display: flex; flex: 1 1; height: 100%; } code-editor .CodeMirror,[data-is="code-editor"] .CodeMirror{ height: 100%; width: 100%; font-size: 15pt; font-family: "Noto Mono", "DejaVu Sans Mono", monospace, "Noto Emoji"; } code-editor .CodeMirror-scroll,[data-is="code-editor"] .CodeMirror-scroll{ margin-right: -30px; overflow: auto; -webkit-overflow-scrolling: touch; } code-editor .CodeMirror-linenumber,[data-is="code-editor"] .CodeMirror-linenumber{ font-size: 14pt; } code-editor .cm-s-solarized .CodeMirror-cursor,[data-is="code-editor"] .cm-s-solarized .CodeMirror-cursor{ width: 2px; border: 0; background: transparent; background: rgba(0, 200, 0, .6); } code-editor .CodeMirror-overlayscroll-vertical div,[data-is="code-editor"] .CodeMirror-overlayscroll-vertical div,code-editor .CodeMirror-overlayscroll-horizontal div,[data-is="code-editor"] .CodeMirror-overlayscroll-horizontal div{ background: #808080; width: 10px; } code-editor .error-marker,[data-is="code-editor"] .error-marker{ border: 1px solid red; background-color: rgba(255, 0, 0,0.2); border-radius: 3px; } code-editor iframe,[data-is="code-editor"] iframe{ border: 0px; display: none; } code-editor #split,[data-is="code-editor"] #split{ display: flex; width: 100%; flex-direction: column; flex: 1 1; height: 100%; float: left; } code-editor #vsplit,[data-is="code-editor"] #vsplit{ display: flex; flex-direction: row; flex: 1 1; height: 100%; overflow: auto; } code-editor #tabs,[data-is="code-editor"] #tabs{ height: 42px; } code-editor #tabs button,[data-is="code-editor"] #tabs button{ font-size: 13pt; border-radius: 0; padding: 10px 10px; border: 0px; margin: 0px; } code-editor #tabs button.selected,[data-is="code-editor"] #tabs button.selected{ background-color: #282828; } code-editor #tabs span.selected,[data-is="code-editor"] #tabs span.selected{ white-space: nowrap; } code-editor #closetab,[data-is="code-editor"] #closetab{ background-image: url(lib/sugar-web/graphics/icons/actions/entry-cancel-active.svg); background-repeat: no-repeat; background-color: #282828; width: 28px; background-position: center; background-size: 16px 16px; } code-editor #closetab:active,[data-is="code-editor"] #closetab:active{ background-image: url(lib/sugar-web/graphics/icons/actions/entry-cancel.svg); } code-editor .CodeMirror-search-label,[data-is="code-editor"] .CodeMirror-search-label{ background-image: url(icons/entry-search.svg); background-repeat: no-repeat; background-color: #282828; width: 28px; background-position: center; background-size: 15px 15px; } code-editor .CodeMirror-search-hint,[data-is="code-editor"] .CodeMirror-search-hint{ font-family: sans-serif; color: white; } code-editor #newtab,[data-is="code-editor"] #newtab{ background-image: url(icons/tab-add.svg); background-repeat: no-repeat; width: 28px; background-position: center; background-size: 20px 20px; } code-editor #tray-button,[data-is="code-editor"] #tray-button{ background-image: url(icons/tray-show.svg); background-repeat: no-repeat; width: 28px; background-position: center; background-size: 20px 20px; } code-editor #vmframe_cont,[data-is="code-editor"] #vmframe_cont{ -webkit-overflow-scrolling: touch; overflow: auto; flex: 1 1; height: 100%; position: relative; } code-editor #vmframe_cont iframe,[data-is="code-editor"] #vmframe_cont iframe{ width: 100%; height: 100%; } code-editor #_docframe,[data-is="code-editor"] #_docframe{ position: absolute; display: none; left: 0; top: 0; }', '', function(opts) {
 var ρσ_modules = {};
 ρσ_modules.gettext = {};
 ρσ_modules.re = {};
@@ -2299,7 +2299,13 @@ function init() {
     collab = new CollaborationBinding;
     iframe = this.refs.vmframe;
     function load_store() {
+        var savedSession;
         if (!location.hash) {
+            savedSession = localStorage.getItem("jappySession");
+            if (savedSession !== null) {
+                check_load(null, null, savedSession);
+            }
+            tag.update();
         } else if ((location.protocol === "dat:" || typeof location.protocol === "object" && ρσ_equals(location.protocol, "dat:"))) {
             console.log("Can't collaborate over DAT yet.");
             event_bus.trigger("restore-last-session");
@@ -2886,8 +2892,16 @@ function init() {
     };
 
     function render_markdown() {
-        var src, output, path;
-        src = editor.getValue();
+        var src = (arguments[0] === undefined || ( 0 === arguments.length-1 && arguments[arguments.length-1] !== null && typeof arguments[arguments.length-1] === "object" && arguments[arguments.length-1] [ρσ_kwargs_symbol] === true)) ? render_markdown.__defaults__.src : arguments[0];
+        var ρσ_kwargs_obj = arguments[arguments.length-1];
+        if (ρσ_kwargs_obj === null || typeof ρσ_kwargs_obj !== "object" || ρσ_kwargs_obj [ρσ_kwargs_symbol] !== true) ρσ_kwargs_obj = {};
+        if (Object.prototype.hasOwnProperty.call(ρσ_kwargs_obj, "src")){
+            src = ρσ_kwargs_obj.src;
+        }
+        var output, path;
+        if (!src) {
+            src = editor.getValue();
+        }
         output = marked(src);
         function write_output() {
             var idoc, head, containerDiv, link, base, html, place;
@@ -2940,7 +2954,13 @@ function init() {
             iframe.contentWindow.location = location.protocol + "//" + location.host + "/template.html";
         }
     };
+    if (!render_markdown.__defaults__) Object.defineProperties(render_markdown, {
+        __defaults__ : {value: {src:null}},
+        __handles_kwarg_interpolation__ : {value: true},
+        __argnames__ : {value: ["src"]}
+    });
 
+    event_bus.on("render-markdown", render_markdown);
     function break_code() {
         var iwindow, highestTimeoutId, i, highestIntervalId, highestAnimationId, inputs;
         iwindow = iframe.contentWindow;
@@ -2981,12 +3001,15 @@ function init() {
 
     event_bus.on("break-code", break_code);
     function serialize() {
-        var result, file;
+        var result, text, file;
         result = {};
         var ρσ_Iter8 = ρσ_Iterable(window.files);
         for (var ρσ_Index8 = 0; ρσ_Index8 < ρσ_Iter8.length; ρσ_Index8++) {
             file = ρσ_Iter8[ρσ_Index8];
-            result[(typeof file === "number" && file < 0) ? result.length + file : file] = (ρσ_expr_temp = window.files)[(typeof file === "number" && file < 0) ? ρσ_expr_temp.length + file : file].getValue();
+            text = (ρσ_expr_temp = window.files)[(typeof file === "number" && file < 0) ? ρσ_expr_temp.length + file : file].getValue();
+            if (len(text) > 0) {
+                result[(typeof file === "number" && file < 0) ? result.length + file : file] = text;
+            }
         }
         return JSON.stringify(result);
     };
@@ -3138,6 +3161,7 @@ function init() {
         var data = ( 0 === arguments.length-1 && arguments[arguments.length-1] !== null && typeof arguments[arguments.length-1] === "object" && arguments[arguments.length-1] [ρσ_kwargs_symbol] === true) ? undefined : arguments[0];
         var filename = (arguments[1] === undefined || ( 1 === arguments.length-1 && arguments[arguments.length-1] !== null && typeof arguments[arguments.length-1] === "object" && arguments[arguments.length-1] [ρσ_kwargs_symbol] === true)) ? new_from_data.__defaults__.filename : arguments[1];
         var overwrite = (arguments[2] === undefined || ( 2 === arguments.length-1 && arguments[arguments.length-1] !== null && typeof arguments[arguments.length-1] === "object" && arguments[arguments.length-1] [ρσ_kwargs_symbol] === true)) ? new_from_data.__defaults__.overwrite : arguments[2];
+        var render = (arguments[3] === undefined || ( 3 === arguments.length-1 && arguments[arguments.length-1] !== null && typeof arguments[arguments.length-1] === "object" && arguments[arguments.length-1] [ρσ_kwargs_symbol] === true)) ? new_from_data.__defaults__.render : arguments[3];
         var ρσ_kwargs_obj = arguments[arguments.length-1];
         if (ρσ_kwargs_obj === null || typeof ρσ_kwargs_obj !== "object" || ρσ_kwargs_obj [ρσ_kwargs_symbol] !== true) ρσ_kwargs_obj = {};
         if (Object.prototype.hasOwnProperty.call(ρσ_kwargs_obj, "filename")){
@@ -3145,6 +3169,9 @@ function init() {
         }
         if (Object.prototype.hasOwnProperty.call(ρσ_kwargs_obj, "overwrite")){
             overwrite = ρσ_kwargs_obj.overwrite;
+        }
+        if (Object.prototype.hasOwnProperty.call(ρσ_kwargs_obj, "render")){
+            render = ρσ_kwargs_obj.render;
         }
         var new_session;
         console.debug("Read: " + filename);
@@ -3182,11 +3209,15 @@ function init() {
         collab.bind(tag.title);
         (ρσ_expr_temp = window.files)[ρσ_bound_index(tag.title, ρσ_expr_temp)].markClean();
         editor.focus();
+        if (render) {
+            render_markdown(data);
+            event_bus.trigger("traybutton-open");
+        }
     };
     if (!new_from_data.__defaults__) Object.defineProperties(new_from_data, {
-        __defaults__ : {value: {filename:null, overwrite:false}},
+        __defaults__ : {value: {filename:null, overwrite:false, render:false}},
         __handles_kwarg_interpolation__ : {value: true},
-        __argnames__ : {value: ["data", "filename", "overwrite"]}
+        __argnames__ : {value: ["data", "filename", "overwrite", "render"]}
     });
 
     event_bus.on("new-from-data", new_from_data);
@@ -3442,17 +3473,22 @@ function init() {
     window.onhashchange = reset_collab;
     function fresh_start() {
         if (!location.hash && !len(window.files)) {
-            require(ρσ_list_decorate([ "text!../jappy.json" ]), (function() {
-                var ρσ_anonfunc = function (raw_translation_data) {
+            require(ρσ_list_decorate([ "text!../jappy.json", "text!../README.md" ]), (function() {
+                var ρσ_anonfunc = function (raw_translation_data, readme) {
                     var translation_data;
                     translation_data = JSON.parse(raw_translation_data);
                     if ((translation_data["language"] === tag.lang || typeof translation_data["language"] === "object" && ρσ_equals(translation_data["language"], tag.lang))) {
                         install(translation_data);
                     }
                     newtab();
+                    new_from_data(readme, "README.md");
+                    setTimeout(function () {
+                        render_markdown();
+                        event_bus.trigger("traybutton-open");
+                    }, 50);
                 };
                 if (!ρσ_anonfunc.__argnames__) Object.defineProperties(ρσ_anonfunc, {
-                    __argnames__ : {value: ["raw_translation_data"]}
+                    __argnames__ : {value: ["raw_translation_data", "readme"]}
                 });
                 return ρσ_anonfunc;
             })());
@@ -3506,7 +3542,6 @@ function init() {
         var protocol, address, path;
         if (!location.hash) {
             console.log("Add a hash id to synchronize.");
-            tag.update();
             return;
         }
         protocol = (ρσ_equals(location.protocol.slice(-2, -1), "s")) ? "wss" : "ws";
