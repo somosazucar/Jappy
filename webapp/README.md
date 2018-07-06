@@ -1,5 +1,5 @@
 
-Jappy.activity
+Jappy Creator
 ==============
 
 Jappy is a Python collaborative programming environment for the Web. It's also possible to write and preview HTML and Markdown text.
@@ -73,8 +73,6 @@ The philosophy of Jappy is to facilitate tools and lower barriers to achieve und
 
 Where possible it aims for simplicity and clean design.
 
-*Shall work with Sugar and Sugarizer, deploy everywhere.*
-
 Web Apps for Sugarizer and any Platform
 
  - Python
@@ -92,6 +90,6 @@ Issues
 Plans
 =====
 
-- To support some kind of manifest file editing
+- To support some kind of manifest file
 - To properly save a session
 - To import remote files (not only from open tabs)
