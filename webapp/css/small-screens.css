@@ -7,3 +7,6 @@
 #tabs button {
     font-size: 7pt !important;
 }
+#tabs {
+	height: 36px !important;
+}
