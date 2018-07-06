@@ -144,7 +144,7 @@ iframe {
         <iframe src="{ location.protocol }//{ location.host }/{ this.getpath() }template.html"
         allowfullscreen="true"
         allowTransparency="false" ref="vmframe"></iframe>
-        <iframe src="{ location.protocol }//{ location.host }/docs/"
+        <iframe
         allowfullscreen="true"
         allowTransparency="true" ref="docframe" id="_docframe"></iframe>
     </div>
@@ -1053,12 +1053,12 @@ def init():
                     translation_data = JSON.parse(raw_translation_data)
                     if translation_data['language']==tag.lang:
                         install(translation_data)
-                    newtab()
                     new_from_data(readme, 'README.md')
                     setTimeout(def():
-                               render_markdown()
+                               render_markdown(readme)
                                event_bus.trigger("traybutton-open")
                               ,50)
+                    newtab()
                 )
     event_bus.on("activity-not-ready", fresh_start)
 
@@ -1074,6 +1074,14 @@ def init():
 
     def hide_help():
         tag.refs.docframe.style.display = 'none'
+
+    def preload_help():
+        url = location.protocol + '//' + location.host + '/' \
+                + "docs/#"
+        setTimeout(def():
+             tag.refs.docframe.contentWindow.location = url
+            , 1000)
+    event_bus.on('compiler-ready', preload_help)
 
     def show_help(term=''):
         clear_output()
