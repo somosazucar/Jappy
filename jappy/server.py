@@ -21,7 +21,8 @@ from jappy.hooks import register_hooks
 signal.signal(signal.SIGINT, signal.SIG_DFL)
 mimetypes.add_type('image/svg+xml', '.svg')
 mimetypes.add_type('application/x-font-woff', '.woff')
-mimetypes.add_type('application/x-rapyd', '.pyj')
+mimetypes.add_type('application/javascript', '.pyj')
+mimetypes.add_type('text/plain', '.md')
 mimetypes.add_type('application/json', '.json')
 
 WRITING_DOCS = (os.environ.get('JAPPY_TIDDLY_BRIDGE') == '1')

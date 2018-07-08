@@ -6,6 +6,13 @@ def show():
     project = title[0].textContent[14:]
     for item in files:
         item.firstChild.target = 'run' 
+        #if item.firstChild.href.endsWith('.pyj') or \
+        #        item.firstChild.href.endsWith('.md') :
+        #    item.firstChild.href = '#'
+        #    item.firstChild.target = '' 
+        #    item.firstChild.onclick = def():
+        #        console.log(item.textContent)
+                    
         if '.index.html' in item.textContent:
             iframe.src = '/dav/' + project + item.textContent
 

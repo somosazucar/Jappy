@@ -16,7 +16,7 @@ td.right {
     font-family: Noto Sans;
 }
 body {
-    background-color: #c0c0c0;
+    background-color: #aaa;
     font-family: Noto Mono;
 }
 iframe {
@@ -25,4 +25,5 @@ iframe {
     top: 95px;
     width: 50vw;
     height: 80vh;
+    background: #c0c0c0;
 }
