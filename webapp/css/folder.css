@@ -19,3 +19,10 @@ body {
     background-color: #c0c0c0;
     font-family: Noto Mono;
 }
+iframe {
+    position: fixed;
+    right: 15px;
+    top: 95px;
+    width: 50vw;
+    height: 80vh;
+}

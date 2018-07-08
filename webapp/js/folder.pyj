@@ -1,0 +1,12 @@
+def show():
+    files = document.querySelectorAll("td:first-child")
+    files = list(files).slice(1)
+    iframe = document.getElementById("run")
+    title = document.getElementsByTagName("h1")
+    project = title[0].textContent[14:]
+    for item in files:
+        item.firstChild.target = 'run' 
+        if '.index.html' in item.textContent:
+            iframe.src = '/dav/' + project + item.textContent
+
+window.onload = show

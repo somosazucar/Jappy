@@ -1,4 +1,5 @@
 compile:
+	rapydscript compile -b js/folder.pyj > lib/folder.js
 	rapydscript compile -b js/jappy.pyj > lib/jappy.js
 	riot --config js/riot.config.js --ext tag.html js/ lib/
 watch:

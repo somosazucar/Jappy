@@ -52,7 +52,9 @@ if not os.path.isdir(workspace_dir):
     os.mkdir(workspace_dir)
 
 jappy_server_version = '0.5'
-response_trailer = '<link rel="stylesheet" href="../../css/folder.css" />' + \
+response_trailer = '<link rel="stylesheet" href="/css/folder.css" />' + \
+    '<script src="/lib/folder.js"></script>' + \
+    '<iframe id="run" name="run"></iframe>' + \
     'Jappy Server ' + jappy_server_version
 
 
