@@ -181,6 +181,8 @@ Error message and password prompt
 
 <li>$:/config/Navigation/UpdateHistory</li>
 
+<li>$:/config/NewJournal/Title</li>
+
 <li>$:/config/OfficialPluginLibrary</li>
 
 <li>$:/config/PageControlButtons/Visibility/$:/core/ui/Buttons/advanced-search</li>
@@ -467,7 +469,7 @@ Error message and password prompt
 
 <li>choice</li>
 
-<li>Documentación Incluída</li>
+<li>Documentación</li>
 
 <li>Educa Juegos</li>
 
@@ -478,6 +480,8 @@ Error message and password prompt
 <li>from</li>
 
 <li>Guía de Instalación de Jappy</li>
+
+<li>Guías</li>
 
 <li>Historia de Jappy</li>
 
@@ -505,6 +509,8 @@ Error message and password prompt
 
 <li>Preguntas Frecuentes</li>
 
+<li>print</li>
+
 <li>Prólogo</li>
 
 <li>Proyectos en Jappy</li>
@@ -519,13 +525,13 @@ Error message and password prompt
 
 <li>shuffle</li>
 
-<li>Tabla de Guías</li>
-
-<li>Tabla de Temas</li>
-
 <li>Tablas en Markdown</li>
 
 <li>Tareas</li>
+
+<li>Temas</li>
+
+<li>template.html</li>
 
 <li>Variables en Python</li>
 
@@ -618,6 +624,9 @@ Dependiendo del tipo de archivo, el navegador podrá mostrar directamente el con
 </div>
 <div created="20180511173546074" modified="20180511173546074" title="$:/config/Navigation/UpdateHistory" type="text/vnd.tiddlywiki" revision="0" bag="default">
 <pre>yes</pre>
+</div>
+<div created="20180709062748932" modified="20180709062810269" title="$:/config/NewJournal/Title" type="text/vnd.tiddlywiki" revision="0" bag="default">
+<pre>DD de MMM de YYYY</pre>
 </div>
 <div caption="{{$:/language/OfficialPluginLibrary}}" created="20180511173546065" modified="20180513034844816" tags="$:/tags/PluginLibrary" title="$:/config/OfficialPluginLibrary" type="text/vnd.tiddlywiki" url="https://tiddlywiki.com/library/v5.1.17/index.html" revision="0" bag="default">
 <pre>{{$:/language/OfficialPluginLibrary/Hint}}
@@ -9728,8 +9737,8 @@ $:/config/PageControlButtons/Visibility/$(listItem)$
 &lt;$button set=&quot;$:/state/sidebar&quot; setTo=&quot;yes&quot; tooltip={{$:/language/Buttons/ShowSideBar/Hint}} aria-label={{$:/language/Buttons/ShowSideBar/Caption}} class=&quot;tc-btn-invisible&quot;&gt;{{$:/core/images/chevron-left}}&lt;/$button&gt;
 &lt;/$reveal&gt;</pre>
 </div>
-<div created="20180426045625220" creator="icarito" modified="20180706050737365" modifier="icarito" title="$:/DefaultTiddlers" type="text/vnd.tiddlywiki" revision="0" bag="default">
-<pre>[[Documentación Incluída]]</pre>
+<div created="20180426045625220" creator="icarito" modified="20180709062734925" modifier="icarito" title="$:/DefaultTiddlers" type="text/vnd.tiddlywiki" revision="0" bag="default">
+<pre>[[Documentación]]</pre>
 </div>
 <div title="$:/isEncrypted" revision="0" bag="default">
 <pre>no</pre>
@@ -14868,7 +14877,7 @@ exports.run = function() {
 <div created="20180426045345969" modified="20180511173546703" title="$:/SiteTitle" type="text/vnd.tiddlywiki" revision="0" bag="default">
 <pre>Educa Juegos</pre>
 </div>
-<div list="[[Documentación Incluída]]" title="$:/StoryList" revision="1" bag="default">
+<div list="Documentación" title="$:/StoryList" revision="1" bag="default">
 <pre></pre>
 </div>
 <div created="20180503065205874" list="$:/core/ui/SideBar/Recent $:/core/ui/SideBar/Tools $:/core/ui/SideBar/More" modified="20180511173546694" title="$:/tags/SideBar" type="text/vnd.tiddlywiki" revision="0" bag="default">
@@ -17871,11 +17880,11 @@ Lanzar una moneda:
 	moneda = ['cara', 'sello']
 	print(random.choice(moneda))</pre>
 </div>
-<div created="20180706044358804" modified="20180706051653618" tags="" title="Documentación Incluída" type="text/x-markdown" revision="0" bag="default">
+<div created="20180706044358804" modified="20180709062940046" tags="" title="Documentación" type="text/x-markdown" revision="0" bag="default">
 <pre>## _**Recurso no-lineal de apoyo al aprendizaje**_
 
-* [Tabla de Guías](#Tabla de Guías)
-* [Tabla de Temas](#Tabla de Temas)
+* [Guías](#Guías)
+* [Temas](#Temas)
 * [Preguntas Frecuentes](#Preguntas Frecuentes)</pre>
 </div>
 <div created="20180511173546483" modified="20180524042743589" title="Educa Juegos" type="text/x-markdown" revision="0" bag="default">
@@ -17940,6 +17949,34 @@ Produce el siguiente resultado:
 *(Linux, Windows, Mac, etc)*
 
 Los navegadores modernos basados en Chromium (e.g. Chrome) tienen la posibilidad de **Agregar al Escritorio** - opción disponible del menu principal del navegador.
+</pre>
+</div>
+<div created="20180513031927322" modified="20180709063121818" title="Guías" type="text/x-markdown" revision="0" bag="default">
+<pre>_**[Documentación no-lineal de apoyo al aprendizaje](#Documentación)**_
+
+* [Temas](#Temas)
+* [Preguntas Frecuentes](#Preguntas Frecuentes)
+
+## Primera etapa: *&quot;**Input - Output**&quot;*
+
+## 🌍 [Hola Mundo](#Hola Mundo ):
+
+    print ('Hola Mundo')
+
+&gt; `print` (*expresión*)
+
+
+## 📬 [Variables](#Variables en Python):
+
+    x = 'abc'
+    y = 123
+    z = x + x    # 'abcabc'
+
+&gt;*variable* = *expresión*
+
+## 🔢 [Adivina  un número...](#Adivina un número)
+
+    nombre = input('¡Adivina un número!')
 </pre>
 </div>
 <div created="20180524042743539" modified="20180524042743539" title="Historia de Jappy" type="application/x-tiddler" revision="0" bag="default">
@@ -18343,6 +18380,19 @@ Output:
 
 &gt;			-- Equipo Educa.Juegos</pre>
 </div>
+<div created="20180711061522072" modified="20180711062203960" title="print" type="text/x-markdown" revision="0" bag="default">
+<pre>Tradicionalmente `print` es la instrucción para colocar texto en pantalla.
+
+Puesto que Jappy opera sobre un lienzo que en realidad es una página web, `print` en Jappy añade un *[elemento](#Los elementos HTML) * al *cuerpo* del documento.
+
+La sintaxis de `print` es:
+
+    variable = print(&quot;contenido de texto&quot;, tag=&quot;etiqueta&quot;, sep=&quot;,&quot;, end=&quot;&lt;br&gt;&quot;, style=&quot;estilo: css&quot;)
+
+`print` retorna un objeto de tipo *elemento HTML*.
+
+	variable.style.fontSize = '80pt'</pre>
+</div>
 <div created="20180503063632936" modified="20180524042743665" title="Prólogo" type="text/x-markdown" revision="0" bag="default">
 <pre>## ¡Hola! (Introducción)
 
@@ -18428,38 +18478,38 @@ Se puede hacer un rudimentario reloj:
 
 Mezcla los ítemes de una lista.</pre>
 </div>
-<div created="20180513031927322" modified="20180706050717815" title="Tabla de Guías" type="text/x-markdown" revision="0" bag="default">
-<pre>_**[Documentación no-lineal de apoyo al aprendizaje](#Documentación Incluída)**_
+<div created="20180513060901034" modified="20180524042743983" title="Tablas en Markdown" type="text/x-markdown" revision="0" bag="default">
+<pre>En Markdown se puede hacer tablas, incluyendo encabezados, filas y columnas.
 
-* [Tabla de Temas](#Tabla de Temas)
-* [Preguntas Frecuentes](#Preguntas Frecuentes)
+Se dibujan con símbolos:
 
-## Primera etapa: *&quot;**Input - Output**&quot;*
+```markdown
+| Lun | Mar | Mie | Jue | Vie |
+|-----|-----|-----|-----|-----|
+| Si | No | Si | No | Si |
+| No | Si | No | Si | No |
+```
 
-## 🌍 [Hola Mundo](#Hola Mundo ):
+Y lucen así:
 
-    print ('Hola Mundo')
-
-&gt; `print` (*expresión*)
-
-
-## 📬 [Variables](#Variables en Python):
-
-    x = 'abc'
-    y = 123
-    z = x + x    # 'abcabc'
-
-&gt;*variable* = *expresión*
-
-## 🔢 [Adivina  un número...](#Adivina un número)
-
-    nombre = input('¡Adivina un número!')
-</pre>
+| Lun | Mar | Mie | Jue | Vie |
+|-----|-----|-----|-----|-----|
+| Si | No | Si | No | Si |
+| No | Si | No | Si | No |</pre>
 </div>
-<div created="20180503075642566" modified="20180706053454486" title="Tabla de Temas" type="text/x-markdown" revision="0" bag="default">
-<pre>_**[Documentación no-lineal de apoyo al aprendizaje](#Documentación Incluída)**_
+<div created="20180503071659811" modified="20180524042744003" title="Tareas" type="text/x-markdown" revision="0" bag="default">
+<pre>## ¡Este proyecto está en construcción!
 
-* [Tabla de Guías](#Tabla de Guías)
+Aquí listamos tareas de diseño y desarrollo de Jappy y también del proyecto Educa.Juegos.
+
+Para temas de Jappy usar [Gitlab](https://gitlab.com/fuentelibre/Jappy/issues).
+
+También se puede ver el avance como [tarjetas Kanban](https://gitlab.com/fuentelibre/Jappy/boards).</pre>
+</div>
+<div created="20180503075642566" modified="20180709063104635" title="Temas" type="text/x-markdown" revision="0" bag="default">
+<pre>_**[Documentación no-lineal de apoyo al aprendizaje](#Documentación)**_
+
+* [Guías](#Guías)
 * [Preguntas Frecuentes](#Preguntas Frecuentes)
 
 ## Para escribir documentos: *Markdown*
@@ -18509,33 +18559,43 @@ Mezcla los ítemes de una lista.</pre>
   }
 &lt;/style&gt;</pre>
 </div>
-<div created="20180513060901034" modified="20180524042743983" title="Tablas en Markdown" type="text/x-markdown" revision="0" bag="default">
-<pre>En Markdown se puede hacer tablas, incluyendo encabezados, filas y columnas.
+<div created="20180709031221229" modified="20180709033834776" tags="" title="template.html" type="text/x-markdown" revision="0" bag="default">
+<pre>El archivo `template.html` es especial. Este archivo es usado por Jappy como plantilla para ejecutar los archivos `.pyj` (RapydScript).
 
-Se dibujan con símbolos:
+## Incluyendo una biblioteca Javascript
 
-```markdown
-| Lun | Mar | Mie | Jue | Vie |
-|-----|-----|-----|-----|-----|
-| Si | No | Si | No | Si |
-| No | Si | No | Si | No |
-```
+Es posible incluir bibliotecas Javascript previamente copiadas al espacio de trabajo, o desde una URL de Internet:
 
-Y lucen así:
+    &lt;script src=&quot;biblioteca_pollito.min.js&quot;&gt;&lt;/script&gt;
 
-| Lun | Mar | Mie | Jue | Vie |
-|-----|-----|-----|-----|-----|
-| Si | No | Si | No | Si |
-| No | Si | No | Si | No |</pre>
-</div>
-<div created="20180503071659811" modified="20180524042744003" title="Tareas" type="text/x-markdown" revision="0" bag="default">
-<pre>## ¡Este proyecto está en construcción!
+Las bibliotecas incluídas de esta forma estarán disponibles en el *espacio de nombres* del navegador durante la ejecución de l programa.
 
-Aquí listamos tareas de diseño y desarrollo de Jappy y también del proyecto Educa.Juegos.
+    pollo = new Pollito()
+    # Pollito es un objeto definido en biblioteca_pollito.min.js
 
-Para temas de Jappy usar [Gitlab](https://gitlab.com/fuentelibre/Jappy/issues).
+## Agregando estructura HTML al documento
 
-También se puede ver el avance como [tarjetas Kanban](https://gitlab.com/fuentelibre/Jappy/boards).</pre>
+`template.html` es, en definitiva el documento sobre el cual se ejecutarán los comandos de Python / RapydScript / Javascript.
+
+Una forma apropiada de desarrollar una aplicación o página es primeramente intervenir `template.html` y luego añadir la lógica en un archivo `.pyj`.
+
+**template.html**
+
+    (...)
+    &lt;body&gt;
+        &lt;h1&gt;Calendario&lt;/h1&gt;
+        &lt;h2 id=&quot;#subtitulo&quot;&gt;&lt;/h2&gt;
+    &lt;body&gt;
+    (...)
+**mes.pyj**
+
+    subtitulo = document.getElementById('subtitulo')
+    mes = (new Date()).getMonth() + 1
+	etiquetas = ['ene', 'feb', 'mar', 'abr', 'may', 'jun', \
+                 'jul', 'ago', 'sep', 'oct', 'nov', 'dic']
+	subtitulo.textContent = etiquetas[mes].upper()
+&gt; ## Calendario
+&gt; ### JUL</pre>
 </div>
 <div created="20180524042743993" modified="20180524042743993" title="Variables en Python" type="application/x-tiddler" revision="0" bag="default">
 <pre></pre>
