@@ -54,15 +54,13 @@ iframe {
     height: 100%;
     overflow: auto;
 }
-#tabs {
-    height: 42px;
-}
 #tabs button {
     font-size: 13pt;
     border-radius: 0;
     padding: 10px 10px;
     border: 0px;
     margin: 0px;
+    height: 42px;
 }
 #tabs button.selected {
     background-color: #282828;
@@ -764,13 +762,14 @@ def init():
         return JSON.stringify(result)
 
     def save_without_datastore():
-        localStorage.jappySession = serialize()
-
         def file_written(item):
             return def():
                 window.files[item].markClean()
 
-        if location.hash:
+        if not location.hash:
+            localStorage.jappySession = serialize()
+            makeToast(_("Saved in your browser session."))
+        else:
             url_base = location.protocol
             address = url_base + '//' + location.host + '/dav'
             if window.fs is undefined:
@@ -1066,11 +1065,10 @@ def init():
         #word = editor.findWordAt(editor.getCursor())
         #term = editor.getRange(word.anchor, word.head)
         term = editor.getTokenAt(editor.getCursor())
-        console.warn(term)
         event_bus.trigger("get-help", term.string)
 
-    def get_help():
-        event_bus.trigger("get-help")
+    def get_help(term):
+        event_bus.trigger("get-help", term)
 
     def hide_help():
         tag.refs.docframe.style.display = 'none'
