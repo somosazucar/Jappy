@@ -2905,6 +2905,8 @@ function init() {
         output = marked(src);
         function write_output() {
             var idoc, head, containerDiv, link, base, html, place;
+            window.state = "show";
+            riot.update();
             iframe.removeEventListener("load", write_output);
             idoc = iframe.contentDocument;
             head = idoc.getElementsByTagName("head")[0];

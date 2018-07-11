@@ -63,7 +63,7 @@
 
   <button class="toolbutton pull-right" id="stop-button" title={ _('Stop') } id="stop-button" ref="stopbutton"></button>
 
-  <button class="toolbutton pull-right { hidden: window.state=='run' }" id="start-button" title={ _('Start fullscreen') } ref="startbutton"></button>
+  <button class="toolbutton pull-right { hidden: window.state=='show' } { hidden: window.state=='run' }" id="start-button" title={ _('Start fullscreen') } ref="startbutton"></button>
 
   <button class="toolbutton pull-right { hidden: window.state=='stopped' } { hidden: window.state=='clean' }" id="full-button" title={ _('View fullscreen') } ref="fullbutton"></button>
 

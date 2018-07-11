@@ -682,6 +682,8 @@ def init():
             src = editor.getValue()
         output = marked(src)
         def write_output():
+            window.state = 'show'
+            riot.update()
             iframe.removeEventListener('load', write_output)
             idoc = iframe.contentDocument
             head = idoc.getElementsByTagName('head')[0]
