@@ -1086,7 +1086,7 @@ def init():
     def show_help(term=''):
         clear_output()
         tag.refs.docframe.style.display = 'block'
-        window.state = 'run'
+        window.state = 'show'
         riot.update()
         url = location.protocol + '//' + location.host + '/' \
                 + "docs/#" + term

@@ -3536,7 +3536,7 @@ function init() {
         var url;
         clear_output();
         tag.refs.docframe.style.display = "block";
-        window.state = "run";
+        window.state = "show";
         riot.update();
         url = location.protocol + "//" + location.host + "/" + "docs/#" + term;
         tag.refs.docframe.contentWindow.location = url;
