@@ -1,4 +1,6 @@
-export default {
+module.exports = [];
+
+module.exports = {
   parsers: {
     js: {
       Rapyd: function(js, options) {
@@ -17,4 +19,4 @@ export default {
     template: {},
     style: {}
   }
-};
+}
