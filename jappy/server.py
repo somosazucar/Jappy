@@ -59,6 +59,7 @@ response_trailer = '<link rel="stylesheet" href="/css/folder.css" />' + \
     'Jappy Server ' + jappy_server_version
 
 
+@app.route("/edit")
 @app.route("/")
 def hello():
     return send_from_directory(web_app_dir, 'index.html',
@@ -87,6 +88,8 @@ def i18n():
 @app.route('/docs/<path:path>', methods=['GET', 'PUT', 'HEAD', 'DELETE'])
 def docs(path):
     if WRITING_DOCS:
+        if path.startswith('wiki.html'):
+            path = path[9:]
         url = 'http://localhost:8080/{}'.format(path)
         if request.method == 'GET':
             req = requests.get(url, stream=True)

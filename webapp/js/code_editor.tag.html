@@ -1077,7 +1077,7 @@ def init():
 
     def preload_help():
         url = location.protocol + '//' + location.host + '/' \
-                + "docs/#"
+                + "docs/wiki.html#"
         setTimeout(def():
              tag.refs.docframe.contentWindow.location = url
             , 1000)
@@ -1089,7 +1089,7 @@ def init():
         window.state = 'show'
         riot.update()
         url = location.protocol + '//' + location.host + '/' \
-                + "docs/#" + term
+                + "docs/wiki.html#" + term
         tag.refs.docframe.contentWindow.location = url
         event_bus.trigger("traybutton-open")
         if window.innerWidth < 720:

@@ -3519,7 +3519,7 @@ function init() {
 
     function preload_help() {
         var url;
-        url = location.protocol + "//" + location.host + "/" + "docs/#";
+        url = location.protocol + "//" + location.host + "/" + "docs/wiki.html#";
         setTimeout(function () {
             tag.refs.docframe.contentWindow.location = url;
         }, 1e3);
@@ -3538,7 +3538,7 @@ function init() {
         tag.refs.docframe.style.display = "block";
         window.state = "show";
         riot.update();
-        url = location.protocol + "//" + location.host + "/" + "docs/#" + term;
+        url = location.protocol + "//" + location.host + "/" + "docs/wiki.html#" + term;
         tag.refs.docframe.contentWindow.location = url;
         event_bus.trigger("traybutton-open");
         if (window.innerWidth < 720) {
