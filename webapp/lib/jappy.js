@@ -3776,10 +3776,16 @@ if (!clearScreen.__defaults__) Object.defineProperties(clearScreen, {
 
 function inputAsync() {
     var cb = (arguments[0] === undefined || ( 0 === arguments.length-1 && arguments[arguments.length-1] !== null && typeof arguments[arguments.length-1] === "object" && arguments[arguments.length-1] [ρσ_kwargs_symbol] === true)) ? inputAsync.__defaults__.cb : arguments[0];
-    var ρσ_kwargs_obj = arguments[arguments.length-1];
-    if (ρσ_kwargs_obj === null || typeof ρσ_kwargs_obj !== "object" || ρσ_kwargs_obj [ρσ_kwargs_symbol] !== true) ρσ_kwargs_obj = {};
-    if (Object.prototype.hasOwnProperty.call(ρσ_kwargs_obj, "cb")){
-        cb = ρσ_kwargs_obj.cb;
+    var remove = (arguments[1] === undefined || ( 1 === arguments.length-1 && arguments[arguments.length-1] !== null && typeof arguments[arguments.length-1] === "object" && arguments[arguments.length-1] [ρσ_kwargs_symbol] === true)) ? inputAsync.__defaults__.remove : arguments[1];
+    var kwargs = arguments[arguments.length-1];
+    if (kwargs === null || typeof kwargs !== "object" || kwargs [ρσ_kwargs_symbol] !== true) kwargs = {};
+    if (Object.prototype.hasOwnProperty.call(kwargs, "cb")){
+        cb = kwargs.cb;
+        delete kwargs.cb;
+    }
+    if (Object.prototype.hasOwnProperty.call(kwargs, "remove")){
+        remove = kwargs.remove;
+        delete kwargs.remove;
     }
     var el;
     function onKeyUp(e) {
@@ -3791,12 +3797,12 @@ function inputAsync() {
         __argnames__ : {value: ["e"]}
     });
 
-    el = document.createElement("input");
+    el = ρσ_interpolate_kwargs.call(this, print, [ρσ_desugar_kwargs(kwargs, {tag: "input"})]);
     el.className = "__terminal__";
     el.onsubmit = (function() {
         var ρσ_anonfunc = function (e) {
             if (cb) {
-                if (ρσ_in(cb(el.value), ρσ_list_decorate([ undefined, true ]))) {
+                if (ρσ_in(cb(el.value), ρσ_list_decorate([ undefined, true ])) && remove) {
                     e.target.parentNode.removeChild(el);
                 }
             }
@@ -3812,14 +3818,13 @@ function inputAsync() {
         return ρσ_anonfunc;
     })();
     el.onkeyup = onKeyUp;
-    document.body.appendChild(el);
     el.focus();
     return el;
 };
 if (!inputAsync.__defaults__) Object.defineProperties(inputAsync, {
-    __defaults__ : {value: {cb:null}},
+    __defaults__ : {value: {cb:null, remove:true}},
     __handles_kwarg_interpolation__ : {value: true},
-    __argnames__ : {value: ["cb"]}
+    __argnames__ : {value: ["cb", "remove"]}
 });
 
 function ρσ_print() {
@@ -3827,7 +3832,7 @@ function ρσ_print() {
     if (kwargs === null || typeof kwargs !== "object" || kwargs [ρσ_kwargs_symbol] !== true) kwargs = {};
     var args = Array.prototype.slice.call(arguments, 0);
     if (kwargs !== null && typeof kwargs === "object" && kwargs [ρσ_kwargs_symbol] === true) args.pop();
-    var end, sep, tag, addition, el;
+    var end, sep, parent, scroll, tag, addition, el;
     end = null;
     sep = " ";
     if (ρσ_in("sep", kwargs)) {
@@ -3835,6 +3840,14 @@ function ρσ_print() {
     }
     if (ρσ_in("end", kwargs)) {
         end = kwargs["end"];
+    }
+    if (ρσ_in("parent", kwargs)) {
+        parent = kwargs["parent"];
+    }
+    if (ρσ_in("scroll", kwargs)) {
+        scroll = kwargs["scroll"];
+    } else {
+        scroll = true;
     }
     tag = (kwargs["tag"] !== undefined) ? kwargs["tag"] : (end !== null) ? "span" : "div";
     addition = sep.join((function() {
@@ -3851,8 +3864,14 @@ function ρσ_print() {
         el.style.cssText = kwargs["style"];
     }
     el.innerHTML = addition.replace(/\n/g, "<br/>");
-    document.body.appendChild(el);
-    document.documentElement.scrollTop = document.documentElement.scrollHeight;
+    if (parent !== undefined) {
+        parent.appendChild(el);
+    } else {
+        document.body.appendChild(el);
+    }
+    if (scroll) {
+        document.documentElement.scrollTop = document.documentElement.scrollHeight;
+    }
     return el;
 };
 if (!ρσ_print.__handles_kwarg_interpolation__) Object.defineProperties(ρσ_print, {
@@ -3869,44 +3888,35 @@ window.onerror = (function() {
     });
     return ρσ_anonfunc;
 })();
-function loadCSS(url_list) {
-    var urlmedia;
-    var ρσ_Iter0 = ρσ_Iterable(url_list);
-    for (var ρσ_Index0 = 0; ρσ_Index0 < ρσ_Iter0.length; ρσ_Index0++) {
-        urlmedia = ρσ_Iter0[ρσ_Index0];
-        loadCSSAsync(urlmedia);
+function markdown() {
+    var src = ( 0 === arguments.length-1 && arguments[arguments.length-1] !== null && typeof arguments[arguments.length-1] === "object" && arguments[arguments.length-1] [ρσ_kwargs_symbol] === true) ? undefined : arguments[0];
+    var kwargs = arguments[arguments.length-1];
+    if (kwargs === null || typeof kwargs !== "object" || kwargs [ρσ_kwargs_symbol] !== true) kwargs = {};
+    var markdown_body, link, link2, head;
+    markdown_body = ρσ_interpolate_kwargs.call(this, print, [Jappy.marked(src)].concat([ρσ_desugar_kwargs(kwargs)]));
+    if (!(ρσ_in("parent", kwargs))) {
+        markdown_body.className = "markdown-body";
     }
-};
-if (!loadCSS.__argnames__) Object.defineProperties(loadCSS, {
-    __argnames__ : {value: ["url_list"]}
-});
-
-function makeCSSLink(url, media) {
-    var link;
-    link = document.createElement("link");
-    link.rel = "stylesheet";
-    link.href = url;
-    if (media) {
-        link.media = media;
+    if (!document.getElementById("_markdownstyle_")) {
+        link = ρσ_interpolate_kwargs.call(this, print, [ρσ_desugar_kwargs({tag: "link"})]);
+        link.rel = "stylesheet";
+        link.id = "_markdownstyle_";
+        link.href = "css/github-markdown.css";
+        link2 = ρσ_interpolate_kwargs.call(this, print, [ρσ_desugar_kwargs({tag: "link"})]);
+        link2.rel = "stylesheet";
+        link2.href = "css/markdown-extra.css";
+        head = document.getElementsByTagName("head")[0];
+        head.append(link);
+        head.append(link2);
     }
-    return link;
+    return markdown_body;
 };
-if (!makeCSSLink.__argnames__) Object.defineProperties(makeCSSLink, {
-    __argnames__ : {value: ["url", "media"]}
-});
-
-function loadCSSAsync(url, media) {
-    var link, head;
-    link = makeCSSLink(url, media);
-    head = document.getElementsByTagName("head")[0];
-    setTimeout(function () {
-        head.appendChild(link);
-    });
-};
-if (!loadCSSAsync.__argnames__) Object.defineProperties(loadCSSAsync, {
-    __argnames__ : {value: ["url", "media"]}
+if (!markdown.__handles_kwarg_interpolation__) Object.defineProperties(markdown, {
+    __handles_kwarg_interpolation__ : {value: true},
+    __argnames__ : {value: ["src"]}
 });
 
 if (parent.jappy_editor_version) {
     window.Jappy = parent;
+    window.marked = parent.marked;
 }

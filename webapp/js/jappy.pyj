@@ -13,21 +13,20 @@ def clearScreen(color=None):
         document.body.style.backgroundColor = color
     document.body.innerHTML = ''
 
-def inputAsync(cb=None):
+def inputAsync(cb=None, remove=True, **kwargs):
     def onKeyUp(e):
         if e.keyCode == 13:
             e.target.dispatchEvent(new Event('submit'))
-    el = document.createElement('input')
+    el = print(tag='input', **kwargs)
     el.className = '__terminal__'
     el.onsubmit = def(e):
         if cb:
-            if cb(el.value) in [undefined, True]:
+            if cb(el.value) in [undefined, True] and remove:
                 e.target.parentNode.removeChild(el)
         def scrolldown():
             document.documentElement.scrollTop = document.documentElement.scrollHeight
         setTimeout(scrolldown)
     el.onkeyup = onKeyUp
-    document.body.appendChild(el)
     el.focus()
     return el
 
@@ -39,6 +38,12 @@ def ρσ_print(*args, **kwargs):
         sep = kwargs['sep']
     if 'end' in kwargs:
         end = kwargs['end']
+    if 'parent' in kwargs:
+        parent = kwargs['parent']
+    if 'scroll' in kwargs:
+        scroll = kwargs['scroll']
+    else:
+        scroll = True
     
     tag = kwargs['tag'] if kwargs['tag'] is not undefined \
             else 'span' if end is not None \
@@ -51,8 +56,13 @@ def ρσ_print(*args, **kwargs):
         el.style.cssText = kwargs['style']
     el.innerHTML = addition.replace(/\n/g, '<br/>')
 
-    document.body.appendChild(el)
-    document.documentElement.scrollTop = document.documentElement.scrollHeight
+    if parent is not undefined:
+        parent.appendChild(el)
+    else:
+        document.body.appendChild(el)
+
+    if scroll:
+        document.documentElement.scrollTop = document.documentElement.scrollHeight
 
     return el
 
@@ -60,24 +70,23 @@ window.onerror = def(e):
     console.error(e)
     print(e)
 
-def loadCSS(url_list):
-    for urlmedia in url_list:
-        loadCSSAsync(urlmedia)
-
-def makeCSSLink(url, media):
-    link = document.createElement('link')
-    link.rel = 'stylesheet'
-    link.href = url
-    if media:
-        link.media = media
-    return link
-
-def loadCSSAsync(url, media):
-    link = makeCSSLink(url, media)
-    head = document.getElementsByTagName('head')[0]
-    setTimeout(def():
-                    head.appendChild(link)
-                )
+def markdown(src, **kwargs):
+    markdown_body = print(Jappy.marked(src), **kwargs)
+    if 'parent' not in kwargs:
+        markdown_body.className = 'markdown-body'
+    if not document.getElementById('_markdownstyle_'):
+        link = print(tag='link')
+        link.rel = 'stylesheet'
+        link.id = '_markdownstyle_'
+        link.href= 'css/github-markdown.css'
+        link2 = print(tag='link')
+        link2.rel = 'stylesheet'
+        link2.href= 'css/markdown-extra.css'
+        head = document.getElementsByTagName('head')[0]
+        head.append(link)
+        head.append(link2)
+    return markdown_body
 
 if (parent.jappy_editor_version):
     window.Jappy = parent
+    window.marked = parent.marked
