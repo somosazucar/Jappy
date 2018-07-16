@@ -41,9 +41,9 @@ Hay más información sobre Jappy y sobre como programar un navegador web en el 
 
 Jappy es un proyecto de Software Libre:
 
-- [Repositorio](https://gitlab.com/fuentelibre/Jappy)
-- [Tareas pendientes](https://gitlab.com/fuentelibre/Jappy/issues)
-- [Nueva solicitud](https://gitlab.com/fuentelibre/Jappy/issues/new) <br> Por ejemplo, para reportar un error o hacer una petición.
+- Repositorio
+- Tareas pendientes
+- Nueva solicitud (error, petición, etc)
 
 La interfaz de edición se distribuye bajo licencia **AGPLv3** y el compilador RapydScript-NG bajo **BSD-2-Clause** (sin copyleft).
 
@@ -54,6 +54,10 @@ Esto quiere decir que puedes usar libremente Jappy, compartirlo con tus amigos, 
 |Los programas de tu autoría en general no pueden ser compartidos a menos que declares una licencia para ellos. Siendo obras tuyas, ellos no están sujetos a la licencia Jappy.
 
 <style>
-    img {background-color: black}
+    img {background-color: black !important;
+         height: 55px;
+         border-radius: 2px;
+         box-shadow: 3px 3px;
+        }
     table {text-align: center;}
 </style>
