@@ -3774,6 +3774,17 @@ if (!clearScreen.__defaults__) Object.defineProperties(clearScreen, {
     __argnames__ : {value: ["color"]}
 });
 
+function asyncInput() {
+    var kwargs = arguments[arguments.length-1];
+    if (kwargs === null || typeof kwargs !== "object" || kwargs [ρσ_kwargs_symbol] !== true) kwargs = {};
+    var args = Array.prototype.slice.call(arguments, 0);
+    if (kwargs !== null && typeof kwargs === "object" && kwargs [ρσ_kwargs_symbol] === true) args.pop();
+    return ρσ_interpolate_kwargs.call(this, inputAsync, args.concat([ρσ_desugar_kwargs(kwargs)]));
+};
+if (!asyncInput.__handles_kwarg_interpolation__) Object.defineProperties(asyncInput, {
+    __handles_kwarg_interpolation__ : {value: true}
+});
+
 function inputAsync() {
     var cb = (arguments[0] === undefined || ( 0 === arguments.length-1 && arguments[arguments.length-1] !== null && typeof arguments[arguments.length-1] === "object" && arguments[arguments.length-1] [ρσ_kwargs_symbol] === true)) ? inputAsync.__defaults__.cb : arguments[0];
     var remove = (arguments[1] === undefined || ( 1 === arguments.length-1 && arguments[arguments.length-1] !== null && typeof arguments[arguments.length-1] === "object" && arguments[arguments.length-1] [ρσ_kwargs_symbol] === true)) ? inputAsync.__defaults__.remove : arguments[1];
@@ -3888,7 +3899,7 @@ window.onerror = (function() {
     });
     return ρσ_anonfunc;
 })();
-function markdown() {
+function markdownPrint() {
     var src = ( 0 === arguments.length-1 && arguments[arguments.length-1] !== null && typeof arguments[arguments.length-1] === "object" && arguments[arguments.length-1] [ρσ_kwargs_symbol] === true) ? undefined : arguments[0];
     var kwargs = arguments[arguments.length-1];
     if (kwargs === null || typeof kwargs !== "object" || kwargs [ρσ_kwargs_symbol] !== true) kwargs = {};
@@ -3911,7 +3922,7 @@ function markdown() {
     }
     return markdown_body;
 };
-if (!markdown.__handles_kwarg_interpolation__) Object.defineProperties(markdown, {
+if (!markdownPrint.__handles_kwarg_interpolation__) Object.defineProperties(markdownPrint, {
     __handles_kwarg_interpolation__ : {value: true},
     __argnames__ : {value: ["src"]}
 });

@@ -13,6 +13,9 @@ def clearScreen(color=None):
         document.body.style.backgroundColor = color
     document.body.innerHTML = ''
 
+def asyncInput(*args, **kwargs):
+    return inputAsync(*args, **kwargs)
+
 def inputAsync(cb=None, remove=True, **kwargs):
     def onKeyUp(e):
         if e.keyCode == 13:
@@ -70,7 +73,7 @@ window.onerror = def(e):
     console.error(e)
     print(e)
 
-def markdown(src, **kwargs):
+def markdownPrint(src, **kwargs):
     markdown_body = print(Jappy.marked(src), **kwargs)
     if 'parent' not in kwargs:
         markdown_body.className = 'markdown-body'
