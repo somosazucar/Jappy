@@ -2,94 +2,58 @@
 Jappy Creator
 ==============
 
-Jappy is a Python collaborative programming environment for the Web. It's also possible to write and preview HTML and Markdown text.
+Seas bienvenido a la herramienta *Jappy Creator*, cuyo objetivo es brindar un ambiente creativo de fácil acceso.
 
-It currently implements the [RapydScript-NG transpiler](https://github.com/kovidgoyal/rapydscript-ng)'s Python-like language.
+Desde expresiones artísticas, pasando por aplicaciones móviles y de realidad virtual o aumentada, Jappy ofrece un *lienzo en blanco* para la creatividad.
 
-Jappy is the app powering the http://educa.juegos/ collaborative coding platform.
+*Jappy* está pensado para practicar la programación de «páginas Web». 
 
-## Usage
+## *Para empezar* 
 
-Write Python in Jappy and press the green button **"Run"** to run your code.
+En la botonera superior tenemos:
 
-What actually happens is:
-    - The content of every file is stored (to localStorage or the backend)
-    - The code is transpiled from Python3-like syntax to Javascript
-    - A preset `template.html` file is loaded to the right hand side frame
-    - The Python-compiled-to-Javascript is appended to the frame
-    - The resulting HTML with Javascript is stored to the backend as `.index.html`
-    - The Javascript then runs
-    - Backend peers are notified to load `.index.html` into their frame
+| **Abrir un Ejemplo** |  **Ejecutar** (*Ctrl-Enter*)
+|---------------------------------------------------|
+| ![Cargar Ejemplo](icons/load-example.svg) <br> (puedes tomar<br>ideas de aquí) | ![Ejecutar](icons/run_color.svg) <br> Para ver el resultado al<br>costado derecho de la pantalla
 
-### Experimental persistence and collaboration backend
+Puedes abrir varios archivos a la vez y ejecutarlos.
 
-Users may create persistent projects by adding a hashtag to the URL.
+## Markdown y Python
 
-For the case of **educa.juegos** an url could look like [https://educa.juegos/#sandbox](https://educa.juegos/#sandbox). When the backend collaboration server is available, a **project folder** toolbar menu provides access to files stored in the server. Text should become synchronized accross users. When one user compiles and runs, everybody else will see the result instantly.
+En Jappy se pueden crear dos tipos de archivos:
 
-Project files will be accesible via WebDAV (link provided at the end of the Folder toolbar menu).
+- *Markdown* para **documentos** (extensión ".md")
+- *Python* para **programas** (extensión ".pyj")
 
-### Altering the default template
+Es posible cambiar de nombre a un archivo haciendo **doble click** sobre la pestaña del mismo (ej. `sin_titulo.pyj`).
 
-It is possible to open the file `template.html` which you can open from the examples toolbar menu. If a file called `template.html` is open, it will be used over the default. Here you can alter the resulting HTML however you prefer, including adding custom CSS or Javascript libraries.
+El dialecto de Python que soportamos se llama [RapydScript-NG](https://github.com/kovidgoyal/rapydscript-ng) y es compilado a Javascript para ser ejecutado, por tu navegador Web.
 
-### Support for HTML and Markdown
+## Más información
 
-If you attempt to "run" an HTML file, it will be rendered to the right hand side frame. Markdown text files (ending with `.md`) will be rendered with a custom style.
+Hay más información sobre Jappy y sobre como programar un navegador web en el Sistema de Ayuda incluído con Jappy.
 
-### Launch
+|Referencia (F1)|
+|---|
+|![Referencia](icons/toolbar-book.svg) <br> Ayuda contextual <br> 
 
-In order to launch the app, simply open `Jappy.activity/index.html` in a browser, served by http.
+## Fuentes
 
-The collaboration server is implemented in Flask.
+Jappy es un proyecto de Software Libre:
 
-```
-python2 server.py
-```
-And then open http://localhost:54991/#Sandbox (change the hash reference to your project name).
+- [Repositorio](https://gitlab.com/fuentelibre/Jappy)
+- [Tareas pendientes](https://gitlab.com/fuentelibre/Jappy/issues)
+- [Nueva solicitud](https://gitlab.com/fuentelibre/Jappy/issues/new) <br> Por ejemplo, para reportar un error o hacer una petición.
 
-You may need to install requirements with `pip install -r requirements.txt` first. 
+La interfaz de edición se distribuye bajo licencia **AGPLv3** y el compilador RapydScript-NG bajo **BSD-2-Clause** (sin copyleft).
 
-Collaboration feature are available when using a #hash in your URL. Each #hash represents a "room" and a "project". Each project has a directory under `workspace/`.
+Esto quiere decir que puedes usar libremente Jappy, compartirlo con tus amigos, incluso mejorarlo. La integración de Jappy dentro de herramientas de código cerrado está expresamente prohibida por la licencia.
 
-### Standalone
+| Nota
+|------
+|Los programas de tu autoría en general no pueden ser compartidos a menos que declares una licencia para ellos. Siendo obras tuyas, ellos no están sujetos a la licencia Jappy.
 
-You may also try our experimental standalone app:
-
-```
-python webview.py
-```
-
-This version is run with a WebKitGTK browser and only been tested on GNU/Linux.
-
-## References
-
-https://wiki.sugarlabs.org/go/Project/Develop_Activity
-
-Artisan Workbench
-=================
-
-The philosophy of Jappy is to facilitate tools and lower barriers to achieve understanding of web technologies.
-
-Where possible it aims for simplicity and clean design.
-
-Web Apps for Sugarizer and any Platform
-
- - Python
- - Game
- - Tool
-
-Collaboration, Simplicity, Reflection
-    "Never loose work"
-
-Issues
-======
-
-- Might consider method to avoid *infinite loops*. Currently they **crash the tab or browser or PC**.
-
-Plans
-=====
-
-- To support some kind of manifest file
-- To properly save a session
-- To import remote files (not only from open tabs)
+<style>
+    img {background-color: black}
+    table {text-align: center;}
+</style>
