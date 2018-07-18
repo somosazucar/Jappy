@@ -3453,12 +3453,13 @@ function init() {
         var restore_button;
         if ((ev.key === "Enter" || typeof ev.key === "object" && ρσ_equals(ev.key, "Enter")) && (ev.altKey === true || typeof ev.altKey === "object" && ρσ_equals(ev.altKey, true))) {
             fullscreen();
-        }
-        if ((ev.key === "Escape" || typeof ev.key === "object" && ρσ_equals(ev.key, "Escape"))) {
+        } else if ((ev.key === "Escape" || typeof ev.key === "object" && ρσ_equals(ev.key, "Escape"))) {
             restore_button = document.getElementById("restore-button");
             if (restore_button) {
                 restore_button.click();
             }
+        } else if ((ev.key === "l" || typeof ev.key === "object" && ρσ_equals(ev.key, "l")) && (ev.ctrlKey === true || typeof ev.ctrlKey === "object" && ρσ_equals(ev.ctrlKey, true))) {
+            event_bus.trigger("collaboration-dialog");
         }
     };
     if (!key_handler.__argnames__) Object.defineProperties(key_handler, {
@@ -3502,8 +3503,22 @@ function init() {
     event_bus.on("activity-not-ready", fresh_start);
     function get_context_help() {
         var term;
-        term = editor.getTokenAt(editor.getCursor());
-        event_bus.trigger("get-help", term.string);
+        term = editor.getTokenAt(editor.getCursor()).string;
+        if ((editor.getMode().name === "python" || typeof editor.getMode().name === "object" && ρσ_equals(editor.getMode().name, "python"))) {
+            event_bus.trigger("get-help", "Python");
+        }
+        if ((editor.getMode().name === "markdown" || typeof editor.getMode().name === "object" && ρσ_equals(editor.getMode().name, "markdown"))) {
+            event_bus.trigger("get-help", "Markdown");
+        }
+        if ((editor.getMode().name === "css" || typeof editor.getMode().name === "object" && ρσ_equals(editor.getMode().name, "css"))) {
+            event_bus.trigger("get-help", "CSS");
+        }
+        if ((editor.getMode().name === "htmlmixed" || typeof editor.getMode().name === "object" && ρσ_equals(editor.getMode().name, "htmlmixed"))) {
+            event_bus.trigger("get-help", "HTML");
+        }
+        setTimeout(function () {
+            event_bus.trigger("get-help", term);
+        }, 50);
     };
 
     function get_help(term) {

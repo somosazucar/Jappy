@@ -1035,10 +1035,12 @@ def init():
     def key_handler(ev):
         if ev.key=='Enter' and ev.altKey==True:
             fullscreen()
-        if ev.key=='Escape':
+        elif ev.key=='Escape':
             restore_button = document.getElementById('restore-button')
             if restore_button:
                 restore_button.click()
+        elif ev.key=='l' and ev.ctrlKey==True:
+            event_bus.trigger('collaboration-dialog')
     document.onkeyup = key_handler
 
     def reset_collab(ev):
@@ -1066,8 +1068,18 @@ def init():
     def get_context_help():
         #word = editor.findWordAt(editor.getCursor())
         #term = editor.getRange(word.anchor, word.head)
-        term = editor.getTokenAt(editor.getCursor())
-        event_bus.trigger("get-help", term.string)
+        term = editor.getTokenAt(editor.getCursor()).string
+        if editor.getMode().name=='python':
+                       event_bus.trigger('get-help', 'Python')
+        if editor.getMode().name=='markdown':
+                       event_bus.trigger('get-help', 'Markdown')
+        if editor.getMode().name=='css':
+                       event_bus.trigger('get-help', 'CSS')
+        if editor.getMode().name=='htmlmixed':
+                       event_bus.trigger('get-help', 'HTML')
+        setTimeout(def():
+            event_bus.trigger("get-help", term)
+        , 50)
 
     def get_help(term):
         event_bus.trigger("get-help", term)
