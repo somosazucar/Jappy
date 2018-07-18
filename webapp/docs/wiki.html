@@ -337,6 +337,8 @@ Error message and password prompt
 
 <li>$:/core/ui/TopBar/menu</li>
 
+<li>$:/core/ui/ViewTemplate/body</li>
+
 <li>$:/DefaultTiddlers</li>
 
 <li>$:/isEncrypted</li>
@@ -469,6 +471,8 @@ Error message and password prompt
 
 <li>choice</li>
 
+<li>dir</li>
+
 <li>Documentación</li>
 
 <li>Educa Juegos</li>
@@ -501,8 +505,6 @@ Error message and password prompt
 
 <li>Los elementos HTML</li>
 
-<li>MarkdownExample</li>
-
 <li>Novedades en Jappy</li>
 
 <li>Nuevo Proyecto</li>
@@ -514,6 +516,8 @@ Error message and password prompt
 <li>Prólogo</li>
 
 <li>Proyectos en Jappy</li>
+
+<li>Python</li>
 
 <li>randint</li>
 
@@ -619,8 +623,8 @@ Dependiendo del tipo de archivo, el navegador podrá mostrar directamente el con
 <div created="20180513055504735" modified="20180524054657370" title="$:/config/Navigation/openLinkFromOutsideRiver" type="text/vnd.tiddlywiki" revision="0" bag="default">
 <pre>top</pre>
 </div>
-<div created="20180511173546086" modified="20180511173546086" title="$:/config/Navigation/UpdateAddressBar" type="text/vnd.tiddlywiki" revision="0" bag="default">
-<pre>permalink</pre>
+<div created="20180511173546086" modified="20180714071449965" title="$:/config/Navigation/UpdateAddressBar" type="text/vnd.tiddlywiki" revision="0" bag="default">
+<pre>no</pre>
 </div>
 <div created="20180511173546074" modified="20180511173546074" title="$:/config/Navigation/UpdateHistory" type="text/vnd.tiddlywiki" revision="0" bag="default">
 <pre>yes</pre>
@@ -635,8 +639,8 @@ Dirección oficial: https://tiddlywiki.com/library/v5.1.15/index.html
 
 También se puede publicar desde el repositorio árbol de fuentes de TW.</pre>
 </div>
-<div created="20180502072732119" modified="20180528135218153" title="$:/config/PageControlButtons/Visibility/$:/core/ui/Buttons/advanced-search" type="text/vnd.tiddlywiki" revision="0" bag="default">
-<pre>hide</pre>
+<div created="20180502072732119" modified="20180718044326288" title="$:/config/PageControlButtons/Visibility/$:/core/ui/Buttons/advanced-search" type="text/vnd.tiddlywiki" revision="0" bag="default">
+<pre>show</pre>
 </div>
 <div created="20180511173546045" modified="20180511173546045" title="$:/config/PageControlButtons/Visibility/$:/core/ui/Buttons/close-all" type="text/vnd.tiddlywiki" revision="0" bag="default">
 <pre>show</pre>
@@ -9737,6 +9741,26 @@ $:/config/PageControlButtons/Visibility/$(listItem)$
 &lt;$button set=&quot;$:/state/sidebar&quot; setTo=&quot;yes&quot; tooltip={{$:/language/Buttons/ShowSideBar/Hint}} aria-label={{$:/language/Buttons/ShowSideBar/Caption}} class=&quot;tc-btn-invisible&quot;&gt;{{$:/core/images/chevron-left}}&lt;/$button&gt;
 &lt;/$reveal&gt;</pre>
 </div>
+<div created="20180714072911887" modified="20180718052559510" tags="$:/tags/ViewTemplate" title="$:/core/ui/ViewTemplate/body" type="text/vnd.tiddlywiki" revision="0" bag="default">
+<pre>&lt;$reveal tag=&quot;div&quot; class=&quot;tc-tiddler-body&quot; type=&quot;nomatch&quot; state=&lt;&lt;folded-state&gt;&gt; text=&quot;hide&quot; retain=&quot;yes&quot; animate=&quot;yes&quot;&gt;
+
+&lt;$list filter=&quot;[all[current]!has[plugin-type]!field:hide-body[yes]]&quot;&gt;
+
+&lt;$transclude&gt;
+
+&lt;$transclude tiddler=&quot;$:/language/MissingTiddler/Hint&quot;/&gt;
+
+Otras opciones:
+
+&lt;&lt;list-links &quot;[search&lt;currentTiddler&gt;] -[prefix[$]]&quot;&gt;&gt;
+
+[[Temas]] - [[Guías]] - [[Documentación]]
+
+&lt;/$transclude&gt;
+
+&lt;/$list&gt;
+&lt;/$reveal&gt;</pre>
+</div>
 <div created="20180426045625220" creator="icarito" modified="20180709062734925" modifier="icarito" title="$:/DefaultTiddlers" type="text/vnd.tiddlywiki" revision="0" bag="default">
 <pre>[[Documentación]]</pre>
 </div>
@@ -9752,7 +9776,7 @@ $:/config/PageControlButtons/Visibility/$(listItem)$
 <div created="20180512054509371" description="Markdown" group="Texto" modified="20180512054528243" name="text/x-markdown" title="$:/language/Docs/Types/text/x-markdown" type="text/vnd.tiddlywiki" revision="0" bag="default">
 <pre></pre>
 </div>
-<div created="20180603074625380" modified="20180603195540660" title="$:/language/MissingTiddler/Hint" type="text/vnd.tiddlywiki" revision="0" bag="default">
+<div created="20180603074625380" modified="20180718050339551" title="$:/language/MissingTiddler/Hint" type="text/vnd.tiddlywiki" revision="0" bag="default">
 <pre>El artículo &quot;&lt;$text text=&lt;&lt;currentTiddler&gt;&gt;/&gt;&quot; no existe.</pre>
 </div>
 <div author="Pau DeLuca" core-version="&gt;=5.0.0" created="20180511164856616" dependents="" description="Castellano. (Spain)" modified="20180511164856616" name="es-ES" plugin-type="language" title="$:/languages/es-ES" type="application/json" version="5.1.16" revision="0" bag="default">
@@ -17880,6 +17904,9 @@ Lanzar una moneda:
 	moneda = ['cara', 'sello']
 	print(random.choice(moneda))</pre>
 </div>
+<div created="20180718065004870" modified="20180718070511991" title="dir" type="text/vnd.tiddlywiki" revision="0" bag="default">
+<pre>`dir` retorna una lista con los miembros de un objeto.</pre>
+</div>
 <div created="20180706044358804" modified="20180709062940046" tags="" title="Documentación" type="text/x-markdown" revision="0" bag="default">
 <pre>## _**Recurso no-lineal de apoyo al aprendizaje**_
 
@@ -18015,8 +18042,10 @@ También se puede cambiar de nombre a la función con la siguiente sintaxis:
 <div created="20180524042743529" modified="20180524042743529" title="Indice HTML" type="application/x-tiddler" revision="0" bag="default">
 <pre></pre>
 </div>
-<div created="20180706035011476" modified="20180706035400452" tags="" title="input" type="text/x-markdown" revision="0" bag="default">
-<pre>La función `input` hace una pregunta al usuario y devuelve lo que el usuario responda.</pre>
+<div created="20180706035011476" modified="20180718072714972" tags="" title="input" type="text/x-markdown" revision="0" bag="default">
+<pre>La función `input` hace una pregunta al usuario y devuelve lo que el usuario responda.
+
+    nombre = input('¿Cómo te llamas?')</pre>
 </div>
 <div created="20180503083201381" modified="20180703072218396" tags="" title="Jappy Creator" type="text/x-markdown" revision="0" bag="default">
 <pre>&lt;iframe onload=&quot;this.height=window.innerHeight - 300&quot; src=&quot;/&quot; height=&quot;100%&quot; width=&quot;100%&quot;&gt;&lt;/iframe&gt;
@@ -18061,307 +18090,6 @@ También sirve para texto.
 </div>
 <div created="20180524042743844" modified="20180524042743844" title="Los elementos HTML" type="application/x-tiddler" revision="0" bag="default">
 <pre></pre>
-</div>
-<div title="MarkdownExample" type="text/x-markdown" revision="0" bag="default">
-<pre>Markdown: Basics
-================
-
-Getting the Gist of Markdown's Formatting Syntax
-------------------------------------------------
-
-This page offers a brief overview of what it's like to use Markdown.
-The [syntax page] [s] provides complete, detailed documentation for
-every feature, but Markdown should be very easy to pick up simply by
-looking at a few examples of it in action. The examples on this page
-are written in a before/after style, showing example syntax and the
-HTML output produced by Markdown.
-
-It's also helpful to simply try Markdown out; the [Dingus] [d] is a
-web application that allows you type your own Markdown-formatted text
-and translate it to XHTML.
-
-**Note:** This document is itself written using Markdown; you
-can [see the source for it by adding '.text' to the URL] [src].
-
-  [s]: /projects/markdown/syntax  &quot;Markdown Syntax&quot;
-  [d]: /projects/markdown/dingus  &quot;Markdown Dingus&quot;
-  [src]: /projects/markdown/basics.text
-
-
-## Paragraphs, Headers, Blockquotes ##
-
-A paragraph is simply one or more consecutive lines of text, separated
-by one or more blank lines. (A blank line is any line that looks like
-a blank line -- a line containing nothing but spaces or tabs is
-considered blank.) Normal paragraphs should not be indented with
-spaces or tabs.
-
-Markdown offers two styles of headers: *Setext* and *atx*.
-Setext-style headers for `&lt;h1&gt;` and `&lt;h2&gt;` are created by
-&quot;underlining&quot; with equal signs (`=`) and hyphens (`-`), respectively.
-To create an atx-style header, you put 1-6 hash marks (`#`) at the
-beginning of the line -- the number of hashes equals the resulting
-HTML header level.
-
-Blockquotes are indicated using email-style '`&gt;`' angle brackets.
-
-Markdown:
-
-    A First Level Header
-    ====================
-    
-    A Second Level Header
-    ---------------------
-
-    Now is the time for all good men to come to
-    the aid of their country. This is just a
-    regular paragraph.
-
-    The quick brown fox jumped over the lazy
-    dog's back.
-    
-    ### Header 3
-
-    &gt; This is a blockquote.
-    &gt; 
-    &gt; This is the second paragraph in the blockquote.
-    &gt;
-    &gt; ## This is an H2 in a blockquote
-
-
-Output:
-
-    &lt;h1&gt;A First Level Header&lt;/h1&gt;
-    
-    &lt;h2&gt;A Second Level Header&lt;/h2&gt;
-    
-    &lt;p&gt;Now is the time for all good men to come to
-    the aid of their country. This is just a
-    regular paragraph.&lt;/p&gt;
-    
-    &lt;p&gt;The quick brown fox jumped over the lazy
-    dog's back.&lt;/p&gt;
-    
-    &lt;h3&gt;Header 3&lt;/h3&gt;
-    
-    &lt;blockquote&gt;
-        &lt;p&gt;This is a blockquote.&lt;/p&gt;
-        
-        &lt;p&gt;This is the second paragraph in the blockquote.&lt;/p&gt;
-        
-        &lt;h2&gt;This is an H2 in a blockquote&lt;/h2&gt;
-    &lt;/blockquote&gt;
-
-
-
-### Phrase Emphasis ###
-
-Markdown uses asterisks and underscores to indicate spans of emphasis.
-
-Markdown:
-
-    Some of these words *are emphasized*.
-    Some of these words _are emphasized also_.
-    
-    Use two asterisks for **strong emphasis**.
-    Or, if you prefer, __use two underscores instead__.
-
-Output:
-
-    &lt;p&gt;Some of these words &lt;em&gt;are emphasized&lt;/em&gt;.
-    Some of these words &lt;em&gt;are emphasized also&lt;/em&gt;.&lt;/p&gt;
-    
-    &lt;p&gt;Use two asterisks for &lt;strong&gt;strong emphasis&lt;/strong&gt;.
-    Or, if you prefer, &lt;strong&gt;use two underscores instead&lt;/strong&gt;.&lt;/p&gt;
-   
-
-
-## Lists ##
-
-Unordered (bulleted) lists use asterisks, pluses, and hyphens (`*`,
-`+`, and `-`) as list markers. These three markers are
-interchangable; this:
-
-    *   Candy.
-    *   Gum.
-    *   Booze.
-
-this:
-
-    +   Candy.
-    +   Gum.
-    +   Booze.
-
-and this:
-
-    -   Candy.
-    -   Gum.
-    -   Booze.
-
-all produce the same output:
-
-    &lt;ul&gt;
-    &lt;li&gt;Candy.&lt;/li&gt;
-    &lt;li&gt;Gum.&lt;/li&gt;
-    &lt;li&gt;Booze.&lt;/li&gt;
-    &lt;/ul&gt;
-
-Ordered (numbered) lists use regular numbers, followed by periods, as
-list markers:
-
-    1.  Red
-    2.  Green
-    3.  Blue
-
-Output:
-
-    &lt;ol&gt;
-    &lt;li&gt;Red&lt;/li&gt;
-    &lt;li&gt;Green&lt;/li&gt;
-    &lt;li&gt;Blue&lt;/li&gt;
-    &lt;/ol&gt;
-
-If you put blank lines between items, you'll get `&lt;p&gt;` tags for the
-list item text. You can create multi-paragraph list items by indenting
-the paragraphs by 4 spaces or 1 tab:
-
-    *   A list item.
-    
-        With multiple paragraphs.
-
-    *   Another item in the list.
-
-Output:
-
-    &lt;ul&gt;
-    &lt;li&gt;&lt;p&gt;A list item.&lt;/p&gt;
-    &lt;p&gt;With multiple paragraphs.&lt;/p&gt;&lt;/li&gt;
-    &lt;li&gt;&lt;p&gt;Another item in the list.&lt;/p&gt;&lt;/li&gt;
-    &lt;/ul&gt;
-    
-
-
-### Links ###
-
-Markdown supports two styles for creating links: *inline* and
-*reference*. With both styles, you use square brackets to delimit the
-text you want to turn into a link.
-
-Inline-style links use parentheses immediately after the link text.
-For example:
-
-    This is an [example link](http://example.com/).
-
-Output:
-
-    &lt;p&gt;This is an &lt;a href=&quot;http://example.com/&quot;&gt;
-    example link&lt;/a&gt;.&lt;/p&gt;
-
-Optionally, you may include a title attribute in the parentheses:
-
-    This is an [example link](http://example.com/ &quot;With a Title&quot;).
-
-Output:
-
-    &lt;p&gt;This is an &lt;a href=&quot;http://example.com/&quot; title=&quot;With a Title&quot;&gt;
-    example link&lt;/a&gt;.&lt;/p&gt;
-
-Reference-style links allow you to refer to your links by names, which
-you define elsewhere in your document:
-
-    I get 10 times more traffic from [Google][1] than from
-    [Yahoo][2] or [MSN][3].
-
-    [1]: http://google.com/        &quot;Google&quot;
-    [2]: http://search.yahoo.com/  &quot;Yahoo Search&quot;
-    [3]: http://search.msn.com/    &quot;MSN Search&quot;
-
-Output:
-
-    &lt;p&gt;I get 10 times more traffic from &lt;a href=&quot;http://google.com/&quot;
-    title=&quot;Google&quot;&gt;Google&lt;/a&gt; than from &lt;a href=&quot;http://search.yahoo.com/&quot;
-    title=&quot;Yahoo Search&quot;&gt;Yahoo&lt;/a&gt; or &lt;a href=&quot;http://search.msn.com/&quot;
-    title=&quot;MSN Search&quot;&gt;MSN&lt;/a&gt;.&lt;/p&gt;
-
-The title attribute is optional. Link names may contain letters,
-numbers and spaces, but are *not* case sensitive:
-
-    I start my morning with a cup of coffee and
-    [The New York Times][NY Times].
-
-    [ny times]: http://www.nytimes.com/
-
-Output:
-
-    &lt;p&gt;I start my morning with a cup of coffee and
-    &lt;a href=&quot;http://www.nytimes.com/&quot;&gt;The New York Times&lt;/a&gt;.&lt;/p&gt;
-
-
-### Images ###
-
-Image syntax is very much like link syntax.
-
-Inline (titles are optional):
-
-    ![alt text](/path/to/img.jpg &quot;Title&quot;)
-
-Reference-style:
-
-    ![alt text][id]
-
-    [id]: /path/to/img.jpg &quot;Title&quot;
-
-Both of the above examples produce the same output:
-
-    &lt;img src=&quot;/path/to/img.jpg&quot; alt=&quot;alt text&quot; title=&quot;Title&quot; /&gt;
-
-
-
-### Code ###
-
-In a regular paragraph, you can create code span by wrapping text in
-backtick quotes. Any ampersands (`&amp;`) and angle brackets (`&lt;` or
-`&gt;`) will automatically be translated into HTML entities. This makes
-it easy to use Markdown to write about HTML example code:
-
-    I strongly recommend against using any `&lt;blink&gt;` tags.
-
-    I wish SmartyPants used named entities like `&amp;mdash;`
-    instead of decimal-encoded entites like `&amp;#8212;`.
-
-Output:
-
-    &lt;p&gt;I strongly recommend against using any
-    &lt;code&gt;&amp;lt;blink&amp;gt;&lt;/code&gt; tags.&lt;/p&gt;
-    
-    &lt;p&gt;I wish SmartyPants used named entities like
-    &lt;code&gt;&amp;amp;mdash;&lt;/code&gt; instead of decimal-encoded
-    entites like &lt;code&gt;&amp;amp;#8212;&lt;/code&gt;.&lt;/p&gt;
-
-
-To specify an entire block of pre-formatted code, indent every line of
-the block by 4 spaces or 1 tab. Just like with code spans, `&amp;`, `&lt;`,
-and `&gt;` characters will be escaped automatically.
-
-Markdown:
-
-    If you want your page to validate under XHTML 1.0 Strict,
-    you've got to put paragraph tags in your blockquotes:
-
-        &lt;blockquote&gt;
-            &lt;p&gt;For example.&lt;/p&gt;
-        &lt;/blockquote&gt;
-
-Output:
-
-    &lt;p&gt;If you want your page to validate under XHTML 1.0 Strict,
-    you've got to put paragraph tags in your blockquotes:&lt;/p&gt;
-    
-    &lt;pre&gt;&lt;code&gt;&amp;lt;blockquote&amp;gt;
-        &amp;lt;p&amp;gt;For example.&amp;lt;/p&amp;gt;
-    &amp;lt;/blockquote&amp;gt;
-    &lt;/code&gt;&lt;/pre&gt;
-</pre>
 </div>
 <div created="20180524042743697" modified="20180524042743697" title="Novedades en Jappy" type="application/x-tiddler" revision="0" bag="default">
 <pre></pre>
@@ -18413,6 +18141,80 @@ _&quot;Educa Juegos&quot;_ es una obra de cultura libre disponibilizada bajo la 
 </div>
 <div created="20180524042743652" modified="20180524042743652" title="Proyectos en Jappy" type="application/x-tiddler" revision="0" bag="default">
 <pre></pre>
+</div>
+<div created="20180714072236049" modified="20180718072646634" title="Python" type="text/x-markdown" revision="0" bag="default">
+<pre>**Python** es un lenguaje de programación diseñado para ser sencillo de leer y aprender, muy potente y de amplio uso.
+
+La variante usada en Jappy se llama [RapydScript-NG](https://github.com/kovidgoyal/rapydscript-ng). El código es convertido en Javascript y ejecutado por el navegador.
+
+## Asignación
+
+    x = 5
+
+A partir de la asignación, `x` se vuelve una referencia al valor `5` en cualquier *expresión*.
+
+## Números
+
+Los números se expresan directamente con dígitos `1 2 3 ...`.
+En el ejemplo anterior, `x` referencia a una valor de tipo número.
+
+## Cadenas de caracteres (*&quot;strings&quot;*)
+
+Los &quot;textos&quot; son tratados de otra manera por **Python**. Se deben englobar en comillas simples o dobles.
+
+    sol = &quot;Inti&quot;
+
+## Listas
+
+    colores = ['blue', 'pink', 'yellow']
+
+Luego se puede hacer referencia al valor `'yellow'` usando `colores[2]` (siempre se contamos desde cero).
+
+
+## Objetos
+
+    capital = { 'Perú':'Lima',
+                'Colombia':'Bogotá',
+                'Chile':'Santiago' }
+
+En este caso se puede usar la forma `capital['Chile']` para hacer referencia al valor `'Santiago'`.
+
+## Entrada y Salida
+
+[print](#print) - Añade un elemento HTML a la página
+[input](#input) - Abre un diálogo modal para preguntar al usuario algo
+
+**Extendidos**
+
+[inputAsync](#inputAsync) - Añade un elemento de tipo `input` y espera por un `Enter` para llamar a una función.
+[markdownPrint](#markdownPrint) - Añade un elemento HTML construido a partir de un texto Markdown.
+
+## Condicionales
+
+    if expresion:
+        print(&quot;expresión es verdadera&quot;)
+
+Los valores de verdad pueden producirse con operadores lógicos o se asumen a partir del valor y el tipo (`[]`, `{}`, `0` y `''` equivalen a `False`, otros valores son `True`)
+
+## Operadores
+
+Para los números, los operadores matemáticos incluyen `+ - * / **` (este último es potencia). En el caso de las variables que contienen textos, los mismos se unen con el operador `+`.
+
+## Bucles
+
+Los bucles son maneras de repetir una secuencia a partir de una lista:
+
+    for color in colores:
+    	print(color, style=&quot;color:&quot; + color)
+
+## Funciones
+
+Las funciones son secuencias que, una vez definidas, se pueden invocar desde otro lugar del código.
+
+    def doble(x):
+        return(x*2)
+
+A partir de este punto se puede usar la expresión `doble(4)` para obtener el valor `8`.</pre>
 </div>
 <div created="20180616134943334" modified="20180616135114912" title="randint" type="text/x-markdown" revision="0" bag="default">
 <pre>A veces se necesita un número entero perteneciente un rango.
