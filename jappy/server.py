@@ -184,14 +184,14 @@ class DAVFilterMiddleWare(object):
                 'PATH_INFO')[1:environ.get('PATH_INFO')[1:].index('/') + 1]
         else:
             path = ''
-        #if environ.get('REQUEST_METHOD') == 'PROPFIND':
-        #    if environ.get('PATH_INFO') in ['', '/']:
-        #        # Let's not allow listing of projects
-        #        return Unauthorized()(environ, start_response)
-        #    elif '/.dat' in environ.get('PATH_INFO'):
-        #        # Let's not leak private dat keys
-        #        return Unauthorized()(environ, start_response)
-        if environ.get('REQUEST_METHOD') == 'GET':
+        if environ.get('REQUEST_METHOD') == 'PROPFIND':
+            if environ.get('PATH_INFO') in ['', '/']:
+                # Let's not allow listing of projects
+                return Unauthorized()(environ, start_response)
+            elif '/.dat' in environ.get('PATH_INFO'):
+                # Let's not leak private dat keys
+                return Unauthorized()(environ, start_response)
+        elif environ.get('REQUEST_METHOD') == 'GET':
             # Let's redirect to static route
             filename = environ.get(
                 'PATH_INFO')[environ.get('PATH_INFO').find('/') + 1:]
