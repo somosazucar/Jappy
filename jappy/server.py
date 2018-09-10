@@ -21,13 +21,18 @@ from jappy.hooks import register_hooks
 signal.signal(signal.SIGINT, signal.SIG_DFL)
 mimetypes.add_type('image/svg+xml', '.svg')
 mimetypes.add_type('application/x-font-woff', '.woff')
-mimetypes.add_type('application/javascript', '.pyj')
+mimetypes.add_type('text/javascript', '.pyj')
 mimetypes.add_type('text/plain', '.md')
 mimetypes.add_type('application/json', '.json')
+
+nocache_ext = ('.md', '.pyj')
 
 WRITING_DOCS = (os.environ.get('JAPPY_TIDDLY_BRIDGE') == '1')
 if WRITING_DOCS:
     print("Briding to local Tiddlyserver on port 8080.")
+
+PORT = int(os.environ.get('PORT')) or 54991
+WORKSPACE = int(os.environ.get('WORKSPACE')) or os.path.join(os.path.expanduser("~"), 'Workspace')
 
 app_dir = "../webapp"
 app = Flask(__name__,
@@ -48,7 +53,7 @@ register_hooks(app)
 socketio = SocketIO(app)
 web_app_dir = os.path.realpath(os.path.join(app.root_path, '../webapp/'))
 
-workspace_dir = os.path.realpath(os.path.join(os.path.expanduser("~"), 'Workspace'))
+workspace_dir = os.path.realpath(WORKSPACE)
 if not os.path.isdir(workspace_dir):
     os.mkdir(workspace_dir)
 
@@ -210,7 +215,10 @@ class DAVFilterMiddleWare(object):
             if os.path.exists(dirname):
                 response = Response('Already exists.')
                 return response(environ, start_response)
-        return self.app(environ, custom_start_response)
+        if path.endswith(nocache_ext):
+            return self.app(environ, custom_start_response)
+        else:
+            return self.app(environ, start_response)
 
 
 def start_server():
@@ -237,7 +245,7 @@ def start_server():
     app.wsgi_app = DispatcherMiddleware(app.wsgi_app, {
         '/dav': filtered_dav_app
     })
-    socketio.run(app, host='0.0.0.0', port=54991)
+    socketio.run(app, host='0.0.0.0', port=PORT)
 
 
 pathSize = len(workspace_dir) + 1
