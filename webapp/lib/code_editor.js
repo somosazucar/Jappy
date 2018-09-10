@@ -3685,6 +3685,9 @@ function init() {
                     });
                     return ρσ_anonfunc;
                 })());
+                y.connector.socket.on("reconnect_attempt", function () {
+                    socket.io.opts.transports = ρσ_list_decorate([ "polling", "websocket" ]);
+                });
             };
             if (!ρσ_anonfunc.__argnames__) Object.defineProperties(ρσ_anonfunc, {
                 __argnames__ : {value: ["y"]}

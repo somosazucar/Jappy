@@ -1178,6 +1178,9 @@ def init():
                                 console.warn(event)
                                 event_bus.trigger(event, data)
                         )
+                    y.connector.socket.on('reconnect_attempt', def():
+                            socket.io.opts.transports = ['polling', 'websocket']
+                        )
         )
 
 
