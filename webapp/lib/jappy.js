@@ -3899,6 +3899,17 @@ window.onerror = (function() {
     });
     return ρσ_anonfunc;
 })();
+function mdPrint() {
+    var kwargs = arguments[arguments.length-1];
+    if (kwargs === null || typeof kwargs !== "object" || kwargs [ρσ_kwargs_symbol] !== true) kwargs = {};
+    var args = Array.prototype.slice.call(arguments, 0);
+    if (kwargs !== null && typeof kwargs === "object" && kwargs [ρσ_kwargs_symbol] === true) args.pop();
+    return ρσ_interpolate_kwargs.call(this, markdownPrint, args.concat([ρσ_desugar_kwargs(kwargs)]));
+};
+if (!mdPrint.__handles_kwarg_interpolation__) Object.defineProperties(mdPrint, {
+    __handles_kwarg_interpolation__ : {value: true}
+});
+
 function markdownPrint() {
     var src = ( 0 === arguments.length-1 && arguments[arguments.length-1] !== null && typeof arguments[arguments.length-1] === "object" && arguments[arguments.length-1] [ρσ_kwargs_symbol] === true) ? undefined : arguments[0];
     var kwargs = arguments[arguments.length-1];

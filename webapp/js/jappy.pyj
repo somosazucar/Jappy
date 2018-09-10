@@ -73,6 +73,9 @@ window.onerror = def(e):
     console.error(e)
     print(e)
 
+def mdPrint(*args, **kwargs):
+    return markdownPrint(*args, **kwargs)
+
 def markdownPrint(src, **kwargs):
     markdown_body = print(Jappy.marked(src), **kwargs)
     if 'parent' not in kwargs:

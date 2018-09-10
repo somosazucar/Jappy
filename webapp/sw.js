@@ -259,7 +259,7 @@ self.__precacheManifest = [
   },
   {
     "url": "js/riot.config.js",
-    "revision": "d685a4d2bb18ddc01d3ee737001fde10"
+    "revision": "ba2f0f0fe83da2e950ba99a4fa5a29b0"
   },
   {
     "url": "js/toolbar.tag.html",
@@ -367,7 +367,7 @@ self.__precacheManifest = [
   },
   {
     "url": "lib/jappy.js",
-    "revision": "dcc8779a693cdfabe932dd99c57d404b"
+    "revision": "e31828c05473abced068d08d18010208"
   },
   {
     "url": "lib/jszip.min.js",
@@ -651,8 +651,10 @@ self.__precacheManifest = [
   },
   {
     "url": "workbox-config.js",
-    "revision": "1a99c92f3656dfbb6391bb994d602b8b"
+    "revision": "0bb7808521c0de3f7c9f12dca9627499"
   }
 ].concat(self.__precacheManifest || []);
 workbox.precaching.suppressWarnings();
 workbox.precaching.precacheAndRoute(self.__precacheManifest, {});
+
+workbox.routing.registerRoute(/dav/, workbox.strategies.networkFirst({ networkTimeoutSeconds: 10, cacheName: "jappy-offline", plugins: [] }), 'GET');

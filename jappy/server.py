@@ -32,7 +32,7 @@ if WRITING_DOCS:
     print("Briding to local Tiddlyserver on port 8080.")
 
 PORT = int(os.environ.get('PORT')) or 54991
-WORKSPACE = int(os.environ.get('WORKSPACE')) or os.path.join(os.path.expanduser("~"), 'Workspace')
+WORKSPACE = os.environ.get('WORKSPACE') or os.path.join(os.path.expanduser("~"), 'Workspace')
 
 app_dir = "../webapp"
 app = Flask(__name__,
