@@ -3588,11 +3588,6 @@ function init() {
                 var ρσ_d = {};
                 ρσ_d["name"] = "websockets-client";
                 ρσ_d["room"] = path;
-                ρσ_d["options"] = (function(){
-                    var ρσ_d = {};
-                    ρσ_d["transports"] = ρσ_list_decorate([ "websocket" ]);
-                    return ρσ_d;
-                }).call(this);
                 ρσ_d["url"] = address;
                 return ρσ_d;
             }).call(this);
@@ -3685,9 +3680,6 @@ function init() {
                     });
                     return ρσ_anonfunc;
                 })());
-                y.connector.socket.on("reconnect_attempt", function () {
-                    socket.io.opts.transports = ρσ_list_decorate([ "polling", "websocket" ]);
-                });
             };
             if (!ρσ_anonfunc.__argnames__) Object.defineProperties(ρσ_anonfunc, {
                 __argnames__ : {value: ["y"]}

@@ -1121,7 +1121,6 @@ def init():
         Y({'db'       : { 'name': 'memory'},
            'connector': { 'name': 'websockets-client',
                           'room': path,
-                          'options': { 'transports': ['websocket'] },
                           'url': address },
             'share'   : { 'files': 'Map' }}).then(  
                 def(y):
@@ -1177,9 +1176,6 @@ def init():
                                 data = msg.data
                                 console.warn(event)
                                 event_bus.trigger(event, data)
-                        )
-                    y.connector.socket.on('reconnect_attempt', def():
-                            socket.io.opts.transports = ['polling', 'websocket']
                         )
         )
 
