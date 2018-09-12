@@ -7,3 +7,4 @@ wsgicors
 gevent-websocket
 pyinotify
 requests
+Flask-Hookserver
