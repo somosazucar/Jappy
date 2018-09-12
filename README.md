@@ -44,7 +44,7 @@ In order to launch the app, simply open `Jappy.activity/index.html` in a browser
 The collaboration server is implemented in Flask.
 
 ```
-python2 server.py
+python server.py
 ```
 And then open http://localhost:54991/#Sandbox (change the hash reference to your project name).
 
