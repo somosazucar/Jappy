@@ -3575,7 +3575,7 @@ function init() {
             return;
         }
         protocol = (ρσ_equals(location.protocol.slice(-2, -1), "s")) ? "wss" : "ws";
-        address = protocol + "://" + "jappy.glitch.com";
+        address = protocol + "://" + "jappy.glitch.me";
         path = location.hash.slice(1);
         Y((function(){
             var ρσ_d = {};
