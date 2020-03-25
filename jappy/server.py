@@ -228,6 +228,7 @@ def start_server():
     config.update({
         "mount_path": "/dav",
         "provider_mapping": {"/": provider},
+        "simple_dc": {"user_mapping": {"*": True}},
         "dir_browser": {"enable": True,
                         "response_trailer": response_trailer},
         "verbose": 2,
