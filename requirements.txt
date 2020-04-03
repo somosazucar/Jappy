@@ -4,7 +4,7 @@ Flask-SocketIO
 static
 wsgigzip
 wsgicors
-gevent-websocket
 pyinotify
+gevent-websocket
 requests
 flask-hookserver

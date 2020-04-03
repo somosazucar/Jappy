@@ -7,6 +7,7 @@ from wsgidav.fs_dav_provider import FilesystemProvider
 from werkzeug.middleware.dispatcher import DispatcherMiddleware
 from werkzeug.exceptions import Unauthorized
 from werkzeug.wrappers import Response
+from werkzeug.middleware.proxy_fix import ProxyFix
 from wsgicors import CORS
 from wsgigzip import GzipMiddleware
 import os
@@ -32,6 +33,7 @@ if WRITING_DOCS:
     print("Briding to local Tiddlyserver on port 8080.")
 
 PORT = int(os.environ.get('PORT')) or 54991
+IP = os.environ.get('IP') or '0.0.0.0'
 WORKSPACE = os.environ.get('WORKSPACE') or os.path.join(os.path.expanduser("~"), 'Workspace')
 
 app_dir = "../webapp"
@@ -50,7 +52,8 @@ if not os.path.isdir(web_app_dir):
         raise ImportError('Jappy Web Application cannot be found.')
 
 register_hooks(app)
-socketio = SocketIO(app)
+socketio = SocketIO(app, async_mode='gevent')
+app.wsgi_app = ProxyFix(app.wsgi_app, x_for=1, x_proto=1)
 web_app_dir = os.path.realpath(os.path.join(app.root_path, '../webapp/'))
 
 workspace_dir = os.path.realpath(WORKSPACE)
@@ -245,7 +248,7 @@ def start_server():
     app.wsgi_app = DispatcherMiddleware(app.wsgi_app, {
         '/dav': filtered_dav_app
     })
-    socketio.run(app, host='0.0.0.0', port=PORT)
+    socketio.run(app, host=IP, port=PORT, debug=True)
 
 
 pathSize = len(workspace_dir) + 1
