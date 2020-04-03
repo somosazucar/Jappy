@@ -32,7 +32,7 @@ WRITING_DOCS = (os.environ.get('JAPPY_TIDDLY_BRIDGE') == '1')
 if WRITING_DOCS:
     print("Briding to local Tiddlyserver on port 8080.")
 
-PORT = int(os.environ.get('PORT')) or 54991
+PORT = int(os.environ.get('PORT') or 54991)
 IP = os.environ.get('IP') or '0.0.0.0'
 WORKSPACE = os.environ.get('WORKSPACE') or os.path.join(os.path.expanduser("~"), 'Workspace')
 
