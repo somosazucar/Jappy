@@ -259,8 +259,6 @@ def init():
       'Ctrl-Enter': run,
       'Alt-R': run,
       'F9': toggle_tray,
-      'Shift-F1': get_help,
-      'F1': get_context_help,
       'Tab': def():
                 if editor.somethingSelected():
                     editor.indentSelection("add")
@@ -553,7 +551,6 @@ def init():
     event_bus.on("clear-output", clear_output)
 
     def run():
-        hide_help()
         window.state = 'run'
         event_bus.trigger('traybutton-open')
         riot.update()
@@ -1064,50 +1061,6 @@ def init():
                     newtab()
                 )
     event_bus.on("activity-not-ready", fresh_start)
-
-    def get_context_help():
-        #word = editor.findWordAt(editor.getCursor())
-        #term = editor.getRange(word.anchor, word.head)
-        term = editor.getTokenAt(editor.getCursor()).string
-        if editor.getMode().name=='python':
-                       event_bus.trigger('get-help', 'Python')
-        if editor.getMode().name=='markdown':
-                       event_bus.trigger('get-help', 'Markdown')
-        if editor.getMode().name=='css':
-                       event_bus.trigger('get-help', 'CSS')
-        if editor.getMode().name=='htmlmixed':
-                       event_bus.trigger('get-help', 'HTML')
-        setTimeout(def():
-            event_bus.trigger("get-help", term)
-        , 50)
-
-    def get_help(term):
-        event_bus.trigger("get-help", term)
-
-    def hide_help():
-        tag.refs.docframe.style.display = 'none'
-
-    def preload_help():
-        url = location.protocol + '//' + location.host + '/' \
-                + "docs/wiki.html#"
-        setTimeout(def():
-             tag.refs.docframe.contentWindow.location = url
-            , 1000)
-    event_bus.on('compiler-ready', preload_help)
-
-    def show_help(term=''):
-        clear_output()
-        tag.refs.docframe.style.display = 'block'
-        window.state = 'show'
-        riot.update()
-        url = location.protocol + '//' + location.host + '/' \
-                + "docs/wiki.html#" + term
-        tag.refs.docframe.contentWindow.location = url
-        event_bus.trigger("traybutton-open")
-        if window.innerWidth < 720:
-            run_fullscreen(False)
-        tag.update()
-    event_bus.on('get-help', show_help)
 
     def init_collab():
         if not location.hash:
