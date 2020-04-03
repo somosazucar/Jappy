@@ -1,0 +1,25 @@
+image: node:buster-slim
+
+
+pages:
+    before_script:
+        - apt-get update -yq
+        - apt-get install -yq python3-pip rsync
+        - mkdir -p ~/.ssh; chmod 700 ~/.ssh
+        - echo "$SSH_KNOWN_HOSTS" > ~/.ssh/known_hosts
+        - chmod 644 ~/.ssh/known_hosts
+        - 'which ssh-agent || ( apt-get update -y && apt-get install openssh-client -y )'
+        - eval $(ssh-agent -s)
+        - echo "$SSH_PRIVATE_KEY" | tr -d '\r' | ssh-add -
+        - cd webapp; yarn; cd ..
+        - pip3 install -r requirements.txt
+    script:
+        - cd webapp; make compile; cd ..
+        - mv webapp/ public
+        - rsync -avH public/lib jappy_gitlabci@ssh-jappy.alwaysdata.net:webapp/
+    artifacts:
+        paths:
+            - public
+    only:
+        - main
+
