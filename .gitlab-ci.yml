@@ -16,7 +16,7 @@ pages:
     script:
         - cd webapp; make compile; cd ..
         - mv webapp/ public
-        - rsync -avH public/lib jappy_gitlabci@ssh-jappy.alwaysdata.net:webapp/
+        - rsync -avH --omit-dir-times public/lib jappy_gitlabci@ssh-jappy.alwaysdata.net:webapp/
     artifacts:
         paths:
             - public
