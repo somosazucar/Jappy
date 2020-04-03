@@ -1,11 +1,11 @@
 compile:
-	rapydscript compile -b js/folder.pyj > lib/folder.js
-	rapydscript compile -b js/jappy.pyj > lib/jappy.js
-	riot --config js/riot.config.js --ext tag.html js/ lib/
+	./node_modules/.bin/rapydscript compile -b js/folder.pyj > lib/folder.js
+	./node_modules/.bin/rapydscript compile -b js/jappy.pyj > lib/jappy.js
+	./node_modules/.bin/riot --config js/riot.config.js --ext tag.html js/ lib/
 sw:
-	workbox generateSW
+	./node_modules/.bin/workbox generateSW
 watch:
-	riot --colors --watch --config js/riot.config.js --ext tag.html js/ lib/
+	./node_modules/.bin/riot --colors --watch --config js/riot.config.js --ext tag.html js/ lib/
 dist_xo:
 	python setup.py dist_xo
 genpot:
