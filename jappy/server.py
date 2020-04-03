@@ -52,7 +52,7 @@ if not os.path.isdir(web_app_dir):
         raise ImportError('Jappy Web Application cannot be found.')
 
 register_hooks(app)
-socketio = SocketIO(app, async_mode='gevent')
+socketio = SocketIO(app)
 app.wsgi_app = ProxyFix(app.wsgi_app, x_for=1, x_proto=1)
 web_app_dir = os.path.realpath(os.path.join(app.root_path, '../webapp/'))
 
