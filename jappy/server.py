@@ -4,7 +4,7 @@ from flask_socketio import SocketIO, emit, join_room, leave_room
 from flask import request, send_from_directory, stream_with_context
 from wsgidav.wsgidav_app import DEFAULT_CONFIG, WsgiDAVApp
 from wsgidav.fs_dav_provider import FilesystemProvider
-from werkzeug.wsgi import DispatcherMiddleware
+from werkzeug.middleware.dispatcher import DispatcherMiddleware
 from werkzeug.exceptions import Unauthorized
 from werkzeug.wrappers import Response
 from wsgicors import CORS
@@ -228,9 +228,9 @@ def start_server():
     config.update({
         "mount_path": "/dav",
         "provider_mapping": {"/": provider},
+        "simple_dc": {"user_mapping": {"*": True}},
         "dir_browser": {"enable": True,
                         "response_trailer": response_trailer},
-        "user_mapping": {},
         "verbose": 2,
     })
     dav_app = WsgiDAVApp(config)

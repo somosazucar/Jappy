@@ -1,10 +1,6 @@
 import subprocess
 from flask import jsonify
-try:
-    from flask_hookserver import Hooks
-except ImportError:
-    Hooks = False
-
+from flask_hookserver import Hooks
 
 def register_hooks(app):
     app.config['VALIDATE_IP'] = False
